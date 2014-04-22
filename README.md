@@ -36,6 +36,7 @@ The idea is to have a reactive notes app that can do math for you using data tab
 - can get live/realtime data from json or google docs
 - `*` signifies the "slug" field
 
+
     ┌---------------------------------------------------------------------------------┐
     |                                 t1 ECU Sizes                                    |
     ├-------------------------------------------------------------------------------┬-┤
