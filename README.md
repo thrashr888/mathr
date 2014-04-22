@@ -34,7 +34,7 @@ The idea is to have a reactive notes app that can do math for you using data tab
 
 - importable
 - can get live/realtime data from json or google docs
-- * signifies the "slug" field
+- `*` signifies the "slug" field
 
     ┌---------------------------------------------------------------------------------┐
     |                                 t1 ECU Sizes                                    |
@@ -55,10 +55,12 @@ The idea is to have a reactive notes app that can do math for you using data tab
 - would need to consider functional vs. OO
 - functional might work better on this kind of data
 
+Example function:
+
     ┌-------------------------------┐
-    |          f1 multiply          |
+    |        f1 multiply_list       |
     ├-------------------------------┤
-    |1|def multiply(v, m):          |
+    |1|def multiply_list(v, m):     |
     |2|  for i in v:                |
     |3|    i = i * m                |
     |4|  return v                   |
@@ -83,27 +85,28 @@ Some syntax ideas:
     ECU Sizes!m1.xlarge!Size
     Google docs style: "='Sheet number two'!B4"
 
-#can apply filters
-t1.F X month | < $20
+Can apply filters:
+
+    t1.F X month | < $20
 
 ## Live output from queries on every line
 
-- this is from `t1.F X month | < $20`
+This is from `t1.F X month | < $20`:
 
-┌-----------------------------------┐
-| t1 ECU Sizes | t1.F X month < $20 |
-|-----------------------------------|
-| | F                               |
-| |                        Price Hr |
-|3|                        $19.4184 |
-|4|                          $13.15 |
-└-----------------------------------┘
+    ┌-----------------------------------┐
+    | t1 ECU Sizes | t1.F X month < $20 |
+    |-----------------------------------|
+    | | F                               |
+    | |                        Price Hr |
+    |3|                        $19.4184 |
+    |4|                          $13.15 |
+    └-----------------------------------┘
 
 ## Live output can also result in single values
 
-- output should look more like soulver with the results to the right of every line
+Output should look more like soulver with the results to the right of every line:
 
-t1.F.1 X month # $38.7624
+    t1.F.1 X month # $38.7624
 
 
 # Installation & Runtime
