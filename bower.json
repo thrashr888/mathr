@@ -1,0 +1,12 @@
+{
+  "name": "mathr",
+  "version": "0.0.0",
+  "dependencies": {
+    "jquery": "*",
+    "bootstrap-sass-official": "*",
+    "react": "*",
+    "bacon": "*",
+    "numeral": "*"
+  },
+  "devDependencies": {}
+}

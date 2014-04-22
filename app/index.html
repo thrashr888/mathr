@@ -1,0 +1,274 @@
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+    <title>Mathr Prototype</title>
+    <meta name="description" content="Mathr Prototype">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css({.tmp,app}) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+  </head>
+  <body>
+    <div class="container-fluid">
+
+      <table data-table="1">
+        <tr data-row="1"><td data-col="1">coffee</td> <td data-col="2">$4.00</td></tr>
+        <tr data-row="2"><td data-col="1">milk</td>   <td data-col="2">$3.75</td></tr>
+        <tr data-row="3"><td data-col="1">water</td>  <td data-col="2">$6.25</td></tr>
+      </table>
+
+      <div class="row" data-notes="1">
+        <span data-output="1" class="col-md-3">-</span>
+          <input data-line="1" type="text" class="col-md-8" value="1 + 1"  />
+
+        <span data-output="2" class="col-md-3">-</span>
+          <input data-line="2" type="text" class="col-md-8" value="51 - 1" />
+
+        <span data-output="3" class="col-md-3">-</span>
+          <input data-line="3" type="text" class="col-md-8" value="1 * 2"  />
+
+        <span data-output="4" class="col-md-3">-</span>
+          <input data-line="4" type="text" class="col-md-8" value="l2 / 2" />
+
+        <span data-output="5" class="col-md-3">-</span>
+          <input data-line="5" type="text" class="col-md-8" value="t1.b1"  />
+
+        <span data-output="6" class="col-md-3">-</span>
+          <input data-line="6" type="text" class="col-md-8" value="mathr: 5 * 5"  />
+
+        <span data-output="7" class="col-md-3">-</span>
+          <input data-line="7" type="text" class="col-md-8" value="$8.50 / 4"  />
+
+        <span data-output="8" class="col-md-3">-</span>
+          <input data-line="8" type="text" class="col-md-8" value="random"  />
+
+        <span data-output="9" class="col-md-3">-</span>
+          <input data-line="9" type="text" class="col-md-8" value="random(5)"  />
+      </div>
+
+      <div data-output="error" class="alert" style="height: 150px; overflow-y: scroll;"></div>
+
+    </div>
+
+    <!-- build:js scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/bacon/dist/Bacon.js"></script>
+    <script src="bower_components/numeral/numeral.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/react/JSXTransformer.js"></script>
+    <script src="scripts/grammars/mathr.js"></script>
+    <script src="scripts/app.js"></script>
+    <!-- <script src="scripts/controllers/main.js"></script> -->
+    <!-- endbuild -->
+
+    <script type="text/javascript">
+    /* globals $, parser, numeral */
+    'use strict';
+
+    window.mathr = {
+
+      // yytext, yyleng, yylineno, yy,
+      // yystate /* action[1] */,
+      // $$ /* vstack */,
+      // _$ /* lstack */
+
+      lines: [],
+      currenciesMatch: /^([\$€£]+)([0-9]+(\.[0-9]+)?)/,
+
+      currToFloat: function (currency) {
+        var c = this.currenciesMatch,
+            m = currency.match(c);
+        if (m && m[1]) {
+          console.log('currToFloat1', currency, m);
+          return [m[1], parseFloat(m[2])];
+        } else {
+          console.log('currToFloat2', currency);
+          return ['', parseFloat(currency + '')];
+        }
+      },
+
+      floatToCurr: function (fl, currency) {
+        return fl + currency;
+      },
+
+      getLineVal: function (line) {
+        console.log('getLine', line);
+        return $('div.row span[data-output=' + line.replace('l', '') + ']').html();
+      },
+
+      opFunc: function (t1) {
+        return t1;
+      },
+
+      opCurr: function (t1, t2, t3, a) {
+        console.log('opCurr', [t1, t2, t3, a]);
+        var output = null,
+            fl1 = numeral().unformat(t1),
+            fl3 = numeral().unformat(t3);
+
+        switch (t2) {
+          case '/':
+            output = fl1 / fl3;
+            break;
+          case '*':
+            output = fl1 * fl3;
+            break;
+          case '+':
+            output = fl1 + fl3;
+            break;
+          case '-':
+            output = fl1 - fl3;
+            break;
+          default:
+            output = fl1 * fl3;
+            break;
+        }
+
+        return numeral(output).format('$0,0.00');
+      },
+
+      opLine: function ($1, $2, $3) {
+        console.log('opLine', [$1, $2, $3]);
+        var output = null,
+            $1b = this.getLineVal($1);
+
+        switch ($2) {
+          case '/':
+            output = $1b / $3;
+            break;
+          case '*':
+            output = $1b * $3;
+            break;
+          case '+':
+            output = $1b + $3;
+            break;
+          case '-':
+            output = $1b - $3;
+            break;
+          default:
+            output = $1b;
+            break;
+        }
+
+        return output;
+      }
+    };
+
+    // window.print = function (l) { window.console.log(l); }; // override the parser's call
+    window.print = function () { }; // override the parser's call
+    // var parserSource = generator.generate({moduleName: "mathr"});
+    var errCount = 0;
+
+    function displayError(msg) {
+      var $error = $('[data-output="error"]');
+      $error.prepend('\n<br>' + (++errCount) + ': ' + msg);
+      console.error(msg);
+    }
+
+    function solve(line) {
+      var val;
+      if (line) {
+        try {
+          val = parser.parse($('[data-line="' + line + '"]').val());
+        } catch (e) {
+          val = '';
+          displayError(e);
+        }
+        $('[data-output="' + line + '"]').html(val);
+      }
+    }
+
+    for(var i = 1; i <= 9; i++) {
+      solve(i);
+    }
+
+
+    $('div.row').on('keyup change', 'input[type="text"]', function solveLine (e) {
+      // console.log(e);
+      // solve($(this).data('line'));
+      for(var i = 1; i <= 9; i++) {
+        solve(i);
+      }
+      // second pass to update vars above
+      for(var i2 = 1; i2 <= 9; i2++) {
+        solve(i2);
+      }
+
+      if(e.which === 40) { // down arrow
+
+      } else if (e.which === 38) { // up arrow
+
+      }
+    });
+
+
+
+    function addRandom() {
+      $('div.row input[data-line=8]')
+        .last()
+        .val('€' + Math.round(Math.random()*100) + ' * 2')
+        .trigger('keyup');
+    }
+    addRandom();
+    setInterval(addRandom, 5000);
+    </script>
+
+    <!-- <script type="text/jsx">
+      /** @jsx React.DOM */
+      React.renderComponent(
+        <p>Hello, world!</p>,
+        document.getElementById('o6')
+      );
+    </script> -->
+    <!-- <script type="text/jsx">
+      /** @jsx React.DOM */
+      var TodoList = React.createClass({
+        render: function() {
+          var createItem = function(itemText) {
+            return <li>{itemText}</li>;
+          };
+          return <ul>{this.props.items.map(createItem)}</ul>;
+        }
+      });
+      var TodoApp = React.createClass({
+        getInitialState: function() {
+          return {output: [], input: ''};
+        },
+        onChange: function(e) {
+          this.setState({text: e.target.value});
+        },
+        handleSubmit: function(e) {
+          e.preventDefault();
+          var nextItems = this.state.items.concat([this.state.text]);
+          var nextText = '';
+          this.setState({items: nextItems, text: nextText});
+        },
+        render: function() {
+          return (
+            <div>
+              <h3>TODO</h3>
+              <TodoList items={this.state.items} />
+              <form onSubmit={this.handleSubmit}>
+                <input onChange={this.onChange} value={this.state.text} />
+                <button>{'Add #' + (this.state.items.length + 1)}</button>
+              </form>
+            </div>
+          );
+        }
+      });
+      React.renderComponent(<TodoApp />, mountNode);
+    </script> -->
+
+</body>
+</html>
