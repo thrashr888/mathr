@@ -33,9 +33,9 @@ The idea is to have a reactive notes app that can do math for you using data tab
 ## Embedded Databases/Spreadsheets
 
 - importable
-- can get live/realtime data from json or google docs
-- `*` signifies the "slug" field
-
+- can get live/realtime data from json, websockets or google docs
+- "*" signifies the "slug" field
+- this table won't format properly in markdown :(
 
     ┌---------------------------------------------------------------------------------┐
     |                                 t1 ECU Sizes                                    |
