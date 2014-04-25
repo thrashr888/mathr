@@ -18,37 +18,52 @@
 
       <table data-table="1">
         <tr data-row="1"><td data-col="1">coffee</td> <td data-col="2">$4.00</td></tr>
-        <tr data-row="2"><td data-col="1">milk</td>   <td data-col="2">$3.75</td></tr>
-        <tr data-row="3"><td data-col="1">water</td>  <td data-col="2">$6.25</td></tr>
+        <tr data-row="2"><td data-col="1">milk</td> <td data-col="2">$3.75</td></tr>
+        <tr data-row="3"><td data-col="1">water</td> <td data-col="2">$6.25</td></tr>
       </table>
 
       <div class="row" data-notes="1">
         <span data-output="1" class="col-md-3">-</span>
-          <input data-line="1" type="text" class="col-md-8" value="1 + 1"  />
+          <input data-line="1" type="text" class="col-md-8" value="1 + 1" />
 
         <span data-output="2" class="col-md-3">-</span>
           <input data-line="2" type="text" class="col-md-8" value="51 - 1" />
 
         <span data-output="3" class="col-md-3">-</span>
-          <input data-line="3" type="text" class="col-md-8" value="1 * 2"  />
+          <input data-line="3" type="text" class="col-md-8" value="1 * 2" />
 
         <span data-output="4" class="col-md-3">-</span>
           <input data-line="4" type="text" class="col-md-8" value="l2 / 2" />
 
         <span data-output="5" class="col-md-3">-</span>
-          <input data-line="5" type="text" class="col-md-8" value="t1.b1"  />
+          <input data-line="5" type="text" class="col-md-8" value="t1.b1" />
 
         <span data-output="6" class="col-md-3">-</span>
-          <input data-line="6" type="text" class="col-md-8" value="mathr: 5 * 5"  />
+          <input data-line="6" type="text" class="col-md-8" value="mathr: 5 * 5" />
 
         <span data-output="7" class="col-md-3">-</span>
-          <input data-line="7" type="text" class="col-md-8" value="$8.50 / 4"  />
+          <input data-line="7" type="text" class="col-md-8" value="$8.50 / 4" />
 
         <span data-output="8" class="col-md-3">-</span>
-          <input data-line="8" type="text" class="col-md-8" value="random"  />
+          <input data-line="8" type="text" class="col-md-8" value="" />
 
         <span data-output="9" class="col-md-3">-</span>
-          <input data-line="9" type="text" class="col-md-8" value="random(5)"  />
+          <input data-line="9" type="text" class="col-md-8" value="random(5)" />
+
+        <span data-output="10" class="col-md-3">-</span>
+<textarea data-line="10" class="col-md-8" rows="10">
+1 + 1
+51 - 1
+1*2
+</textarea>
+1 + 1
+51 - 1
+1*2
+l2/2
+t1.b1
+mathr: 5*5
+$8.50/4
+random(5)
       </div>
 
       <div data-output="error" class="alert" style="height: 150px; overflow-y: scroll;"></div>
@@ -85,6 +100,11 @@
 
       lines: [],
       currenciesMatch: /^([\$€£]+)([0-9]+(\.[0-9]+)?)/,
+      lineStack: [],
+
+      reset: function () {
+        this.lineStack = [];
+      },
 
       currToFloat: function (currency) {
         var c = this.currenciesMatch,
@@ -103,16 +123,22 @@
       },
 
       getLineVal: function (line) {
-        console.log('getLine', line);
+        // console.log('getLine', line);
         return $('div.row span[data-output=' + line.replace('l', '') + ']').html();
       },
 
-      opFunc: function (t1) {
+      opFunc: function (t1, args) {
+        // console.log('opFunc', args);
         return t1;
       },
 
+      e: function (e) {
+        this.lineStack.push(e + '<br>');
+        return this.lineStack;
+      },
+
       opCurr: function (t1, t2, t3, a) {
-        console.log('opCurr', [t1, t2, t3, a]);
+        // console.log('opCurr', [t1, t2, t3, a]);
         var output = null,
             fl1 = numeral().unformat(t1),
             fl3 = numeral().unformat(t3);
@@ -139,7 +165,7 @@
       },
 
       opLine: function ($1, $2, $3) {
-        console.log('opLine', [$1, $2, $3]);
+        // console.log('opLine', [$1, $2, $3]);
         var output = null,
             $1b = this.getLineVal($1);
 
@@ -169,6 +195,7 @@
     window.print = function () { }; // override the parser's call
     // var parserSource = generator.generate({moduleName: "mathr"});
     var errCount = 0;
+    var fieldCount = 10;
 
     function displayError(msg) {
       var $error = $('[data-output="error"]');
@@ -180,48 +207,97 @@
       var val;
       if (line) {
         try {
-          val = parser.parse($('[data-line="' + line + '"]').val());
+          var exp = $('[data-line="' + line + '"]').val();
+          if (exp) {
+            val = parser.parse(exp);
+          } else {
+            return;
+          }
         } catch (e) {
           val = '';
-          displayError(e);
+          displayError(e.stack);
         }
         $('[data-output="' + line + '"]').html(val);
       }
     }
 
-    for(var i = 1; i <= 9; i++) {
+    for(var i = 1; i <= fieldCount; i++) {
       solve(i);
     }
 
-
-    $('div.row').on('keyup change', 'input[type="text"]', function solveLine (e) {
+    $('div.row').on('keyup', 'input[type="text"],textarea', function solveLine (e) {
       // console.log(e);
       // solve($(this).data('line'));
-      for(var i = 1; i <= 9; i++) {
+      for(var i = 1; i <= fieldCount; i++) {
         solve(i);
       }
       // second pass to update vars above
-      for(var i2 = 1; i2 <= 9; i2++) {
+      for(var i2 = 1; i2 <= fieldCount; i2++) {
         solve(i2);
-      }
-
-      if(e.which === 40) { // down arrow
-
-      } else if (e.which === 38) { // up arrow
-
       }
     });
 
+    var curCursor = 0;
+    $('div.row').on('keydown', 'input[type="text"]', function moveLine (e) {
 
+      var lineNo = $(this).data('line');
+      var $next;
+
+      var newCursor = $(this)[0].selectionStart;
+      var maxCursor = $(this).val().length;
+
+      // console.log(curCursor);
+      // e.preventDefault();
+
+      function jumpToLine(lineNum, cursorNum) {
+        $next = $('div.row').find('[data-line="' + lineNum + '"]');
+        if ($next && $next[0]) {
+          // console.log(cursorNum);
+          $next[0].focus();
+          $next[0].setSelectionRange(cursorNum, cursorNum);
+        }
+      }
+
+      if(e.which === 40) { // down arrow
+        e.preventDefault();
+        if (newCursor > curCursor) {
+          curCursor = newCursor;
+        }
+        jumpToLine(lineNo + 1, curCursor);
+        return;
+      } else if (e.which === 38) { // up arrow
+        e.preventDefault();
+        if (newCursor > curCursor) {
+          curCursor = newCursor;
+        }
+        jumpToLine(lineNo - 1, curCursor);
+        return;
+      } else if (e.which === 37) { // left arrow
+        curCursor = newCursor;
+        if (curCursor == 0) {
+          jumpToLine(lineNo - 1, 99999);
+        }
+        return;
+      } else if (e.which === 39) { // right arrow
+        curCursor = newCursor;
+        if (curCursor >= maxCursor) {
+          curCursor = 0;
+          jumpToLine(lineNo + 1, 0);
+        }
+        return;
+      }
+    });
 
     function addRandom() {
       $('div.row input[data-line=8]')
         .last()
-        .val('€' + Math.round(Math.random()*100) + ' * 2')
+        .val('$' + Math.round(Math.random()*100) + '*2')
         .trigger('keyup');
     }
     addRandom();
-    setInterval(addRandom, 5000);
+    setInterval(addRandom, 20000);
+
+    $('input[data-line="1"]').focus()[0].setSelectionRange(0, 0, 'forward');
     </script>
 
     <!-- <script type="text/jsx">
@@ -269,6 +345,32 @@
       });
       React.renderComponent(<TodoApp />, mountNode);
     </script> -->
+
+    <style>
+    div.row span,
+    div.row input,
+    div.row textarea {
+      font-family: courier;
+    }
+
+    input[type=text], textarea {
+      /*box-sizing: border-box;*/
+      box-sizing: padding-box;
+      /*-webkit-transition: all 0.30s ease-in-out;
+      -moz-transition: all 0.30s ease-in-out;
+      -ms-transition: all 0.30s ease-in-out;
+      -o-transition: all 0.30s ease-in-out;*/
+      padding: 3px 0 3px 3px;
+      margin: 0 1px 0 0;
+      border: none;
+      border-left: 1px solid #DDDDDD;
+    }
+
+    input[type=text]:focus, textarea:focus {
+      outline: none;
+      border-left: 2px solid rgba(81, 203, 238, 1);
+    }
+    </style>
 
 </body>
 </html>
