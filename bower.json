@@ -6,7 +6,10 @@
     "bootstrap-sass-official": "*",
     "react": "*",
     "bacon": "*",
-    "numeral": "*"
+    "numeral": "*",
+    "medium": "*"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "medium": "*"
+  }
 }

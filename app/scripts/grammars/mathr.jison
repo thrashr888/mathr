@@ -16,16 +16,16 @@
 ")"                   return ')';
 "PI"                  return 'PI';
 "E"                   return 'E';
-^"#".+                return 'COMMENT'
+^"#".+                return 'COMMENT';
 <<EOF>>               return 'EOF';
 
-([\w]+)"("([\w\d]+)")"      return 'FUNCTION';
-"t"([0-9]+)"."[a-z]+[0-9]+  return 'TABLECELL';
-"t"([0-9]+)                 return 'TABLE';
-"l"([0-9]+)                 return 'LINE';
-([\w]+)":"                  return 'LABEL';
-([\w]+)                     return 'TEXT';
-([$€£])[0-9]+("."[0-9]+)?\b return 'CURRENCY';
+([\w]+)"("([\w\d]+)")"        return 'FUNCTION';
+"t"([0-9]+)"."[a-z]+?[0-9]+?  return 'TABLECELL';
+"t"([0-9]+)                   return 'TABLE';
+"l"([0-9]+)                   return 'LINE';
+([\w]+)":"                    return 'LABEL';
+([\w]+)                       return 'TEXT';
+([$€£])[0-9]+("."[0-9]+)?\b   return 'CURRENCY';
 
 /lex
 
@@ -48,70 +48,48 @@ expressions
     ;
 
 e
-    : e '+' e
-        {$$ = $1+$3;}
+    : e e
+        {$$ = $1 + ' ' + $2;}
+    | e '+' e
+        {$$ = numeral($1).add(numeral($3)).format(mathr.numberFormat);}
     | e '-' e
-        {$$ = $1-$3;}
+        {$$ = numeral($1).subtract(numeral($3)).format(mathr.numberFormat);}
     | e '*' e
-        {$$ = $1*$3;}
+        {$$ = numeral($1).multiply(numeral($3)).format(mathr.numberFormat);}
     | e '/' e
-        {$$ = $1/$3;}
+        {$$ = numeral($1).divide(numeral($3)).format(mathr.numberFormat);}
     | e '%'
         {$$ = $1/100;}
     | e '^' e
-        {$$ = Math.pow($1, $3);}
+        {$$ = numeral($1).pow($3).format(mathr.numberFormat);}
     | e '!'
-        {{
-          $$ = (function fact (n) { return n==0 ? 1 : fact(n-1) * n })($1);
-        }}
+        {$$ = (function fact (n) { return n==0 ? 1 : fact(n-1) * n })($1);}
     | '-' e %prec UMINUS
         {$$ = -$2;}
     | '(' e ')'
         {$$ = $2;}
     | NUMBER
-        {$$ = Number(yytext);}
+        {$$ = numeral($1).format(mathr.numberFormat); $$.__isNumber = true;}
     | E
-        {$$ = Math.E;}
+        {$$ = numeral(Math.E).format(mathr.numberFormat); $$.__isNumber = true;}
     | PI
-        {$$ = Math.PI;}
+        {$$ = numeral(Math.PI).format(mathr.numberFormat); $$.__isNumber = true;}
     | TABLE
         {$$ = "*" + $1 + "*";}
     | FUNCTION
-        {$$ = mathr.opFunc($1, arguments);}
+        {$$ = mathr.opFunc($1, arguments); $$.__isFunction = true;}
     | LINE
-        {$$ = "<em>" + mathr.getLineVal($1) + "</em>";}
-    | LINE "+" e
-        {$$ = mathr.opLine($1, $2, $3);}
-    | LINE "-" e
-        {$$ = mathr.opLine($1, $2, $3);}
-    | LINE "*" e
-        {$$ = mathr.opLine($1, $2, $3);}
-    | LINE "/" e
-        {$$ = mathr.opLine($1, $2, $3);}
+        {$$ = mathr.getLineVal($1); $$.__isLine = true;}
     | LABEL
-        {$$ = '<b>' + $1 + '</b> ';}
-    | LABEL e
-        {$$ = '<b>' + $1 + '</b> ' + $2;}
-    | TEXT e
-        {$$ = $1 + ' ' + $2;}
-    | e TEXT
-        {$$ = $1 + ' ' + $2;}
-    | NUMBER TEXT
-        {$$ = $1 + ' ' + $2;}
-    | TEXT NUMBER
-        {$$ = $1 + ' ' + $2;}
+        {$$ = '<b>' + $1 + '</b> '; $$.__isText = true;}
+    | TEXT
+        {$$ = $1; $$.__isText = true;}
+    | COMMENT
+        {$$ = '<em>' + $1 + '</em> '; $$.__isText = true;}
     | CURRENCY
-        {$$ = "$" + yytext;}
-    | CURRENCY "+" e
-        {$$ = mathr.opCurr($1, $2, $3, arguments);}
-    | CURRENCY "-" e
-        {$$ = mathr.opCurr($1, $2, $3, arguments);}
-    | CURRENCY "*" e
-        {$$ = numeral($1).multiply($3).format('$0,0.00');}
-    | CURRENCY "/" e
-        {$$ = numeral($1).divide($3).format('$0,0.00');}
+        {$$ = numeral($1).format(mathr.currencyFormat); $$.__isCurrency = true;}
     | TABLECELL
-        {$$ = "cell:[" + $1 + "]";}
+        {$$ = mathr.getCellVal($1); $$.__isTableCell = true;}
     ;
 
 calc
@@ -119,11 +97,17 @@ calc
         { $$ = mathr.e($1); }
     | calc NEWLINE e
         { $1.push($3); $$ = $1 }
+    | calc
+        { $1.push($2); $$ = $1 }
     | calc NEWLINE
-        { $$ = $1 }
+        { $$ = $1.join('<br>\n'); }
+    | calc EOF
+        { $$ = $1.join('<br>\n'); }
     ;
 
 Whitespace
   : COMMENT
-        {return $1;}
+        {$$ = '<em>' + $1 + '</em> '; $$.__isText = true;}
+  | NEWLINE
+        {$$ = $1; return $1;}
   ;

@@ -12,58 +12,42 @@
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+    <link rel="stylesheet" href="styles/fonts.css">
   </head>
   <body>
-    <div class="container-fluid">
+    <div class="container">
 
-      <table data-table="1">
-        <tr data-row="1"><td data-col="1">coffee</td> <td data-col="2">$4.00</td></tr>
-        <tr data-row="2"><td data-col="1">milk</td> <td data-col="2">$3.75</td></tr>
-        <tr data-row="3"><td data-col="1">water</td> <td data-col="2">$6.25</td></tr>
-      </table>
+        <table data-table="1" class="table">
+          <tr data-row="1"><td data-col="a">coffee</td> <td data-col="b">$4.00</td></tr>
+          <tr data-row="2"><td data-col="a">milk</td> <td data-col="b">$3.75</td></tr>
+          <tr data-row="3"><td data-col="a">water</td> <td data-col="b">$6.25</td></tr>
+        </table>
 
-      <div class="row" data-notes="1">
-        <span data-output="1" class="col-md-3">-</span>
-          <input data-line="1" type="text" class="col-md-8" value="1 + 1" />
+      <div class="row" data-note="0">
+        <div class="editor-container col-md-12">
+          <div class="row">
+            <span class="gutter col-md-1 col-xs-1">
+              1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13
+            </span>
 
-        <span data-output="2" class="col-md-3">-</span>
-          <input data-line="2" type="text" class="col-md-8" value="51 - 1" />
-
-        <span data-output="3" class="col-md-3">-</span>
-          <input data-line="3" type="text" class="col-md-8" value="1 * 2" />
-
-        <span data-output="4" class="col-md-3">-</span>
-          <input data-line="4" type="text" class="col-md-8" value="l2 / 2" />
-
-        <span data-output="5" class="col-md-3">-</span>
-          <input data-line="5" type="text" class="col-md-8" value="t1.b1" />
-
-        <span data-output="6" class="col-md-3">-</span>
-          <input data-line="6" type="text" class="col-md-8" value="mathr: 5 * 5" />
-
-        <span data-output="7" class="col-md-3">-</span>
-          <input data-line="7" type="text" class="col-md-8" value="$8.50 / 4" />
-
-        <span data-output="8" class="col-md-3">-</span>
-          <input data-line="8" type="text" class="col-md-8" value="" />
-
-        <span data-output="9" class="col-md-3">-</span>
-          <input data-line="9" type="text" class="col-md-8" value="random(5)" />
-
-        <span data-output="10" class="col-md-3">-</span>
-<textarea data-line="10" class="col-md-8" rows="10">
-1 + 1
-51 - 1
-1*2
-</textarea>
-1 + 1
-51 - 1
-1*2
-l2/2
+            <div class="editor col-md-6 col-xs-6" data-input="1">10.5 * $2
+0 + 1.6666
+5000 - 12.5
+1000944.111 * 14
+33 + l5
+l8 * 2
+l2 / 2
+# testing
 t1.b1
-mathr: 5*5
-$8.50/4
+mathr: 5 * 5.5
+$8.50 / 4
+
 random(5)
+</div>
+
+            <span data-output="1" class="col-md-5 col-xs-5">-</span>
+          </div>
+        </div>
       </div>
 
       <div data-output="error" class="alert" style="height: 150px; overflow-y: scroll;"></div>
@@ -80,6 +64,7 @@ random(5)
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="bower_components/medium/medium.js"></script>
     <script src="bower_components/react/react.js"></script>
     <script src="bower_components/react/JSXTransformer.js"></script>
     <script src="scripts/grammars/mathr.js"></script>
@@ -87,10 +72,57 @@ random(5)
     <!-- <script src="scripts/controllers/main.js"></script> -->
     <!-- endbuild -->
 
+
+    <script type="text/javascript">
+    /*globals Medium*/
+    'use strict';
+
+    new Medium({
+        debug: true,
+        element: $('.editor')[0],
+        modifier: 'auto',
+        placeholder: 'Go!',
+        autofocus: true,
+        autoHR: false,
+        mode: 'partial',
+        modifiers: {
+            86: 'paste'
+        },
+        tags: {
+            paragraph: 'p',
+            outerLevel: ['pre','blockquote', 'figure', 'hr'],
+            innerLevel: ['a', 'b', 'u', 'i', 'strong']
+        },
+        cssClasses: {
+            editor: 'Medium',
+            pasteHook: 'Medium-paste-hook',
+            placeholder: 'Medium-placeholder'
+        }
+    });
+    </script>
+
     <script type="text/javascript">
     /* globals $, parser, numeral */
     'use strict';
 
+    // Numeral setup
+    numeral.fn.pow = function (value) {
+      'use strict';
+      function cback(accum, curr, currI, O) {
+          var corrFactor = this.correctionFactor(accum, curr);
+          return Math.pow(curr * corrFactor);
+      }
+      this._value = [this._value, value].reduce(cback, 1);
+      return this;
+    }.bind(numeral.fn);
+
+    numeral.fn.match = function (inputRegex) {
+      'use strict';
+      // console.log(this._value, this);
+      return ('' + this._value).match(inputRegex);
+    }.bind(numeral.fn);
+
+    // mathr object used in the parser
     window.mathr = {
 
       // yytext, yyleng, yylineno, yy,
@@ -99,100 +131,179 @@ random(5)
       // _$ /* lstack */
 
       lines: [],
-      currenciesMatch: /^([\$€£]+)([0-9]+(\.[0-9]+)?)/,
       lineStack: [],
+
+      currenciesMatch: /^([\$€£])([0-9\.]+)$/,
+      currenciesUnpaddedMatch: /^([\$€£])([0-9]+)$/,
+      numberUnpaddedMatch: /^([0-9]+)$/,
+      functionMatch: /^([\w_$]+)\(([\w\d\s_\$,]+)\)$/,
+      tableMatch: /^t([0-9]+)\.?([a-z]+?)([0-9]+?)$/,
+      lineMatch: /^l([0-9]+)$/,
+
+      numberFormat: '0,0.[00]',
+      currencyFormat: '$0,0.[00]',
+
+      functionStack: {
+        'random': function (v) {
+          return Math.random(v);
+        }
+      },
 
       reset: function () {
         this.lineStack = [];
       },
 
-      currToFloat: function (currency) {
-        var c = this.currenciesMatch,
-            m = currency.match(c);
-        if (m && m[1]) {
-          console.log('currToFloat1', currency, m);
-          return [m[1], parseFloat(m[2])];
-        } else {
-          console.log('currToFloat2', currency);
-          return ['', parseFloat(currency + '')];
+      wrapNumeral: function (input) {
+        // console.log(typeof input);
+        var out;
+        if (typeof input !== 'string' || typeof input !== 'number') {
+          // already wrapped
+          return input;
         }
-      },
 
-      floatToCurr: function (fl, currency) {
-        return fl + currency;
+        /*
+
+        TODO:
+        - add other types (line, cell, func)
+        - pass all input through this
+
+        - stop formatting everywhere
+        - format in solve()
+          - add value to data-value
+
+        */
+
+        if (input.match(this.currenciesUnpaddedMatch))
+        {
+          out = numeral(input + '.00').format(this.currencyFormat);
+          out.__isCurrency = true;
+        }
+        else if (input.match(this.currenciesMatch))
+        {
+          out = numeral(input).format(this.currencyFormat);
+          out.__isCurrency = true;
+        }
+        else if (input.match(this.numberUnpaddedMatch))
+        {
+          out = numeral(input + '.00').format(this.numberFormat);
+        }
+        else
+        {
+          out = numeral(input).format(this.numberFormat);
+        }
+        return out;
       },
 
       getLineVal: function (line) {
-        // console.log('getLine', line);
-        return $('div.row span[data-output=' + line.replace('l', '') + ']').html();
+        var out = $('div.row span[data-output=' + line.replace('l', '') + ']').html();
+        // console.log('getLine', line, out);
+        return this.wrapNumeral(out) || '';
       },
 
-      opFunc: function (t1, args) {
-        // console.log('opFunc', args);
-        return t1;
+      getTable: function (query) {
+        var l = query.match(this.tableMatch);
+        var table = l[1];
+        // <table data-table="1" class="table">
+        return $('div.row table[data-table=' + table + ']').html();
+      },
+
+      getCellVal: function (query) {
+        var l = query.match(this.tableMatch);
+        var table = l[1],
+            column = l[2],
+            row = l[3];
+        // console.log(l);
+        // <table data-table="1" class="table">
+        // <tr data-row="1"><td data-col="1">coffee</td> <td data-col="2">$4.00</td></tr>
+        // self.tables[table][row][column];
+        var out = $('div.row table[data-table=' + table + '] tr[data-row=' + row + '] td[data-col=' + column + ']').html();
+        return this.wrapNumeral(out) || '';
+      },
+
+      opFunc: function (t1) {
+        // console.log('opFunc', t1, args);
+        var func = t1.match(this.functionMatch);
+        if (!this.functionStack[func[1]]) {
+          return 'n/a';
+        }
+        var result = this.functionStack[func[1]].apply(func[2]);
+        return result;
       },
 
       e: function (e) {
-        this.lineStack.push(e + '<br>');
+        this.lineStack.push(e);
         return this.lineStack;
       },
 
-      opCurr: function (t1, t2, t3, a) {
-        // console.log('opCurr', [t1, t2, t3, a]);
+      opCurr: function ($1, $2, $3) {
+        console.log('opCurr', [$1, $2, $3]);
         var output = null,
-            fl1 = numeral().unformat(t1),
-            fl3 = numeral().unformat(t3);
+            $1b = numeral($1),
+            $3b = numeral($3);
+        console.log('opCurr', [$1b, $2, $3b]);
 
-        switch (t2) {
+        switch ($2) {
           case '/':
-            output = fl1 / fl3;
+            output = $1b.divide($3b);
             break;
           case '*':
-            output = fl1 * fl3;
+            output = $1b.multiply($3b);
             break;
           case '+':
-            output = fl1 + fl3;
+            output = $1b.add($3b);
             break;
           case '-':
-            output = fl1 - fl3;
+            output = $1b.subtract($3b);
             break;
           default:
-            output = fl1 * fl3;
+            output = $1b.multiply($3b);
             break;
         }
 
-        return numeral(output).format('$0,0.00');
+        // return numeral(output).format('$0,0.00');
+        console.log('opCurr', output, [$1b, $2, $3b]);
+
+        if ($1b.match(this.currenciesMatch) || $3b.match(this.currenciesMatch)) {
+          return output.format(this.currencyFormat);
+        } else {
+          return output.format(this.numberFormat);
+        }
       },
 
       opLine: function ($1, $2, $3) {
         // console.log('opLine', [$1, $2, $3]);
         var output = null,
-            $1b = this.getLineVal($1);
+            $1b = this.getLineVal($1),
+            $1c = numeral($1b);
 
         switch ($2) {
           case '/':
-            output = $1b / $3;
+            output = $1c.divide($3);
             break;
           case '*':
-            output = $1b * $3;
+            output = $1c.multiply($3);
             break;
           case '+':
-            output = $1b + $3;
+            output = $1c.add($3);
             break;
           case '-':
-            output = $1b - $3;
+            output = $1c.subtract($3);
             break;
           default:
-            output = $1b;
+            output = $1c;
             break;
         }
 
-        return output;
+        if ($1b.match(this.currenciesMatch)) {
+          return numeral(output).format(this.currencyFormat);
+        } else {
+          return numeral(output).format(this.numberFormat);
+        }
       }
     };
 
-    // window.print = function (l) { window.console.log(l); }; // override the parser's call
-    window.print = function () { }; // override the parser's call
+    numeral.defaultFormat(window.mathr.numberFormat);
+
     // var parserSource = generator.generate({moduleName: "mathr"});
     var errCount = 0;
     var fieldCount = 10;
@@ -203,11 +314,14 @@ random(5)
       console.error(msg);
     }
 
-    function solve(line) {
-      var val;
+    function solve(note, line) {
+      var exp, val, el;
       if (line) {
         try {
-          var exp = $('[data-line="' + line + '"]').val();
+          // <div class="row" data-note="0">
+          el = $('div[data-note="' + note + '"] [data-input="' + line + '"]');
+          exp = el.val() || el.html();
+
           if (exp) {
             val = parser.parse(exp);
           } else {
@@ -217,87 +331,39 @@ random(5)
           val = '';
           displayError(e.stack);
         }
-        $('[data-output="' + line + '"]').html(val);
+        $('[data-note="' + note + '"] [data-output="' + line + '"]').html(val).data('value', val);
       }
+      return [exp, val];
     }
 
     for(var i = 1; i <= fieldCount; i++) {
-      solve(i);
+      solve(1, i);
     }
 
-    $('div.row').on('keyup', 'input[type="text"],textarea', function solveLine (e) {
-      // console.log(e);
-      // solve($(this).data('line'));
-      for(var i = 1; i <= fieldCount; i++) {
-        solve(i);
-      }
-      // second pass to update vars above
-      for(var i2 = 1; i2 <= fieldCount; i2++) {
-        solve(i2);
-      }
+    // solve everytime the content updates
+    $('div.row[data-note="0"]').on('change', '[data-input]', function solveLines (e) {
+      var el = $(e.currentTarget),
+        note = el.parent('[data-note]').data('note'),
+        input = el.data('input');
+      solve(note, input);
+    });
+    solve(0, 1);
+
+    // conform to a 'change' event
+    $('body').on('focus', '[contenteditable]', function() {
+        var $this = $(this);
+        $this.data('before', $this.html());
+        return $this;
+    }).on('blur keyup paste input', '[contenteditable]', function() {
+        var $this = $(this);
+        if ($this.data('before') !== $this.html()) {
+            $this.data('before', $this.html());
+            $this.trigger('change');
+        }
+        return $this;
     });
 
-    var curCursor = 0;
-    $('div.row').on('keydown', 'input[type="text"]', function moveLine (e) {
-
-      var lineNo = $(this).data('line');
-      var $next;
-
-      var newCursor = $(this)[0].selectionStart;
-      var maxCursor = $(this).val().length;
-
-      // console.log(curCursor);
-      // e.preventDefault();
-
-      function jumpToLine(lineNum, cursorNum) {
-        $next = $('div.row').find('[data-line="' + lineNum + '"]');
-        if ($next && $next[0]) {
-          // console.log(cursorNum);
-          $next[0].focus();
-          $next[0].setSelectionRange(cursorNum, cursorNum);
-        }
-      }
-
-      if(e.which === 40) { // down arrow
-        e.preventDefault();
-        if (newCursor > curCursor) {
-          curCursor = newCursor;
-        }
-        jumpToLine(lineNo + 1, curCursor);
-        return;
-      } else if (e.which === 38) { // up arrow
-        e.preventDefault();
-        if (newCursor > curCursor) {
-          curCursor = newCursor;
-        }
-        jumpToLine(lineNo - 1, curCursor);
-        return;
-      } else if (e.which === 37) { // left arrow
-        curCursor = newCursor;
-        if (curCursor == 0) {
-          jumpToLine(lineNo - 1, 99999);
-        }
-        return;
-      } else if (e.which === 39) { // right arrow
-        curCursor = newCursor;
-        if (curCursor >= maxCursor) {
-          curCursor = 0;
-          jumpToLine(lineNo + 1, 0);
-        }
-        return;
-      }
-    });
-
-    function addRandom() {
-      $('div.row input[data-line=8]')
-        .last()
-        .val('$' + Math.round(Math.random()*100) + '*2')
-        .trigger('keyup');
-    }
-    addRandom();
-    setInterval(addRandom, 20000);
-
-    $('input[data-line="1"]').focus()[0].setSelectionRange(0, 0, 'forward');
+    // $('[data-note="0"][data-input="1"]').focus()[0].setSelectionRange(0, 0, 'forward');
     </script>
 
     <!-- <script type="text/jsx">
@@ -347,28 +413,66 @@ random(5)
     </script> -->
 
     <style>
-    div.row span,
-    div.row input,
-    div.row textarea {
-      font-family: courier;
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-size: 18px;
     }
 
-    input[type=text], textarea {
-      /*box-sizing: border-box;*/
-      box-sizing: padding-box;
-      /*-webkit-transition: all 0.30s ease-in-out;
+    div.row {
+      /*font-family: 'Source Sans Pro', sans-serif;*/
+      /*font-family: 'Source Code Pro', ;*/
+      line-height: 30px;
+    }
+
+    div[data-output],
+    span[data-output] {
+      background-color: rgba(0, 31, 255, 0.10);
+      line-height: 30px;
+      x-overflow: hidden;
+
+      padding-bottom: 500em;
+      margin-bottom: -500em;
+    }
+
+    .gutter {
+      line-height: 30px;
+      text-align: right;
+      font-size: 12px;
+      background-color: #fdfdfd;
+
+      padding-bottom: 500em;
+      margin-bottom: -500em;
+    }
+
+    div[data-input].editor {
+      font-family: 'Source Code Pro', ;
+
+      /*font-family: 'Source Sans Pro', sans-serif;*/
+      /*box-sizing: padding-box;*/
+      -webkit-transition: all 0.30s ease-in-out;
       -moz-transition: all 0.30s ease-in-out;
       -ms-transition: all 0.30s ease-in-out;
-      -o-transition: all 0.30s ease-in-out;*/
-      padding: 3px 0 3px 3px;
-      margin: 0 1px 0 0;
+      -o-transition: all 0.30s ease-in-out;
+
+      height: 300px;
+
       border: none;
-      border-left: 1px solid #DDDDDD;
+      border-left: 1px solid #dddddd;
+      border-right: 1px solid #dddddd;
+
+      white-space: pre;
+      line-height: 30px;
     }
 
-    input[type=text]:focus, textarea:focus {
+    div[data-input].editor:focus {
       outline: none;
-      border-left: 2px solid rgba(81, 203, 238, 1);
+      border-left: 3px solid lightblue;
+    }
+
+    .editor-container {
+      border: 1px solid #dfdfdf;
+      border-radius: 3px;
+      overflow: hidden;
     }
     </style>
 
