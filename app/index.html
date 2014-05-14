@@ -37,9 +37,9 @@
 0 + 1.6666
 5000 - 12.5
 1000944.111 * 14
-33 + l5
-l8 * 2
-l2 / 2
+33 + l3
+l2 * 2
+l4 / 2
 # testing
 t1.b1
 mathr: 5 * 5.5
@@ -61,18 +61,6 @@ random(5)
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
     <!-- endbower -->
@@ -123,6 +111,21 @@ random(5)
       }
     };
 
+    var noteManager = {
+      getNoteByNumber: function (number) {
+        return $('[data-note="' + number + '"]');
+      },
+      getNoteByGutter: function (gutter) {
+        return gutter.parent().parent().parent('[data-note]').data('note');
+      },
+      getEditorByGutter: function (gutter) {
+        return gutter.siblings('[data-input]');
+      },
+      getNoteByEditor: function (editor) {
+        return editor.parent().parent('[data-note]').data('note');
+      }
+    };
+
     function resizeEditorContainer(editor) {
       // console.log(editor);
       if (editor && editor.renderer && editor.renderer.container) {
@@ -148,13 +151,20 @@ random(5)
     }
 
     function displayError(msg) {
-      var errCount;
-      if (!errCount) {
-        errCount = 0;
-      }
-      var $error = $('[data-output="error"]');
-      $error.prepend('\n<br>' + (++errCount) + ': ' + msg);
+      var out = '\n<p style="border-top: 1px solid black;">';
+      out += (new Date()).getHours() + '.';
+      out += (new Date()).getMinutes() + '.';
+      out += (new Date()).getSeconds() + ': ';
+      out += msg;
+      out += '</p>';
+      $('[data-output="error"]').prepend(out);
       console.error(msg);
+    }
+
+    function stripTags (string) {
+      string = string.replace(/<\/p>/ig, '\n');
+      string = string.replace(/(<([^>]+)>)/ig, '');
+      return string;
     }
 
     function solve(note, line, htmlCode) {
@@ -166,7 +176,7 @@ random(5)
           el = $('div[data-note="' + note + '"] [data-input="' + line + '"]');
           // console.log(el);
           exp = htmlCode || el.val() || el.html() || '';
-          exp = exp.replace(/(<([^>]+)>)/ig, '');
+          exp = stripTags(exp);
 
           if (exp) {
             // var parserSource = generator.generate({moduleName: "mathr"});
@@ -196,9 +206,26 @@ random(5)
       }, 20);
     }
 
+    function selectLine (string, lineNum) {
+      lineNum--; // array starts at 0
+      var lines = string.split("\n");
+
+      // calculate start/end
+      var startPos = 0, endPos = string.length;
+      for(var x = 0; x < lines.length; x++) {
+        if(x == lineNum) {
+            break;
+        }
+        startPos += (lines[x].length+1);
+      }
+
+      var endPos = lines[lineNum].length+startPos;
+
+      return [startPos, endPos];
+    }
+
     $('div[data-note]').each(function () {
       var note = parseInt($(this).data('note'));
-
       __config.editors[note] = new Quill('div[data-note="0"] [data-input].editor', __config.quillSetup);
       __config.editors[note]
         .on('renderer-update', editorUpdated.bind(__config.editors[note]))
@@ -210,18 +237,16 @@ random(5)
 
     $('.gutter').on('click', 'a', function (e) {
       e.preventDefault();
-      var el = $(e.currentTarget);
-      var line = el.data('line');
-      var editor = el.siblings('[data-input]');
-      editor.focus()[0].setSelectionRange(0, 0, 'forward');
+
+      var el = $(e.currentTarget),
+        note = noteManager.getNoteByGutter(el),
+        exp = stripTags(__config.editors[note].editor.innerHTML),
+        line = el.data('line'),
+        linePos = selectLine(exp, line);
+
       location.hash = 'l' + line;
-
-      for (var start = 0; start >= 0 && editor.html()[start] !== '\n'; --start) {
-        editor.focus()[0].setSelectionRange(start, start, 'forward');
-      }
+      __config.editors[note].setSelection(linePos[0], linePos[1]);
     });
-
-    // $('[data-note="0"][data-input="1"]').focus()[0].setSelectionRange(0, 0, 'forward');
     </script>
 
 </body>
