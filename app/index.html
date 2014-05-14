@@ -86,324 +86,73 @@ random(5)
     <script src="bower_components/react/JSXTransformer.js"></script>
     <script src="scripts/grammars/mathr.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/mathr.js"></script>
     <!-- <script src="scripts/controllers/main.js"></script> -->
     <!-- endbuild -->
 
-
     <script type="text/javascript">
-    /*g lobals Medium*/
+    /*globals $, Quill, parser, numeral*/
     'use strict';
 
-    // new Medium({
-    //     debug: true,
-    //     element: $('.editor')[0],
-    //     modifier: 'auto',
-    //     placeholder: 'Go!',
-    //     autofocus: true,
-    //     autoHR: false,
-    //     mode: 'partial',
-    //     modifiers: {
-    //         86: 'paste'
-    //     },
-    //     tags: {
-    //         outerLevel: ['pre','blockquote', 'figure', 'hr'],
-    //         innerLevel: ['a', 'b', 'u', 'i', 'strong']
-    //     },
-    //     cssClasses: {
-    //         editor: 'Medium',
-    //         pasteHook: 'Medium-paste-hook',
-    //         placeholder: 'Medium-placeholder'
-    //     }
-    // });
-    </script>
-
-    <script type="text/javascript">
-      /*globals Quill*/
-
-      var __config = {
-        lineHeight: 30,
-      };
-
-      var editor1 = new Quill('div[data-note="0"] [data-input].editor', {
-        styles: {
-          'body': {
-            'font-family': 'Source Code Pro, ',
-            'font-size': '18px',
-            'white-space': 'pre',
-            'line-height': '30px',
-            'padding': 0,
-            'height': 'auto',
-            'overflow-y': 'hidden'
-          },
-          'html': {
-            'height': 'auto'
-          },
-          'editor-container': {
-            'height': 'auto'
-          }
-        },
-        logLevel: 'debug',
-        modules: {
-          'multi-cursor': {}
-        },
-        formats: ['bold']
-      });
-      // console.log(editor1);
-
-      function resizeEditorContainer(editor) {
-        // console.log(editor);
-        if (editor && editor.renderer && editor.renderer.container) {
-          var container = $(editor.renderer.container);
-          container.height(editor.root.clientHeight);
-          container.attr('height', '');
-        }
-      }
-
-      function fillGutter (editor) {
-        // console.log(gutter, editor, output);
-        var gutter = editor.siblings('div.gutter');
-        var output = editor.siblings('[data-output]');
-        gutter.height(editor.height());
-        output.height(editor.height());
-
-        var gCount = editor.height() / (__config.lineHeight - 0.0000001);
-        var gNums = [];
-        for (var i = 1; i < gCount; i++) {
-          gNums.push('<a data-line="' + i + '" name="#l' + i + '" href="#l' + i + '">' + i + '</a>');
-        }
-        gutter.html(gNums.join('<br>'));
-      }
-
-      editor1.on('renderer-update', function () { // d, t, e
-        // console.log('ru', d, t, e);
-        // console.log(this.editor);
-        var self = this,
-          $container = $(this.editor.renderer.container),
-          note = $container.parent().parent('[data-note]').data('note');
-        setTimeout(function () {
-          solve(note, parseInt($container.data('input')), self.editor.innerHTML);
-          resizeEditorContainer(self.editor);
-          fillGutter($container);
-        }, 20);
-      }).on('text-change', function () { // d, t, e
-        // console.log('tc', d, t, e);
-        var $container = $(this.editor.renderer.container),
-          note = $container.parent().parent('[data-note]').data('note');
-        solve(note, parseInt($container.data('input')), this.editor.innerHTML);
-        resizeEditorContainer(this.editor);
-        fillGutter($container);
-      }).on('pre-event', function () { // d, t, e
-        // console.log('pe', d, t, e);
-        // resizeEditorContainer(this.root, $('div[data-note="0"] [data-input]'));
-        // fillGutter($('div[data-note="0"] [data-input]'));
-      });
-    </script>
-
-    <script type="text/javascript">
-    /* globals $, parser, numeral */
-
-    // Numeral setup
-    numeral.fn.pow = function (value) {
-      function cback(accum, curr) { // accum, curr, currI, O
-          var corrFactor = this.correctionFactor(accum, curr);
-          return Math.pow(curr * corrFactor);
-      }
-      this._value = [this._value, value].reduce(cback, 1);
-      return this;
-    }.bind(numeral.fn);
-
-    numeral.fn.match = function (inputRegex) {
-      // console.log(this._value, this);
-      return ('' + this._value).match(inputRegex);
-    }.bind(numeral.fn);
-
-    // mathr object used in the parser
-    window.mathr = {
-
-      // yytext, yyleng, yylineno, yy,
-      // yystate /* action[1] */,
-      // $$ /* vstack */,
-      // _$ /* lstack */
-
-      lines: [],
-      lineStack: [],
-
-      currenciesMatch: /^([\$€£])([0-9,]+\.?[0-9]*)$/,
-      currenciesUnpaddedMatch: /^([\$€£])([0-9,]+)$/,
-      numberUnpaddedMatch: /^([0-9,]+)$/,
-      functionMatch: /^([\w_$]+)\(([\w\d\s_\$,]+)\)$/,
-      tableMatch: /^t([0-9]+)\.?([a-z]+?)([0-9]+?)$/,
-      lineMatch: /^l([0-9]+)$/,
-
-      numberFormat: '0,0.[00]',
-      currencyFormat: '$0,0.[00]',
-
-      functionStack: {
-        'random': function (v) {
-          return Math.random(v);
-        }
-      },
-
-      reset: function () {
-        this.lineStack = [];
-      },
-
-      wrapNumeral: function (input) {
-        // console.log(typeof input);
-        var out;
-        if (typeof input !== 'string' || typeof input !== 'number') {
-          // already wrapped
-          return input;
-        }
-
-        /*
-
-        TODO:
-        - add other types (line, cell, func)
-        - pass all input through this
-
-        - stop formatting everywhere
-        - format in solve()
-          - add value to data-value
-
-        */
-
-        if (input.match(this.currenciesUnpaddedMatch))
-        {
-          out = numeral(input + '.00').format(this.currencyFormat);
-          out.__isCurrency = true;
-        }
-        else if (input.match(this.currenciesMatch))
-        {
-          out = numeral(input).format(this.currencyFormat);
-          out.__isCurrency = true;
-        }
-        else if (input.match(this.numberUnpaddedMatch))
-        {
-          out = numeral(input + '.00').format(this.numberFormat);
-        }
-        else
-        {
-          out = numeral(input).format(this.numberFormat);
-        }
-        return out;
-      },
-
-      getLineVal: function (line) {
-        var out = $('div.row div[data-output=' + line.replace('l', '') + ']').html();
-        // console.log('getLine', line, out);
-        return this.wrapNumeral(out) || '';
-      },
-
-      getTable: function (query) {
-        var l = query.match(this.tableMatch);
-        var table = l[1];
-        // <table data-table="1" class="table">
-        return $('div.row table[data-table=' + table + ']').html();
-      },
-
-      getCellVal: function (query) {
-        var l = query.match(this.tableMatch);
-        var table = l[1],
-            column = l[2],
-            row = l[3];
-        // console.log(l);
-        // <table data-table="1" class="table">
-        // <tr data-row="1"><td data-col="1">coffee</td> <td data-col="2">$4.00</td></tr>
-        // self.tables[table][row][column];
-        var out = $('div.row table[data-table=' + table + '] tr[data-row=' + row + '] td[data-col=' + column + ']').html();
-        return this.wrapNumeral(out) || '';
-      },
-
-      opFunc: function (t1) {
-        // console.log('opFunc', t1, args);
-        var func = t1.match(this.functionMatch);
-        if (!this.functionStack[func[1]]) {
-          return 'n/a';
-        }
-        var result = this.functionStack[func[1]].apply(func[2]);
-        return result;
-      },
-
-      e: function (e) {
-        this.lineStack.push(e);
-        return this.lineStack;
-      },
-
-      opCurr: function ($1, $2, $3) {
-        console.log('opCurr', [$1, $2, $3]);
-        var output = null,
-            $1b = numeral($1),
-            $3b = numeral($3);
-        console.log('opCurr', [$1b, $2, $3b]);
-
-        switch ($2) {
-          case '/':
-            output = $1b.divide($3b);
-            break;
-          case '*':
-            output = $1b.multiply($3b);
-            break;
-          case '+':
-            output = $1b.add($3b);
-            break;
-          case '-':
-            output = $1b.subtract($3b);
-            break;
-          default:
-            output = $1b.multiply($3b);
-            break;
-        }
-
-        // return numeral(output).format('$0,0.00');
-        console.log('opCurr', output, [$1b, $2, $3b]);
-
-        if ($1b.match(this.currenciesMatch) || $3b.match(this.currenciesMatch)) {
-          return output.format(this.currencyFormat);
-        } else {
-          return output.format(this.numberFormat);
-        }
-      },
-
-      opLine: function ($1, $2, $3) {
-        // console.log('opLine', [$1, $2, $3]);
-        var output = null,
-            $1b = this.getLineVal($1),
-            $1c = numeral($1b);
-
-        switch ($2) {
-          case '/':
-            output = $1c.divide($3);
-            break;
-          case '*':
-            output = $1c.multiply($3);
-            break;
-          case '+':
-            output = $1c.add($3);
-            break;
-          case '-':
-            output = $1c.subtract($3);
-            break;
-          default:
-            output = $1c;
-            break;
-        }
-
-        if ($1b.match(this.currenciesMatch)) {
-          return numeral(output).format(this.currencyFormat);
-        } else {
-          return numeral(output).format(this.numberFormat);
-        }
-      }
+    var __config = {
+      lineHeight: 30,
     };
 
-    numeral.defaultFormat(window.mathr.numberFormat);
+    var editor1 = new Quill('div[data-note="0"] [data-input].editor', {
+      styles: {
+        'body': {
+          'font-family': 'Source Code Pro, ',
+          'font-size': '18px',
+          'white-space': 'pre',
+          'line-height': '30px',
+          'padding': 0,
+          'height': 'auto',
+          'overflow-y': 'hidden'
+        },
+        'html': {
+          'height': 'auto'
+        },
+        'editor-container': {
+          'height': 'auto'
+        }
+      },
+      logLevel: 'debug',
+      modules: {
+        'multi-cursor': {}
+      },
+      formats: ['bold']
+    });
+    // console.log(editor1);
 
-    // var parserSource = generator.generate({moduleName: "mathr"});
-    var errCount = 0;
-    var fieldCount = 10;
+    function resizeEditorContainer(editor) {
+      // console.log(editor);
+      if (editor && editor.renderer && editor.renderer.container) {
+        var container = $(editor.renderer.container);
+        container.height(editor.root.clientHeight);
+        container.attr('height', '');
+      }
+    }
+
+    function fillGutter (editor) {
+      // console.log(gutter, editor, output);
+      var gutter = editor.siblings('div.gutter');
+      var output = editor.siblings('[data-output]');
+      gutter.height(editor.height());
+      output.height(editor.height());
+
+      var gCount = editor.height() / (__config.lineHeight - 0.0000001);
+      var gNums = [];
+      for (var i = 1; i < gCount; i++) {
+        gNums.push('<a data-line="' + i + '" name="#l' + i + '" href="#l' + i + '">' + i + '</a>');
+      }
+      gutter.html(gNums.join('<br>'));
+    }
 
     function displayError(msg) {
+      var errCount;
+      if (!errCount) {
+        errCount = 0;
+      }
       var $error = $('[data-output="error"]');
       $error.prepend('\n<br>' + (++errCount) + ': ' + msg);
       console.error(msg);
@@ -421,6 +170,7 @@ random(5)
           exp = exp.replace(/(<([^>]+)>)/ig, '');
 
           if (exp) {
+            // var parserSource = generator.generate({moduleName: "mathr"});
             val = parser.parse(exp);
           } else {
             return;
@@ -434,52 +184,29 @@ random(5)
       return [exp, val];
     }
 
-    for(var i = 1; i <= fieldCount; i++) {
-      solve(1, i);
-    }
-
-    // solve everytime the content updates
-    $('div[data-note]').on('change', '[data-input]', function solveLines (e) {
-      var editor = $(e.currentTarget),
-        note = editor.parent().parent().parent('[data-note]').data('note'),
-        input = editor.data('input');
-      // console.log(editor.parent('[data-note]'));
-      solve(note, input);
-      fillGutter(editor);
+    editor1.on('renderer-update', function () { // d, t, e
+      // console.log('ru', d, t, e);
+      // console.log(this.editor);
+      var self = this,
+        $container = $(this.editor.renderer.container),
+        note = $container.parent().parent('[data-note]').data('note');
+      setTimeout(function () {
+        solve(note, parseInt($container.data('input')), self.editor.innerHTML);
+        resizeEditorContainer(self.editor);
+        fillGutter($container);
+      }, 20);
+    }).on('text-change', function () { // d, t, e
+      // console.log('tc', d, t, e);
+      var $container = $(this.editor.renderer.container),
+        note = $container.parent().parent('[data-note]').data('note');
+      solve(note, parseInt($container.data('input')), this.editor.innerHTML);
+      resizeEditorContainer(this.editor);
+      fillGutter($container);
+    }).on('pre-event', function () { // d, t, e
+      // console.log('pe', d, t, e);
+      // resizeEditorContainer(this.root, $('div[data-note="0"] [data-input]'));
+      // fillGutter($('div[data-note="0"] [data-input]'));
     });
-
-    (new MutationObserver(function (e) {
-      console.log('observer', e);
-    })).observe($('div[data-input].editor')[0], {characterData: true});
-
-    // conform to a 'change' event
-    $('body').on('focus', '[contenteditable]', function() {
-        var $this = $(this);
-        $this.data('before', $this.html());
-        return $this;
-    }).on('blur keyup paste input', '[contenteditable]', function() {
-        var $this = $(this);
-        if ($this.data('before') !== $this.html()) {
-            $this.data('before', $this.html());
-            $this.trigger('change');
-        }
-        return $this;
-    });
-
-    // function fillGutter (editor) {
-    //   // console.log(gutter, editor, output);
-    //   var gutter = editor.siblings('div.gutter');
-    //   var output = editor.siblings('[data-output]');
-    //   gutter.height(editor.height());
-    //   output.height(editor.height());
-
-    //   var gCount = gutter.height() / 23;
-    //   var gNums = [];
-    //   for (var i = 1; i < gCount; i++) {
-    //     gNums.push('<a data-line="' + i + '" name="#l' + i + '" href="#l' + i + '">' + i + '</a>');
-    //   }
-    //   gutter.html(gNums.join('<br>'));
-    // }
 
     $('.gutter').on('click', 'a', function (e) {
       e.preventDefault();
@@ -492,11 +219,6 @@ random(5)
         editor.focus()[0].setSelectionRange(start, start, 'forward');
       }
     });
-
-    solve(0, 1);
-    setTimeout(function () {
-      fillGutter($('div[data-note="0"] [data-input]'));
-    }, 500);
 
     // $('[data-note="0"][data-input="1"]').focus()[0].setSelectionRange(0, 0, 'forward');
     </script>
@@ -546,101 +268,6 @@ random(5)
       });
       React.renderComponent(<TodoApp />, mountNode);
     </script> -->
-
-    <style>
-    body {
-      font-family: 'Source Sans Pro', sans-serif;
-      font-size: 18px;
-    }
-
-    .row {
-      /*font-family: 'Source Sans Pro', sans-serif;*/
-      /*font-family: 'Source Code Pro', ;*/
-      line-height: 30px;
-    }
-
-    div[data-output] {
-      background-color: #0066ff;
-      background-color: rgba(0, 31, 255, 0.10);
-      line-height: 30px;
-      overflow-x: hidden;
-    }
-
-
-    div[data-note] div[data-output] {
-      padding-bottom: 500em;
-      margin-bottom: -500em;
-      border-left: 1px solid #dddddd;
-    }
-
-    div[data-output].alert {
-      background-color: #fdfdfd;
-      border: 1px solid #dddddd;
-      padding: 5px;
-      overflow-y: scroll;
-      height: 250px;
-      margin-top: 2em;
-    }
-
-    .gutter {
-      line-height: 30px;
-      text-align: right;
-      font-size: 12px;
-      background-color: #fdfdfd;
-      border-right: 1px solid #dddddd;
-      overflow-y: hidden;
-
-      /*-webkit-transition: height 0.30s ease-in-out;
-      -moz-transition: height 0.30s ease-in-out;
-      -ms-transition: height 0.30s ease-in-out;
-      -o-transition: height 0.30s ease-in-out;*/
-    }
-    .gutter a {
-      padding: 5px;
-      margin: -5px;
-    }
-    .gutter a:hover {
-      text-decoration: underline;
-      cursor: pointer;
-    }
-
-    div[data-input].editor {
-      font-family: 'Source Code Pro', ;
-
-      /*font-family: 'Source Sans Pro', sans-serif;*/
-      /*box-sizing: padding-box;*/
-      /*-webkit-transition: all 0.20s ease-in-out;
-      -moz-transition: all 0.20s ease-in-out;
-      -ms-transition: all 0.20s ease-in-out;
-      -o-transition: all 0.20s ease-in-out;*/
-
-      border: none;
-
-      white-space: pre;
-      line-height: 30px;
-    }
-    div[data-input].editor p {
-      margin: 0;
-      padding: 0;
-    }
-    div[data-input].editor iframe {
-      /*-webkit-transition: height 0.30s ease-in-out;
-      -moz-transition: height 0.30s ease-in-out;
-      -ms-transition: height 0.30s ease-in-out;
-      -o-transition: height 0.30s ease-in-out;*/
-    }
-
-    div[data-input].editor:focus {
-      outline: none;
-      border-left: 3px solid lightblue;
-    }
-
-    .editor-container {
-      border: 1px solid #dfdfdf;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    </style>
 
 </body>
 </html>

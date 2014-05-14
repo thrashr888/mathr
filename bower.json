@@ -7,7 +7,6 @@
     "react": "*",
     "bacon": "*",
     "numeral": "*",
-    "medium": "*",
     "quill": "*"
   },
   "devDependencies": {
