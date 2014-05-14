@@ -23,7 +23,7 @@
 "t"([0-9]+)"."[a-z]+?[0-9]+?  return 'TABLECELL';
 "t"([0-9]+)                   return 'TABLE';
 "l"([0-9]+)                   return 'LINE';
-([\w]+)":"                    return 'LABEL';
+$([\w]+)":"                   return 'LABEL';
 ([\w]+)                       return 'TEXT';
 ([$€£])[0-9]+("."[0-9]+)?\b   return 'CURRENCY';
 

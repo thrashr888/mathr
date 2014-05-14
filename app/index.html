@@ -5,32 +5,35 @@
     <meta name="description" content="Mathr Prototype">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <!-- endbower -->
     <!-- endbuild -->
+
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+
     <link rel="stylesheet" href="styles/fonts.css">
+    <link rel="stylesheet" href="http://quilljs.com/css/quill.snow.css" />
+
   </head>
   <body>
     <div class="container">
 
+      <div class="row">
         <table data-table="1" class="table">
           <tr data-row="1"><td data-col="a">coffee</td> <td data-col="b">$4.00</td></tr>
           <tr data-row="2"><td data-col="a">milk</td> <td data-col="b">$3.75</td></tr>
           <tr data-row="3"><td data-col="a">water</td> <td data-col="b">$6.25</td></tr>
         </table>
+      </div>
 
-      <div class="row" data-note="0">
-        <div class="editor-container col-md-12">
-          <div class="row">
-            <span class="gutter col-md-1 col-xs-1">
-              1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13
-            </span>
-
-            <div class="editor col-md-6 col-xs-6" data-input="1">10.5 * $2
+      <div class="row editor-container col-md-12" data-note="0">
+        <div class="row">
+          <div class="gutter col-md-1 col-xs-1"></div>
+          <div class="editor col-md-6 col-xs-6" data-input="1">10.5 * $2
 0 + 1.6666
 5000 - 12.5
 1000944.111 * 14
@@ -45,25 +48,39 @@ $8.50 / 4
 random(5)
 </div>
 
-            <span data-output="1" class="col-md-5 col-xs-5">-</span>
-          </div>
+          <div data-output="1" class="col-md-5 col-xs-5">-</div>
         </div>
       </div>
 
-      <div data-output="error" class="alert" style="height: 150px; overflow-y: scroll;"></div>
+      <div class="row">
+        <div data-output="error" class="col-md-12 alert"></div>
+      </div>
 
     </div>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="http://quilljs.com/js/quill.js"></script>
+
     <script src="bower_components/medium/medium.js"></script>
     <script src="bower_components/react/react.js"></script>
     <script src="bower_components/react/JSXTransformer.js"></script>
@@ -74,41 +91,120 @@ random(5)
 
 
     <script type="text/javascript">
-    /*globals Medium*/
+    /*g lobals Medium*/
     'use strict';
 
-    new Medium({
-        debug: true,
-        element: $('.editor')[0],
-        modifier: 'auto',
-        placeholder: 'Go!',
-        autofocus: true,
-        autoHR: false,
-        mode: 'partial',
-        modifiers: {
-            86: 'paste'
+    // new Medium({
+    //     debug: true,
+    //     element: $('.editor')[0],
+    //     modifier: 'auto',
+    //     placeholder: 'Go!',
+    //     autofocus: true,
+    //     autoHR: false,
+    //     mode: 'partial',
+    //     modifiers: {
+    //         86: 'paste'
+    //     },
+    //     tags: {
+    //         outerLevel: ['pre','blockquote', 'figure', 'hr'],
+    //         innerLevel: ['a', 'b', 'u', 'i', 'strong']
+    //     },
+    //     cssClasses: {
+    //         editor: 'Medium',
+    //         pasteHook: 'Medium-paste-hook',
+    //         placeholder: 'Medium-placeholder'
+    //     }
+    // });
+    </script>
+
+    <script type="text/javascript">
+      /*globals Quill*/
+
+      var __config = {
+        lineHeight: 30,
+      };
+
+      var editor1 = new Quill('div[data-note="0"] [data-input].editor', {
+        styles: {
+          'body': {
+            'font-family': 'Source Code Pro, ',
+            'font-size': '18px',
+            'white-space': 'pre',
+            'line-height': '30px',
+            'padding': 0,
+            'height': 'auto',
+            'overflow-y': 'hidden'
+          },
+          'html': {
+            'height': 'auto'
+          },
+          'editor-container': {
+            'height': 'auto'
+          }
         },
-        tags: {
-            paragraph: 'p',
-            outerLevel: ['pre','blockquote', 'figure', 'hr'],
-            innerLevel: ['a', 'b', 'u', 'i', 'strong']
+        logLevel: 'debug',
+        modules: {
+          'multi-cursor': {}
         },
-        cssClasses: {
-            editor: 'Medium',
-            pasteHook: 'Medium-paste-hook',
-            placeholder: 'Medium-placeholder'
+        formats: ['bold']
+      });
+      // console.log(editor1);
+
+      function resizeEditorContainer(editor) {
+        // console.log(editor);
+        if (editor && editor.renderer && editor.renderer.container) {
+          var container = $(editor.renderer.container);
+          container.height(editor.root.clientHeight);
+          container.attr('height', '');
         }
-    });
+      }
+
+      function fillGutter (editor) {
+        // console.log(gutter, editor, output);
+        var gutter = editor.siblings('div.gutter');
+        var output = editor.siblings('[data-output]');
+        gutter.height(editor.height());
+        output.height(editor.height());
+
+        var gCount = editor.height() / (__config.lineHeight - 0.0000001);
+        var gNums = [];
+        for (var i = 1; i < gCount; i++) {
+          gNums.push('<a data-line="' + i + '" name="#l' + i + '" href="#l' + i + '">' + i + '</a>');
+        }
+        gutter.html(gNums.join('<br>'));
+      }
+
+      editor1.on('renderer-update', function () { // d, t, e
+        // console.log('ru', d, t, e);
+        // console.log(this.editor);
+        var self = this,
+          $container = $(this.editor.renderer.container),
+          note = $container.parent().parent('[data-note]').data('note');
+        setTimeout(function () {
+          solve(note, parseInt($container.data('input')), self.editor.innerHTML);
+          resizeEditorContainer(self.editor);
+          fillGutter($container);
+        }, 20);
+      }).on('text-change', function () { // d, t, e
+        // console.log('tc', d, t, e);
+        var $container = $(this.editor.renderer.container),
+          note = $container.parent().parent('[data-note]').data('note');
+        solve(note, parseInt($container.data('input')), this.editor.innerHTML);
+        resizeEditorContainer(this.editor);
+        fillGutter($container);
+      }).on('pre-event', function () { // d, t, e
+        // console.log('pe', d, t, e);
+        // resizeEditorContainer(this.root, $('div[data-note="0"] [data-input]'));
+        // fillGutter($('div[data-note="0"] [data-input]'));
+      });
     </script>
 
     <script type="text/javascript">
     /* globals $, parser, numeral */
-    'use strict';
 
     // Numeral setup
     numeral.fn.pow = function (value) {
-      'use strict';
-      function cback(accum, curr, currI, O) {
+      function cback(accum, curr) { // accum, curr, currI, O
           var corrFactor = this.correctionFactor(accum, curr);
           return Math.pow(curr * corrFactor);
       }
@@ -117,7 +213,6 @@ random(5)
     }.bind(numeral.fn);
 
     numeral.fn.match = function (inputRegex) {
-      'use strict';
       // console.log(this._value, this);
       return ('' + this._value).match(inputRegex);
     }.bind(numeral.fn);
@@ -133,9 +228,9 @@ random(5)
       lines: [],
       lineStack: [],
 
-      currenciesMatch: /^([\$€£])([0-9\.]+)$/,
-      currenciesUnpaddedMatch: /^([\$€£])([0-9]+)$/,
-      numberUnpaddedMatch: /^([0-9]+)$/,
+      currenciesMatch: /^([\$€£])([0-9,]+\.?[0-9]*)$/,
+      currenciesUnpaddedMatch: /^([\$€£])([0-9,]+)$/,
+      numberUnpaddedMatch: /^([0-9,]+)$/,
       functionMatch: /^([\w_$]+)\(([\w\d\s_\$,]+)\)$/,
       tableMatch: /^t([0-9]+)\.?([a-z]+?)([0-9]+?)$/,
       lineMatch: /^l([0-9]+)$/,
@@ -195,7 +290,7 @@ random(5)
       },
 
       getLineVal: function (line) {
-        var out = $('div.row span[data-output=' + line.replace('l', '') + ']').html();
+        var out = $('div.row div[data-output=' + line.replace('l', '') + ']').html();
         // console.log('getLine', line, out);
         return this.wrapNumeral(out) || '';
       },
@@ -314,13 +409,16 @@ random(5)
       console.error(msg);
     }
 
-    function solve(note, line) {
+    function solve(note, line, htmlCode) {
       var exp, val, el;
       if (line) {
         try {
           // <div class="row" data-note="0">
+          // console.log([note, line, htmlCode]);
           el = $('div[data-note="' + note + '"] [data-input="' + line + '"]');
-          exp = el.val() || el.html();
+          // console.log(el);
+          exp = htmlCode || el.val() || el.html() || '';
+          exp = exp.replace(/(<([^>]+)>)/ig, '');
 
           if (exp) {
             val = parser.parse(exp);
@@ -341,13 +439,18 @@ random(5)
     }
 
     // solve everytime the content updates
-    $('div.row[data-note="0"]').on('change', '[data-input]', function solveLines (e) {
-      var el = $(e.currentTarget),
-        note = el.parent('[data-note]').data('note'),
-        input = el.data('input');
+    $('div[data-note]').on('change', '[data-input]', function solveLines (e) {
+      var editor = $(e.currentTarget),
+        note = editor.parent().parent().parent('[data-note]').data('note'),
+        input = editor.data('input');
+      // console.log(editor.parent('[data-note]'));
       solve(note, input);
+      fillGutter(editor);
     });
-    solve(0, 1);
+
+    (new MutationObserver(function (e) {
+      console.log('observer', e);
+    })).observe($('div[data-input].editor')[0], {characterData: true});
 
     // conform to a 'change' event
     $('body').on('focus', '[contenteditable]', function() {
@@ -362,6 +465,38 @@ random(5)
         }
         return $this;
     });
+
+    // function fillGutter (editor) {
+    //   // console.log(gutter, editor, output);
+    //   var gutter = editor.siblings('div.gutter');
+    //   var output = editor.siblings('[data-output]');
+    //   gutter.height(editor.height());
+    //   output.height(editor.height());
+
+    //   var gCount = gutter.height() / 23;
+    //   var gNums = [];
+    //   for (var i = 1; i < gCount; i++) {
+    //     gNums.push('<a data-line="' + i + '" name="#l' + i + '" href="#l' + i + '">' + i + '</a>');
+    //   }
+    //   gutter.html(gNums.join('<br>'));
+    // }
+
+    $('.gutter').on('click', 'a', function (e) {
+      e.preventDefault();
+      var el = $(e.currentTarget);
+      // var line = el.data('line');
+      var editor = el.siblings('[data-input]');
+      editor.focus()[0].setSelectionRange(0, 0, 'forward');
+
+      for (var start = 0; start >= 0 && editor.html()[start] !== '\n'; --start) {
+        editor.focus()[0].setSelectionRange(start, start, 'forward');
+      }
+    });
+
+    solve(0, 1);
+    setTimeout(function () {
+      fillGutter($('div[data-note="0"] [data-input]'));
+    }, 500);
 
     // $('[data-note="0"][data-input="1"]').focus()[0].setSelectionRange(0, 0, 'forward');
     </script>
@@ -418,20 +553,33 @@ random(5)
       font-size: 18px;
     }
 
-    div.row {
+    .row {
       /*font-family: 'Source Sans Pro', sans-serif;*/
       /*font-family: 'Source Code Pro', ;*/
       line-height: 30px;
     }
 
-    div[data-output],
-    span[data-output] {
+    div[data-output] {
+      background-color: #0066ff;
       background-color: rgba(0, 31, 255, 0.10);
       line-height: 30px;
-      x-overflow: hidden;
+      overflow-x: hidden;
+    }
 
+
+    div[data-note] div[data-output] {
       padding-bottom: 500em;
       margin-bottom: -500em;
+      border-left: 1px solid #dddddd;
+    }
+
+    div[data-output].alert {
+      background-color: #fdfdfd;
+      border: 1px solid #dddddd;
+      padding: 5px;
+      overflow-y: scroll;
+      height: 250px;
+      margin-top: 2em;
     }
 
     .gutter {
@@ -439,9 +587,21 @@ random(5)
       text-align: right;
       font-size: 12px;
       background-color: #fdfdfd;
+      border-right: 1px solid #dddddd;
+      overflow-y: hidden;
 
-      padding-bottom: 500em;
-      margin-bottom: -500em;
+      /*-webkit-transition: height 0.30s ease-in-out;
+      -moz-transition: height 0.30s ease-in-out;
+      -ms-transition: height 0.30s ease-in-out;
+      -o-transition: height 0.30s ease-in-out;*/
+    }
+    .gutter a {
+      padding: 5px;
+      margin: -5px;
+    }
+    .gutter a:hover {
+      text-decoration: underline;
+      cursor: pointer;
     }
 
     div[data-input].editor {
@@ -449,19 +609,25 @@ random(5)
 
       /*font-family: 'Source Sans Pro', sans-serif;*/
       /*box-sizing: padding-box;*/
-      -webkit-transition: all 0.30s ease-in-out;
-      -moz-transition: all 0.30s ease-in-out;
-      -ms-transition: all 0.30s ease-in-out;
-      -o-transition: all 0.30s ease-in-out;
-
-      height: 300px;
+      /*-webkit-transition: all 0.20s ease-in-out;
+      -moz-transition: all 0.20s ease-in-out;
+      -ms-transition: all 0.20s ease-in-out;
+      -o-transition: all 0.20s ease-in-out;*/
 
       border: none;
-      border-left: 1px solid #dddddd;
-      border-right: 1px solid #dddddd;
 
       white-space: pre;
       line-height: 30px;
+    }
+    div[data-input].editor p {
+      margin: 0;
+      padding: 0;
+    }
+    div[data-input].editor iframe {
+      /*-webkit-transition: height 0.30s ease-in-out;
+      -moz-transition: height 0.30s ease-in-out;
+      -ms-transition: height 0.30s ease-in-out;
+      -o-transition: height 0.30s ease-in-out;*/
     }
 
     div[data-input].editor:focus {
