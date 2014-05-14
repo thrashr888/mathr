@@ -91,38 +91,37 @@ random(5)
     <!-- endbuild -->
 
     <script type="text/javascript">
-    /*globals $, Quill, parser, numeral*/
+    /*globals $, Quill, parser*/
     'use strict';
 
     var __config = {
       lineHeight: 30,
+      editors: [],
+      quillSetup: {
+        styles: {
+          'body': {
+            'font-family': 'Source Code Pro, ',
+            'font-size': '18px',
+            'white-space': 'pre',
+            'line-height': '30px',
+            'padding': 0,
+            'height': 'auto',
+            'overflow-y': 'hidden'
+          },
+          'html': {
+            'height': 'auto'
+          },
+          'editor-container': {
+            'height': 'auto'
+          }
+        },
+        logLevel: 'debug',
+        modules: {
+          'multi-cursor': {}
+        },
+        formats: ['bold']
+      }
     };
-
-    var editor1 = new Quill('div[data-note="0"] [data-input].editor', {
-      styles: {
-        'body': {
-          'font-family': 'Source Code Pro, ',
-          'font-size': '18px',
-          'white-space': 'pre',
-          'line-height': '30px',
-          'padding': 0,
-          'height': 'auto',
-          'overflow-y': 'hidden'
-        },
-        'html': {
-          'height': 'auto'
-        },
-        'editor-container': {
-          'height': 'auto'
-        }
-      },
-      logLevel: 'debug',
-      modules: {
-        'multi-cursor': {}
-      },
-      formats: ['bold']
-    });
-    // console.log(editor1);
 
     function resizeEditorContainer(editor) {
       // console.log(editor);
@@ -184,7 +183,7 @@ random(5)
       return [exp, val];
     }
 
-    editor1.on('renderer-update', function () { // d, t, e
+    function editorUpdated () { // d, t, e
       // console.log('ru', d, t, e);
       // console.log(this.editor);
       var self = this,
@@ -195,25 +194,27 @@ random(5)
         resizeEditorContainer(self.editor);
         fillGutter($container);
       }, 20);
-    }).on('text-change', function () { // d, t, e
-      // console.log('tc', d, t, e);
-      var $container = $(this.editor.renderer.container),
-        note = $container.parent().parent('[data-note]').data('note');
-      solve(note, parseInt($container.data('input')), this.editor.innerHTML);
-      resizeEditorContainer(this.editor);
-      fillGutter($container);
-    }).on('pre-event', function () { // d, t, e
-      // console.log('pe', d, t, e);
-      // resizeEditorContainer(this.root, $('div[data-note="0"] [data-input]'));
-      // fillGutter($('div[data-note="0"] [data-input]'));
+    }
+
+    $('div[data-note]').each(function () {
+      var note = parseInt($(this).data('note'));
+
+      __config.editors[note] = new Quill('div[data-note="0"] [data-input].editor', __config.quillSetup);
+      __config.editors[note]
+        .on('renderer-update', editorUpdated.bind(__config.editors[note]))
+        .on('text-change', editorUpdated.bind(__config.editors[note]))
+        .on('pre-event', function () { // d, t, e
+          // console.log('pe', d, t, e);
+        });
     });
 
     $('.gutter').on('click', 'a', function (e) {
       e.preventDefault();
       var el = $(e.currentTarget);
-      // var line = el.data('line');
+      var line = el.data('line');
       var editor = el.siblings('[data-input]');
       editor.focus()[0].setSelectionRange(0, 0, 'forward');
+      location.hash = 'l' + line;
 
       for (var start = 0; start >= 0 && editor.html()[start] !== '\n'; --start) {
         editor.focus()[0].setSelectionRange(start, start, 'forward');
@@ -222,52 +223,6 @@ random(5)
 
     // $('[data-note="0"][data-input="1"]').focus()[0].setSelectionRange(0, 0, 'forward');
     </script>
-
-    <!-- <script type="text/jsx">
-      /** @jsx React.DOM */
-      React.renderComponent(
-        <p>Hello, world!</p>,
-        document.getElementById('o6')
-      );
-    </script> -->
-    <!-- <script type="text/jsx">
-      /** @jsx React.DOM */
-      var TodoList = React.createClass({
-        render: function() {
-          var createItem = function(itemText) {
-            return <li>{itemText}</li>;
-          };
-          return <ul>{this.props.items.map(createItem)}</ul>;
-        }
-      });
-      var TodoApp = React.createClass({
-        getInitialState: function() {
-          return {output: [], input: ''};
-        },
-        onChange: function(e) {
-          this.setState({text: e.target.value});
-        },
-        handleSubmit: function(e) {
-          e.preventDefault();
-          var nextItems = this.state.items.concat([this.state.text]);
-          var nextText = '';
-          this.setState({items: nextItems, text: nextText});
-        },
-        render: function() {
-          return (
-            <div>
-              <h3>TODO</h3>
-              <TodoList items={this.state.items} />
-              <form onSubmit={this.handleSubmit}>
-                <input onChange={this.onChange} value={this.state.text} />
-                <button>{'Add #' + (this.state.items.length + 1)}</button>
-              </form>
-            </div>
-          );
-        }
-      });
-      React.renderComponent(<TodoApp />, mountNode);
-    </script> -->
 
 </body>
 </html>
