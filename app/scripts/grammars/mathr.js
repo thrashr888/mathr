@@ -77,8 +77,7 @@ yy: {},
 symbols_: {"error":2,"expressions":3,"e":4,"EOF":5,"calc":6,"+":7,"-":8,"*":9,"/":10,"%":11,"^":12,"!":13,"(":14,")":15,"NUMBER":16,"E":17,"PI":18,"TABLE":19,"FUNCTION":20,"LINE":21,"LABEL":22,"TEXT":23,"COMMENT":24,"CURRENCY":25,"TABLECELL":26,"NEWLINE":27,"Whitespace":28,"$accept":0,"$end":1},
 terminals_: {2:"error",5:"EOF",7:"+",8:"-",9:"*",10:"/",11:"%",12:"^",13:"!",14:"(",15:")",16:"NUMBER",17:"E",18:"PI",19:"TABLE",20:"FUNCTION",21:"LINE",22:"LABEL",23:"TEXT",24:"COMMENT",25:"CURRENCY",26:"TABLECELL",27:"NEWLINE"},
 productions_: [0,[3,2],[3,2],[4,2],[4,3],[4,3],[4,3],[4,3],[4,2],[4,3],[4,2],[4,2],[4,3],[4,1],[4,1],[4,1],[4,1],[4,1],[4,1],[4,1],[4,1],[4,1],[4,1],[4,1],[6,1],[6,3],[6,1],[6,2],[6,2],[28,1],[28,1]],
-performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */
-/**/) {
+performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
 var $0 = $$.length - 1;
@@ -608,8 +607,7 @@ stateStackSize:function stateStackSize() {
         return this.conditionStack.length;
     },
 options: {},
-performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START
-/**/) {
+performAction: function anonymous(yy,yy_,$avoiding_name_collisions,YY_START) {
 
 var YYSTATE=YY_START;
 switch($avoiding_name_collisions) {
@@ -657,7 +655,7 @@ case 20:return 25;
 break;
 }
 },
-rules: [/^(?:\n+)/,/^(?:\s+)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:^#.+)/,/^(?:$)/,/^(?:([\w]+)\(([\w\d]+)\))/,/^(?:t([0-9]+)\.[a-z]+?[0-9]+?)/,/^(?:t([0-9]+))/,/^(?:l([0-9]+))/,/^(?:([\w]+):)/,/^(?:([\w]+))/,/^(?:([$€£])[0-9]+(\.[0-9]+)?\b)/],
+rules: [/^(?:\n+)/,/^(?:\s+)/,/^(?:[0-9]+(\.[0-9]+)?\b)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:\^)/,/^(?:\()/,/^(?:\))/,/^(?:PI\b)/,/^(?:E\b)/,/^(?:^#.+)/,/^(?:$)/,/^(?:([\w]+)\(([\w\d]+)\))/,/^(?:t([0-9]+)\.[a-z]+?[0-9]+?)/,/^(?:t([0-9]+))/,/^(?:l([0-9]+))/,/^(?:$([\w]+):)/,/^(?:([\w]+))/,/^(?:([$€£])[0-9]+(\.[0-9]+)?\b)/],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"inclusive":true}}
 };
 return lexer;

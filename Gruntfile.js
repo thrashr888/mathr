@@ -39,7 +39,10 @@ module.exports = function (grunt) {
         }
       },
       js: {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+        files: [
+          '<%= yeoman.app %>/scripts/{,*/}*.js',
+          '<%= yeoman.app %>/bower_components/filtrex/filtrex.js'
+        ],
         tasks: ['newer:jshint:all'],
         options: {
           livereload: true

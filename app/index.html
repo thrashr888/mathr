@@ -41,14 +41,16 @@
 l2 * 2
 l4 / 2
 # testing
+# testing + 50 * 3
+"testing" + 3
+math:
+math: + 5 + 5.5
 t1.b1
-mathr: 5 * 5.5
 $8.50 / 4
+$22
+random(5)</div>
 
-random(5)
-</div>
-
-          <div data-output="1" class="col-md-5 col-xs-5">-</div>
+          <div data-output="1" class="col-md-5 col-xs-5"></div>
         </div>
       </div>
 
@@ -61,30 +63,82 @@ random(5)
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
+    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
     <!-- endbower -->
+    <script src="http://quilljs.com/js/quill.js"></script>
+    <script src="bower_components/react/react.js"></script>
+    <script src="bower_components/react/JSXTransformer.js"></script>
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="http://quilljs.com/js/quill.js"></script>
-
-    <script src="bower_components/medium/medium.js"></script>
-    <script src="bower_components/react/react.js"></script>
-    <script src="bower_components/react/JSXTransformer.js"></script>
     <script src="scripts/grammars/mathr.js"></script>
+    <script src="scripts/compiler.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/mathr.js"></script>
     <!-- <script src="scripts/controllers/main.js"></script> -->
     <!-- endbuild -->
 
     <script type="text/javascript">
-    /*globals $, Quill, parser*/
+    /*globals $, Quill, parser, compileExpression*/
     'use strict';
+
+    var __init_data__ = [
+      {
+        id: 1,
+        type: 'note',
+        name: 'test note',
+        input: ['10.5 * $2',
+          '0 + 1.6666',
+          '5000 - 12.5',
+          '1000944.111 * 14',
+          '33 + l3',
+          'l2 * 2',
+          'l4 / 2',
+          '# testing',
+          '# testing + 50 * 3',
+          '"testing" + 3',
+          'math:',
+          'math: + 5 + 5.5',
+          't1.b1',
+          '$8.50 / 4',
+          '$22',
+          'random(5)']
+      },
+      {
+        id: 2,
+        type: 'table',
+        name: 'groceries',
+        input: [
+          ['coffee', '$4.00'],
+          ['milk', '$3.75'],
+          ['water', '$6.25'],
+        ]
+      },
+      {
+        id: 3,
+        type: 'function',
+        name: 'multiplyList',
+        input: 'function multiplyList (v, m) {\n\tfor(var i in v) {\n\t\ti = i * m;\n\t};\n\treturn v;\n};'
+      }
+    ];
 
     var __config = {
       lineHeight: 30,
       editors: [],
+      errors: [],
       quillSetup: {
         styles: {
           'body': {
@@ -111,9 +165,14 @@ random(5)
       }
     };
 
+
     var noteManager = {
+      noteByNumber: [],
       getNoteByNumber: function (number) {
-        return $('[data-note="' + number + '"]');
+        if (!this.noteByNumber[number]) {
+          this.noteByNumber[number] = $('[data-note="' + number + '"]');
+        }
+        return this.noteByNumber[number];
       },
       getNoteByGutter: function (gutter) {
         return gutter.parent().parent().parent('[data-note]').data('note');
@@ -125,6 +184,7 @@ random(5)
         return editor.parent().parent('[data-note]').data('note');
       }
     };
+
 
     function resizeEditorContainer(editor) {
       // console.log(editor);
@@ -167,6 +227,43 @@ random(5)
       return string;
     }
 
+    function solveLines(htmlCode) {
+      // console.log(htmlCode);
+      var compiled = [],
+        rendered = {},
+        rerendered = [],
+        code = htmlCode;
+      code = stripTags(code);
+      var lines = code.split('\n');
+
+      // TODO: add tables
+      rendered['t1.b1'] = 3; // just a test
+
+      // first rendering pass
+      lines.forEach(function (line, i) {
+        try {
+          compiled[i] = compileExpression(line);
+          rendered['l' + (i + 1)] = compiled[i](rendered);
+        } catch (e) {
+          __config.errors.push(e);
+        }
+      });
+
+      compiled.forEach(function (line, i) {
+        try {
+          rendered['l' + (i + 1)] = rerendered[i] = line(rendered);
+          // rendered['l' + (i + 1)] = rerendered[i];
+        } catch (e) {
+          console.log(e);
+          __config.errors.push(e);
+        }
+      });
+
+      // console.log(rendered);
+
+      return rerendered.join('<br>');
+    }
+
     function solve(note, line, htmlCode) {
       var exp, val, el;
       if (line) {
@@ -198,9 +295,13 @@ random(5)
       // console.log(this.editor);
       var self = this,
         $container = $(this.editor.renderer.container),
-        note = $container.parent().parent('[data-note]').data('note');
+        note = $container.parent().parent('[data-note]').data('note'),
+        line = parseInt($container.data('input'));
       setTimeout(function () {
-        solve(note, parseInt($container.data('input')), self.editor.innerHTML);
+        // solve(note, parseInt($container.data('input')), self.editor.innerHTML);
+        var val = solveLines(self.editor.innerHTML);
+        $('[data-note="' + note + '"] [data-output="' + line + '"]').html(val).data('value', val);
+
         resizeEditorContainer(self.editor);
         fillGutter($container);
       }, 20);
@@ -208,25 +309,27 @@ random(5)
 
     function selectLine (string, lineNum) {
       lineNum--; // array starts at 0
-      var lines = string.split("\n");
+      var lines = string.split('\n');
 
       // calculate start/end
       var startPos = 0, endPos = string.length;
       for(var x = 0; x < lines.length; x++) {
-        if(x == lineNum) {
+        if (x === lineNum) {
             break;
         }
         startPos += (lines[x].length+1);
       }
-
-      var endPos = lines[lineNum].length+startPos;
+      endPos = lines[lineNum].length + startPos;
 
       return [startPos, endPos];
     }
 
+
     $('div[data-note]').each(function () {
       var note = parseInt($(this).data('note'));
+
       __config.editors[note] = new Quill('div[data-note="0"] [data-input].editor', __config.quillSetup);
+
       __config.editors[note]
         .on('renderer-update', editorUpdated.bind(__config.editors[note]))
         .on('text-change', editorUpdated.bind(__config.editors[note]))
@@ -234,6 +337,7 @@ random(5)
           // console.log('pe', d, t, e);
         });
     });
+
 
     $('.gutter').on('click', 'a', function (e) {
       e.preventDefault();
@@ -245,6 +349,7 @@ random(5)
         linePos = selectLine(exp, line);
 
       location.hash = 'l' + line;
+
       __config.editors[note].setSelection(linePos[0], linePos[1]);
     });
     </script>
