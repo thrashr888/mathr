@@ -23,14 +23,11 @@
     <div class="container">
 
       <div class="row">
-        <table data-table="1" class="table">
-          <tr data-row="1"><td data-col="a">coffee</td> <td data-col="b">$4.00</td></tr>
-          <tr data-row="2"><td data-col="a">milk</td> <td data-col="b">$3.75</td></tr>
-          <tr data-row="3"><td data-col="a">water</td> <td data-col="b">$6.25</td></tr>
+        <table data-table="1" class="table" id="table1">
         </table>
       </div>
 
-      <div class="row editor-container col-md-12" data-note="0">
+      <div class="row editor-container col-md-12" data-note="0" id="note1">
         <div class="row">
           <div class="gutter col-md-1 col-xs-1"></div>
           <div class="editor col-md-6 col-xs-6" data-input="1">10.5 * $2
@@ -54,9 +51,10 @@ random(5)</div>
         </div>
       </div>
 
-      <div class="row">
-        <div data-output="error" class="col-md-12 alert"></div>
+      <div class="row" id="func1">
       </div>
+
+      <div data-output="error" class="row col-md-12 alert" id="error1"></div>
 
     </div>
 
@@ -77,6 +75,7 @@ random(5)</div>
     <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
+    <script src="bower_components/filtrex/filtrex.js"></script>
     <!-- endbower -->
     <script src="http://quilljs.com/js/quill.js"></script>
     <script src="bower_components/react/react.js"></script>
@@ -88,8 +87,115 @@ random(5)</div>
     <script src="scripts/compiler.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/mathr.js"></script>
+    <!-- <script src="scripts/reactTest.jsx" type="text/jsx"></script> -->
     <!-- <script src="scripts/controllers/main.js"></script> -->
     <!-- endbuild -->
+
+    <script type="text/jsx">
+    /**
+     * @jsx React.DOM
+     */
+
+    var SheetRow = React.createClass({
+      render: function () {
+        return (
+          <tr data-row="{this.props.row}"><td data-col="a">{this.props.a}</td> <td data-col="b">{this.props.b}</td></tr>
+        );
+      }
+    });
+    var Sheet = React.createClass({
+      render: function () {
+        return (
+          <table data-table="1" className="table">
+            <SheetRow row="1" a="coffee" b="$4.00" />
+            <SheetRow row="2" a="milk" b="$3.75" />
+            <SheetRow row="3" a="water" b="$6.25" />
+          </table>
+        );
+      }
+    });
+
+    React.renderComponent(
+      <Sheet />,
+      document.getElementById('table1')
+    );
+
+    var ErrorItem = React.createClass({
+      render: function () {
+        return (
+          <p>{this.props.text}</p>
+        );
+      }
+    });
+    var ErrorList = React.createClass({
+      render: function () {
+        return (
+          <div data-output="error" className="col-md-12 alert">
+            <ErrorItem text="I am an error." />
+            <ErrorItem text="I am another error." />
+          </div>
+        );
+      }
+    });
+    React.renderComponent(
+      <ErrorList />,
+      document.getElementById('error1')
+    );
+
+
+    var Note = React.createClass({
+      render: function () {
+        return (
+          <div className="row editor-container col-md-12" data-note="0">
+            <div className="row">
+              <div className="gutter col-md-1 col-xs-1"></div>
+              <div className="editor col-md-6 col-xs-6" data-input="1">10.5 * $2
+0 + 1.6666
+5000 - 12.5
+1000944.111 * 14
+33 + l3
+l2 * 2
+l4 / 2
+# testing
+# testing + 50 * 3
+"testing" + 3
+math:
+math: + 5 + 5.5
+t1.b1
+$8.50 / 4
+$22
+random(5)</div>
+
+              <div data-output="1" className="col-md-5 col-xs-5"></div>
+            </div>
+          </div>
+        );
+      }
+    });
+    // React.renderComponent(
+    //   <Note />,
+    //   document.getElementById('note1')
+    // );
+
+
+    var Func = React.createClass({
+      render: function () {
+        var testFunc = 'function multiplyList (v, m) {\n\tfor(var i in v) {\n\t\ti = i * m;\n\t};\n\treturn v;\n};';
+        return (
+          <div className="row editor-container col-md-7" data-func="0">
+            <div className="row">
+              <div className="gutter col-md-1 col-xs-1"></div>
+              <div className="editor col-md-6 col-xs-6" data-input="1">{{__html: testFunc}}</div>
+            </div>
+          </div>
+        );
+      }
+    });
+    React.renderComponent(
+      <Func />,
+      document.getElementById('func1')
+    );
+    </script>
 
     <script type="text/javascript">
     /*globals $, Quill, parser, compileExpression*/
