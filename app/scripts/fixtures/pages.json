@@ -1,0 +1,22 @@
+[
+  {
+    "type": "note",
+    "name": "test note",
+    "input": "10.5 * $2\n0 + 1.6666\n5000 - 12.5\n1000944.111 * 14\n33 + l3\nl2 * 2\nl4 / 2\n# testing\n# testing + 50 * 3\n\"testing\" + 3\nmath:\nmath: + 5 + 5.5\nt1.b1\n$8.50 / 4\n$22\nrandom(5)"
+  },
+  {
+    "type": "table",
+    "name": "groceries",
+    "input": [
+      ["coffee", "$4.00"],
+      ["milk", "$3.75"],
+      ["water", "$6.25"]
+    ]
+  },
+  {
+    "type": "function",
+    "hidden": "true",
+    "name": "multiplyList",
+    "input": "function multiplyList (v, m) {\n\tfor(var i in v) {\n\t\ti = i * m;\n\t};\n\treturn v;\n};"
+  }
+]

@@ -8,8 +8,9 @@
     "bacon": "*",
     "numeral": "*",
     "quill": "*",
-    "filtrex": "https://github.com/joewalnes/filtrex.git"
+    "filtrex": "https://github.com/joewalnes/filtrex.git",
+    "fluxxor": "https://github.com/BinaryMuse/fluxxor.git",
+    "uuid-js": "~0.7.5"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

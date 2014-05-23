@@ -20,43 +20,7 @@
 
   </head>
   <body>
-    <div class="container">
-
-      <div class="row">
-        <table data-table="1" class="table" id="table1">
-        </table>
-      </div>
-
-      <div class="row editor-container col-md-12" data-note="0" id="note1">
-        <div class="row">
-          <div class="gutter col-md-1 col-xs-1"></div>
-          <div class="editor col-md-6 col-xs-6" data-input="1">10.5 * $2
-0 + 1.6666
-5000 - 12.5
-1000944.111 * 14
-33 + l3
-l2 * 2
-l4 / 2
-# testing
-# testing + 50 * 3
-"testing" + 3
-math:
-math: + 5 + 5.5
-t1.b1
-$8.50 / 4
-$22
-random(5)</div>
-
-          <div data-output="1" class="col-md-5 col-xs-5"></div>
-        </div>
-      </div>
-
-      <div class="row" id="func1">
-      </div>
-
-      <div data-output="error" class="row col-md-12 alert" id="error1"></div>
-
-    </div>
+    <div class="container" id="page1"></div>
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
@@ -76,171 +40,23 @@ random(5)</div>
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
     <script src="bower_components/filtrex/filtrex.js"></script>
+    <script src="bower_components/uuid-js/lib/uuid.js"></script>
     <!-- endbower -->
     <script src="http://quilljs.com/js/quill.js"></script>
     <script src="bower_components/react/react.js"></script>
     <script src="bower_components/react/JSXTransformer.js"></script>
+    <script src="bower_components/fluxxor/build/fluxxor.js"></script>
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
-    <script src="scripts/grammars/mathr.js"></script>
+    <!-- <script src="scripts/grammars/mathr.js"></script> -->
     <script src="scripts/compiler.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/mathr.js"></script>
-    <!-- <script src="scripts/reactTest.jsx" type="text/jsx"></script> -->
     <!-- <script src="scripts/controllers/main.js"></script> -->
     <!-- endbuild -->
 
-    <script type="text/jsx">
-    /**
-     * @jsx React.DOM
-     */
-
-    var SheetRow = React.createClass({
-      render: function () {
-        return (
-          <tr data-row="{this.props.row}"><td data-col="a">{this.props.a}</td> <td data-col="b">{this.props.b}</td></tr>
-        );
-      }
-    });
-    var Sheet = React.createClass({
-      render: function () {
-        return (
-          <table data-table="1" className="table">
-            <SheetRow row="1" a="coffee" b="$4.00" />
-            <SheetRow row="2" a="milk" b="$3.75" />
-            <SheetRow row="3" a="water" b="$6.25" />
-          </table>
-        );
-      }
-    });
-
-    React.renderComponent(
-      <Sheet />,
-      document.getElementById('table1')
-    );
-
-    var ErrorItem = React.createClass({
-      render: function () {
-        return (
-          <p>{this.props.text}</p>
-        );
-      }
-    });
-    var ErrorList = React.createClass({
-      render: function () {
-        return (
-          <div data-output="error" className="col-md-12 alert">
-            <ErrorItem text="I am an error." />
-            <ErrorItem text="I am another error." />
-          </div>
-        );
-      }
-    });
-    React.renderComponent(
-      <ErrorList />,
-      document.getElementById('error1')
-    );
-
-
-    var Note = React.createClass({
-      render: function () {
-        return (
-          <div className="row editor-container col-md-12" data-note="0">
-            <div className="row">
-              <div className="gutter col-md-1 col-xs-1"></div>
-              <div className="editor col-md-6 col-xs-6" data-input="1">10.5 * $2
-0 + 1.6666
-5000 - 12.5
-1000944.111 * 14
-33 + l3
-l2 * 2
-l4 / 2
-# testing
-# testing + 50 * 3
-"testing" + 3
-math:
-math: + 5 + 5.5
-t1.b1
-$8.50 / 4
-$22
-random(5)</div>
-
-              <div data-output="1" className="col-md-5 col-xs-5"></div>
-            </div>
-          </div>
-        );
-      }
-    });
-    // React.renderComponent(
-    //   <Note />,
-    //   document.getElementById('note1')
-    // );
-
-
-    var Func = React.createClass({
-      render: function () {
-        var testFunc = 'function multiplyList (v, m) {\n\tfor(var i in v) {\n\t\ti = i * m;\n\t};\n\treturn v;\n};';
-        return (
-          <div className="row editor-container col-md-7" data-func="0">
-            <div className="row">
-              <div className="gutter col-md-1 col-xs-1"></div>
-              <div className="editor col-md-6 col-xs-6" data-input="1">{{__html: testFunc}}</div>
-            </div>
-          </div>
-        );
-      }
-    });
-    React.renderComponent(
-      <Func />,
-      document.getElementById('func1')
-    );
-    </script>
-
     <script type="text/javascript">
-    /*globals $, Quill, parser, compileExpression*/
-    'use strict';
-
-    var __init_data__ = [
-      {
-        id: 1,
-        type: 'note',
-        name: 'test note',
-        input: ['10.5 * $2',
-          '0 + 1.6666',
-          '5000 - 12.5',
-          '1000944.111 * 14',
-          '33 + l3',
-          'l2 * 2',
-          'l4 / 2',
-          '# testing',
-          '# testing + 50 * 3',
-          '"testing" + 3',
-          'math:',
-          'math: + 5 + 5.5',
-          't1.b1',
-          '$8.50 / 4',
-          '$22',
-          'random(5)']
-      },
-      {
-        id: 2,
-        type: 'table',
-        name: 'groceries',
-        input: [
-          ['coffee', '$4.00'],
-          ['milk', '$3.75'],
-          ['water', '$6.25'],
-        ]
-      },
-      {
-        id: 3,
-        type: 'function',
-        name: 'multiplyList',
-        input: 'function multiplyList (v, m) {\n\tfor(var i in v) {\n\t\ti = i * m;\n\t};\n\treturn v;\n};'
-      }
-    ];
-
     var __config = {
       lineHeight: 30,
       editors: [],
@@ -270,7 +86,428 @@ random(5)</div>
         formats: ['bold']
       }
     };
+    </script>
 
+    <script type="text/jsx">
+    /**
+     * @jsx React.DOM
+     */
+    var PageStore = Fluxxor.createStore({
+      actions: {
+        "ADD_PAGE": "onAddPage",
+        "ADD_PAGES": "onAddPages",
+        "TOGGLE_PAGE": "onTogglePage",
+        "CLEAR_TPAGE": "onClearPages"
+      },
+
+      initialize: function() {
+        this.pages = [];
+      },
+
+      onAddPage: function(payload) {
+        // console.log(payload)
+        this.pages.push({
+          id: payload.page.id || UUIDjs.create(4).toString(),
+          type: payload.page.type,
+          name: payload.page.name,
+          input: payload.page.input,
+          hidden: false
+        });
+        this.emit("change");
+      },
+
+      onAddPages: function(payload) {
+        console.log(payload)
+
+        for (var i = 0, l = payload.pages.length; i < l; i++) {
+          var page = payload.pages[i];
+
+          this.pages.push({
+            id: page.id || UUIDjs.create(4).toString(),
+            type: page.type,
+            name: page.name,
+            input: page.input,
+            hidden: false
+          });
+        }
+
+        this.emit("change");
+      },
+
+      onTogglePage: function(payload) {
+        payload.page.hidden = !payload.page.hidden;
+        this.emit("change");
+      },
+
+      onClearPages: function() {
+        this.pages = this.pages.filter(function(page) {
+          return page.hidden;
+        });
+        this.emit("change");
+      },
+
+      getState: function() {
+        return {
+          pages: this.pages
+        };
+      }
+    });
+
+    var actions = {
+      addPage: function(page) {
+        this.dispatch("ADD_PAGE", {page: page});
+      },
+
+      addPages: function(pages) {
+        this.dispatch("ADD_PAGES", {pages: pages});
+      },
+
+      togglePage: function(page) {
+        this.dispatch("TOGGLE_PAGE", {page: page});
+      },
+
+      clearPages: function() {
+        this.dispatch("CLEAR_PAGESS");
+      }
+    };
+
+    var stores = {
+      PageStore: new PageStore()
+    };
+
+    var flux = new Fluxxor.Flux(stores, actions);
+
+    var FluxMixin = Fluxxor.FluxMixin(React),
+        FluxChildMixin = Fluxxor.FluxChildMixin(React),
+        StoreWatchMixin = Fluxxor.StoreWatchMixin;
+
+
+
+    var SheetColumn = React.createClass({
+      render: function () {
+        return (
+          <td data-col={this.props.col}>{this.props.val}</td>
+        );
+      }
+    });
+    var SheetRow = React.createClass({
+      render: function () {
+        return (
+          <tr data-row="{this.props.row}">
+            <SheetColumn col="a" val={this.props.a} />
+            <SheetColumn col="b" val={this.props.b} />
+          </tr>
+        );
+      }
+    });
+    var Sheet = React.createClass({
+      render: function () {
+        return (
+          <table data-table="1" className="table">
+            <SheetRow row="1" a="coffee" b="$4.00" />
+            <SheetRow row="2" a="milk" b="$3.75" />
+            <SheetRow row="3" a="water" b="$6.25" />
+          </table>
+        );
+      }
+    });
+
+    var ErrorItem = React.createClass({
+      render: function () {
+        return (
+          <p>{this.props.text}</p>
+        );
+      }
+    });
+    var ErrorList = React.createClass({
+      getInitialState: function() {
+        return {data: [
+          {text: 'I am an error.'},
+          {text: 'I am another error.'},
+        ]};
+      },
+      render: function () {
+        return (
+          <div data-output="error" className="col-md-12 alert">
+            <ErrorItem text="I am an error." />
+            <ErrorItem text="I am another error." />
+          </div>
+        );
+      }
+    });
+
+    var GutterLine = React.createClass({
+      render: function () {
+        return (
+          <a data-line={this.props.line} name="#{this.props.line}" href="#{this.props.line}">{this.props.line}</a>
+        );
+      }
+    });
+    var Gutter = React.createClass({
+      countLines: function (rows) {
+        var gNums = [];
+        for (var i = 1; i < rows; i++) {
+          gNums.push(i);
+        }
+        this.setState({lines: gNums});
+      },
+      componentWillMount: function() {
+        this.countLines(this.props.rows);
+      },
+      componentWillReceiveProps: function (nextProps) {
+        this.countLines(nextProps.rows);
+      },
+      render: function () {
+        var gutterLines = this.state.lines.map(function (line) {
+          return <GutterLine line={line} key={line} />;
+        });
+        return (
+          <div className="gutter col-md-1 col-xs-1 m-note--gutter">
+            {gutterLines}
+          </div>
+        );
+      }
+    });
+
+    var EditorInput = React.createClass({
+      solveLines: function (rawCode) {
+        // console.log(rawCode);
+        var compiled = [],
+          rendered = {},
+          rerendered = [],
+          code = rawCode;
+        code = stripTags(code);
+        var lines = code.split('\n');
+
+        // TODO: add tables
+        rendered['t1.b1'] = 3; // just a test
+
+        // first rendering pass
+        lines.forEach(function (line, i) {
+          try {
+            compiled[i] = compileExpression(line);
+            rendered['l' + (i + 1)] = compiled[i](rendered);
+          } catch (e) {
+            __config.errors.push(e);
+          }
+        });
+
+        compiled.forEach(function (line, i) {
+          try {
+            rendered['l' + (i + 1)] = rerendered[i] = line(rendered);
+            // rendered['l' + (i + 1)] = rerendered[i];
+          } catch (e) {
+            console.log(e);
+            __config.errors.push(e);
+          }
+        });
+
+        // console.log(rendered);
+
+        return rerendered.join('<br>');
+      },
+      editorUpdated: function (d, t, e) { // d, t, e
+        // console.log(this);
+        // console.log(this.props);
+
+        var text = this.rte.getText();
+        var output = {
+          input: this.text,
+          output: this.solveLines(text)
+        };
+        this.setState(output);
+        this.props.onInputUpdate(output);
+        this.resizeContainer();
+      },
+      installRTE: function () {
+        var node = this.getDOMNode();
+        this.rte = new Quill(node, __config.quillSetup);
+
+        if (this.props.input) {
+          this.rte.setContents([
+            { text: this.props.input }
+          ]);
+          // this.rte.insertText(0, this.props.input);
+        }
+
+        this.rte
+          .on('renderer-update', this.editorUpdated)
+          .on('text-change', this.editorUpdated)
+          .on('pre-event', function () { // d, t, e
+            // console.log('pe', d, t, e);
+          }.bind(this));
+      },
+      componentDidMount: function () {
+        // console.log(this.props.input);
+        if (!this.rte) {
+          this.installRTE();
+        }
+      },
+      resizeContainer: function () {
+        if (this.rte && this.rte.editor.renderer) {
+          var $container = this.rte.editor.renderer.container;
+          $container.style.height = this.rte.root.clientHeight + 'px';
+        }
+      },
+      componentDidUpdate: function () {
+        this.resizeContainer();
+      },
+      componentWillReceiveProps: function (nextProps) {
+        // console.log(nextProps);
+        if (nextProps.input) {
+          if (!this.rte) {
+            // this.installRTE();
+          }
+          this.setState({
+            input: nextProps.input
+          });
+          // console.log(nextProps.input);
+          // this.rte.setContents({ text: nextProps.input });
+          this.rte.insertText(0, nextProps.input);
+        }
+      },
+      render: function () {
+        this.resizeContainer();
+        // console.log(this.props.input);
+        return (
+          <div className="editor col-md-6 col-xs-6 m-note--input"></div>
+        );
+      }
+    });
+    var EditorOutput = React.createClass({
+      render: function () {
+        // console.log(this.props)
+        var rawOutput = this.props && this.props.output ? this.props.output.replace('\n', '<br>') : 'feed me';
+
+        return (
+          <div className="col-md-5 col-xs-5 m-note--output" dangerouslySetInnerHTML={{__html: rawOutput}}></div>
+        );
+      }
+    });
+
+    var Note = React.createClass({
+      handleInputUpdate: function (update) {
+        // console.log('update update:', update);
+        // this.setState({
+        //   input: update.input
+        // });
+        // this.setState({
+        //   input: update.input,
+        //   output: update.output
+        // });
+        // console.log(this.state.output)
+      },
+      getInitialState: function() {
+        return {output: 'no!'};
+      },
+      render: function () {
+        // console.log(this.props)
+        // console.log(this.state)
+        return (
+          <div className="row m-note m-note--container col-md-12">
+            <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
+            <div className="row m-note--row">
+              <Gutter rows={this.state.input ? this.state.input.split('\n').length : 10} />
+              <EditorInput input={this.props.item ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
+              <EditorOutput output={this.state.output} />
+            </div>
+          </div>
+        );
+      }
+    });
+    var Func = React.createClass({
+      handleInputUpdate: function (input) {
+        // console.log('input update:', input);
+        this.setState({output: input.output});
+      },
+      render: function () {
+        return (
+          <div className="row m-func m-note--container col-md-12">
+            <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
+            <div className="row m-note--row">
+              <Gutter rows="10" />
+              <EditorInput input={this.props.item ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
+            </div>
+          </div>
+        );
+      }
+    });
+
+    var Page = React.createClass({
+      mixins: [FluxMixin, StoreWatchMixin("PageStore")],
+
+      getStateFromFlux: function() {
+        var flux = this.getFlux();
+        console.log(flux)
+        // Normally we'd use one key per store, but we only have one store, so
+        // we'll use the state of the store as our entire state here.
+        return flux.store("PageStore").getState();
+      },
+
+      componentWillMount: function() {
+        // console.log(this);
+        $.ajax({
+          url: this.props.url,
+          dataType: 'json',
+          success: function(pages) {
+            // this.setState({pages: pages});
+            this.getFlux().actions.addPages(pages);
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(this.props.url, status, err.toString());
+          }.bind(this)
+        });
+      },
+      getInitialState: function() {
+        return {};
+      },
+      render: function () {
+        //<Func item={this.state.pages[2]} />
+        // console.log(this.state)
+        var itemList = this.state.pages.map(function (item) {
+          switch (item.type) {
+            case 'note':
+              return <Note item={item} key={item.id} />;
+            case 'function':
+              return <Func item={item} key={item.id} />;
+            case 'table':
+              return <Sheet item={item} key={item.id} />;
+            default:
+              return null;
+          }
+        });
+        return (
+          <div className="container">
+            {itemList}
+            <ErrorList />
+          </div>
+        );
+      }
+    });
+
+    React.renderComponent(
+      <Page url="/scripts/fixtures/pages.json" flux={flux} />,
+      document.getElementById('page1')
+    );
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+    /*globals $, Quill, parser, compileExpression*/
+    'use strict';
 
     var noteManager = {
       noteByNumber: [],
@@ -431,18 +668,18 @@ random(5)</div>
     }
 
 
-    $('div[data-note]').each(function () {
-      var note = parseInt($(this).data('note'));
+    // $('div[data-note]').each(function () {
+    //   var note = parseInt($(this).data('note'));
 
-      __config.editors[note] = new Quill('div[data-note="0"] [data-input].editor', __config.quillSetup);
+    //   __config.editors[note] = new Quill('div[data-note="0"] [data-input].editor', __config.quillSetup);
 
-      __config.editors[note]
-        .on('renderer-update', editorUpdated.bind(__config.editors[note]))
-        .on('text-change', editorUpdated.bind(__config.editors[note]))
-        .on('pre-event', function () { // d, t, e
-          // console.log('pe', d, t, e);
-        });
-    });
+    //   __config.editors[note]
+    //     .on('renderer-update', editorUpdated.bind(__config.editors[note]))
+    //     .on('text-change', editorUpdated.bind(__config.editors[note]))
+    //     .on('pre-event', function () { // d, t, e
+    //       // console.log('pe', d, t, e);
+    //     });
+    // });
 
 
     $('.gutter').on('click', 'a', function (e) {

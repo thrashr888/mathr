@@ -10,6 +10,12 @@ body {
   line-height: 30px;
 }
 
+.m-note,
+.m-func {
+  margin: 1em 0;
+}
+
+.m-note--output,
 div[data-output] {
   background-color: #0066ff;
   background-color: rgba(0, 31, 255, 0.10);
@@ -17,13 +23,21 @@ div[data-output] {
   overflow-x: hidden;
 }
 
+.m-note--hed {
+  border-bottom: 1px solid #dddddd;
+  padding: 0.25em 0.5em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
 
+.m-note--output,
 div[data-note] div[data-output] {
   padding-bottom: 500em;
   margin-bottom: -500em;
   border-left: 1px solid #dddddd;
 }
 
+.m-note--output.alert,
 div[data-output].alert {
   background-color: #fdfdfd;
   border: 1px solid #dddddd;
@@ -33,6 +47,7 @@ div[data-output].alert {
   margin-top: 2em;
 }
 
+.m-note--gutter,
 .gutter {
   line-height: 30px;
   text-align: right;
@@ -46,15 +61,20 @@ div[data-output].alert {
   -ms-transition: height 0.30s ease-in-out;
   -o-transition: height 0.30s ease-in-out;*/
 }
+.m-note--gutter a,
 .gutter a {
   padding: 5px;
   margin: -5px;
+  clear: both;
+  display: block;
 }
+.m-note--gutter a:hover,
 .gutter a:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 
+.m-note--input,
 div[data-input].editor {
   font-family: 'Source Code Pro', serif;
 
@@ -70,10 +90,7 @@ div[data-input].editor {
   white-space: pre;
   line-height: 30px;
 }
-div[data-input].editor p {
-  margin: 0;
-  padding: 0;
-}
+.m-note--input iframe,
 div[data-input].editor iframe {
   /*-webkit-transition: height 0.30s ease-in-out;
   -moz-transition: height 0.30s ease-in-out;
@@ -81,11 +98,8 @@ div[data-input].editor iframe {
   -o-transition: height 0.30s ease-in-out;*/
 }
 
-div[data-input].editor:focus {
-  outline: none;
-  border-left: 3px solid lightblue;
-}
 
+.m-note--container,
 .editor-container {
   border: 1px solid #dfdfdf;
   border-radius: 3px;
