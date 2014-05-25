@@ -96,6 +96,7 @@
         "ADD_PAGE": "onAddPage",
         "ADD_PAGES": "onAddPages",
         "TOGGLE_PAGE": "onTogglePage",
+        "UPDATE_PAGE": "onUpdatePage",
         "CLEAR_PAGES": "onClearPages",
         "GET_PAGES": "onGetPages"
       },
@@ -111,6 +112,7 @@
           type: payload.page.type,
           name: payload.page.name,
           input: payload.page.input,
+          output: null,
           hidden: false
         });
         this.emit("change");
@@ -124,6 +126,7 @@
             type: page.type,
             name: page.name,
             input: page.input,
+            output: null,
             hidden: false
           });
         }
@@ -132,6 +135,11 @@
 
       onTogglePage: function(payload) {
         payload.page.hidden = !payload.page.hidden;
+        this.emit("change");
+      },
+
+      onUpdatePage: function(payload) {
+        // console.log(payload)
         this.emit("change");
       },
 
@@ -174,6 +182,10 @@
 
       togglePage: function(page) {
         this.dispatch("TOGGLE_PAGE", {page: page});
+      },
+
+      updatePage: function(page) {
+        this.dispatch("UPDATE_PAGE", {page: page});
       },
 
       clearPages: function() {
@@ -253,14 +265,14 @@
     var GutterLine = React.createClass({
       render: function () {
         return (
-          <a data-line={this.props.line} name="#{this.props.line}" href="#{this.props.line}">{this.props.line}</a>
+          <a data-line={this.props.line} name={"l_"+this.props.id} href={"#l_"+this.props.id} key={this.props.id}>{this.props.line}</a>
         );
       }
     });
     var Gutter = React.createClass({
       countLines: function (rows) {
         var gNums = [];
-        for (var i = 1; i < rows; i++) {
+        for (var i = 1; i < rows-1; i++) {
           gNums.push(i);
         }
         this.setState({lines: gNums});
@@ -273,8 +285,8 @@
       },
       render: function () {
         var gutterLines = this.state.lines.map(function (line) {
-          return <GutterLine line={line} key={line} />;
-        });
+          return <GutterLine line={line} id={this.props.id+'_'+line} />;
+        }.bind(this));
         return (
           <div className="gutter col-md-1 col-xs-1 m-note--gutter">
             {gutterLines}
@@ -284,8 +296,89 @@
     });
 
     var EditorInput = React.createClass({
+      resizeContainer: function () {
+        if (this.rte && this.rte.editor.renderer) {
+          var $container = this.rte.editor.renderer.container;
+          $container.style.height = this.rte.root.clientHeight + 'px';
+        }
+      },
+      editorUpdated: function (d, t, e) { // d, t, e
+        // console.log([d, t, e]);
+        var text = this.rte.getText();
+        this.props.onInputUpdate(text);
+        this.resizeContainer();
+      },
+      installRTE: function () {
+        var node = this.getDOMNode();
+        this.rte = new Quill(node, __config.quillSetup);
+
+        if (this.props.input) {
+          // this.rte.setContents({ value: this.props.input });
+          this.rte.setHTML(this.props.input);
+          // this.rte.insertText(0, this.props.input);
+        }
+        this.resizeContainer();
+
+        this.rte
+          .on('renderer-update', this.editorUpdated)
+          .on('text-change', this.editorUpdated)
+          .on('pre-event', function () { // d, t, e
+            // console.log('pe', d, t, e);
+          }.bind(this));
+      },
+      componentDidMount: function () {
+        // console.log(this.props.input);
+        if (!this.rte) {
+          this.installRTE();
+          if (this.props.input) {
+            // this.rte.setContents({ value: this.props.input });
+            this.rte.setHTML(this.props.input);
+            // this.rte.insertText(0, this.props.input);
+          }
+          this.resizeContainer();
+        }
+      },
+      componentWillReceiveProps: function (nextProps) {
+        if (nextProps.input) {
+          if (!this.rte) {
+            this.installRTE();
+          }
+          // this.rte.setContents({ text: nextProps.input });
+          this.rte.setHTML(nextProps.input);
+          // this.rte.insertText(0, nextProps.input);
+        }
+      },
+      render: function () {
+        return (
+          <div className="editor col-md-6 col-xs-6 m-note--input"></div>
+        );
+      }
+    });
+    var EditorOutput = React.createClass({
+      render: function () {
+        // console.log(this.props)
+        var rawOutput = this.props && this.props.output ? this.props.output.replace(/\n/g, '<br>') : 'feed me.';
+
+        return (
+          <div className="col-md-5 col-xs-5 m-note--output" dangerouslySetInnerHTML={{__html: rawOutput}}></div>
+        );
+      }
+    });
+
+    var Note = React.createClass({
+      mixins: [FluxChildMixin],
+
       solveLines: function (rawCode) {
         // console.log(rawCode);
+        function stripTags (string) {
+          if (!string) {
+            return '';
+          }
+          string = string.replace(/<\/p>/ig, '\n');
+          string = string.replace(/(<([^>]+)>)/ig, '');
+          return string;
+        }
+
         var compiled = [],
           rendered = {},
           rerendered = [],
@@ -315,93 +408,13 @@
             __config.errors.push(e);
           }
         });
-
         // console.log(rendered);
 
-        return rerendered.join('<br>');
+        return rerendered.join('\n');
       },
-      editorUpdated: function (d, t, e) { // d, t, e
-        // console.log(this);
-        // console.log(this.props);
 
-        var text = this.rte.getText();
-        var output = {
-          input: this.text,
-          output: this.solveLines(text)
-        };
-        this.setState(output);
-        this.props.onInputUpdate(output);
-        this.resizeContainer();
-      },
-      installRTE: function () {
-        var node = this.getDOMNode();
-        this.rte = new Quill(node, __config.quillSetup);
-
-        if (this.props.input) {
-          this.rte.setContents([
-            { text: this.props.input }
-          ]);
-          // this.rte.insertText(0, this.props.input);
-        }
-
-        this.rte
-          .on('renderer-update', this.editorUpdated)
-          .on('text-change', this.editorUpdated)
-          .on('pre-event', function () { // d, t, e
-            // console.log('pe', d, t, e);
-          }.bind(this));
-      },
-      componentDidMount: function () {
-        // console.log(this.props.input);
-        if (!this.rte) {
-          this.installRTE();
-        }
-      },
-      resizeContainer: function () {
-        if (this.rte && this.rte.editor.renderer) {
-          var $container = this.rte.editor.renderer.container;
-          $container.style.height = this.rte.root.clientHeight + 'px';
-        }
-      },
-      componentDidUpdate: function () {
-        this.resizeContainer();
-      },
-      componentWillReceiveProps: function (nextProps) {
-        // console.log(nextProps);
-        if (nextProps.input) {
-          if (!this.rte) {
-            // this.installRTE();
-          }
-          this.setState({
-            input: nextProps.input
-          });
-          // console.log(nextProps.input);
-          // this.rte.setContents({ text: nextProps.input });
-          this.rte.insertText(0, nextProps.input);
-        }
-      },
-      render: function () {
-        this.resizeContainer();
-        // console.log(this.props.input);
-        return (
-          <div className="editor col-md-6 col-xs-6 m-note--input"></div>
-        );
-      }
-    });
-    var EditorOutput = React.createClass({
-      render: function () {
-        // console.log(this.props)
-        var rawOutput = this.props && this.props.output ? this.props.output.replace('\n', '<br>') : 'feed me';
-
-        return (
-          <div className="col-md-5 col-xs-5 m-note--output" dangerouslySetInnerHTML={{__html: rawOutput}}></div>
-        );
-      }
-    });
-
-    var Note = React.createClass({
       handleInputUpdate: function (update) {
-        // console.log('update update:', update);
+        // console.log('update:', update);
         // this.setState({
         //   input: update.input
         // });
@@ -409,43 +422,53 @@
         //   input: update.input,
         //   output: update.output
         // });
-        // console.log(this.state.output)
+        console.log(this.props.item.input, update)
+        if (update && this.props.item.input !== update) {
+          this.props.item.input = update;
+        }
+        this.props.item.output = this.solveLines(update);
+        // this.setState();
+        // console.log(update, this.props.item)
+        this.getFlux().actions.updatePage(this.props.item);
       },
       getInitialState: function() {
-        return {output: 'no!'};
+        return {};
       },
       render: function () {
         // console.log(this.props)
-        // console.log(this.state)
         return (
           <div className="row m-note m-note--container col-md-12">
             <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
             <div className="row m-note--row">
-              <Gutter rows={this.state.input ? this.state.input.split('\n').length : 10} />
-              <EditorInput input={this.props.item ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
-              <EditorOutput output={this.state.output} />
+              <Gutter id={this.props.item.id} rows={this.props.item.input ? this.props.item.input.split('\n').length : 5} />
+              <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
+              <EditorOutput output={this.props.item.output ? this.props.item.output : ''} />
             </div>
           </div>
         );
       }
     });
     var Func = React.createClass({
+      mixins: [FluxChildMixin],
+
       handleInputUpdate: function (input) {
         // console.log('input update:', input);
-        this.setState({output: input.output});
+        // this.setState({output: input.output});
       },
       render: function () {
         return (
           <div className="row m-func m-note--container col-md-12">
             <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
             <div className="row m-note--row">
-              <Gutter rows="10" />
+              <Gutter id={this.props.item.id} rows={10} />
               <EditorInput input={this.props.item ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
             </div>
           </div>
         );
       }
     });
+
+
 
     var Page = React.createClass({
       mixins: [FluxMixin, StoreWatchMixin("PageStore")],
@@ -494,212 +517,5 @@
       document.getElementById('page1')
     );
     </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <script type="text/javascript">
-    /*globals $, Quill, parser, compileExpression*/
-    'use strict';
-
-    var noteManager = {
-      noteByNumber: [],
-      getNoteByNumber: function (number) {
-        if (!this.noteByNumber[number]) {
-          this.noteByNumber[number] = $('[data-note="' + number + '"]');
-        }
-        return this.noteByNumber[number];
-      },
-      getNoteByGutter: function (gutter) {
-        return gutter.parent().parent().parent('[data-note]').data('note');
-      },
-      getEditorByGutter: function (gutter) {
-        return gutter.siblings('[data-input]');
-      },
-      getNoteByEditor: function (editor) {
-        return editor.parent().parent('[data-note]').data('note');
-      }
-    };
-
-
-    function resizeEditorContainer(editor) {
-      // console.log(editor);
-      if (editor && editor.renderer && editor.renderer.container) {
-        var container = $(editor.renderer.container);
-        container.height(editor.root.clientHeight);
-        container.attr('height', '');
-      }
-    }
-
-    function fillGutter (editor) {
-      // console.log(gutter, editor, output);
-      var gutter = editor.siblings('div.gutter');
-      var output = editor.siblings('[data-output]');
-      gutter.height(editor.height());
-      output.height(editor.height());
-
-      var gCount = editor.height() / (__config.lineHeight - 0.0000001);
-      var gNums = [];
-      for (var i = 1; i < gCount; i++) {
-        gNums.push('<a data-line="' + i + '" name="#l' + i + '" href="#l' + i + '">' + i + '</a>');
-      }
-      gutter.html(gNums.join('<br>'));
-    }
-
-    function displayError(msg) {
-      var out = '\n<p style="border-top: 1px solid black;">';
-      out += (new Date()).getHours() + '.';
-      out += (new Date()).getMinutes() + '.';
-      out += (new Date()).getSeconds() + ': ';
-      out += msg;
-      out += '</p>';
-      $('[data-output="error"]').prepend(out);
-      console.error(msg);
-    }
-
-    function stripTags (string) {
-      string = string.replace(/<\/p>/ig, '\n');
-      string = string.replace(/(<([^>]+)>)/ig, '');
-      return string;
-    }
-
-    function solveLines(htmlCode) {
-      // console.log(htmlCode);
-      var compiled = [],
-        rendered = {},
-        rerendered = [],
-        code = htmlCode;
-      code = stripTags(code);
-      var lines = code.split('\n');
-
-      // TODO: add tables
-      rendered['t1.b1'] = 3; // just a test
-
-      // first rendering pass
-      lines.forEach(function (line, i) {
-        try {
-          compiled[i] = compileExpression(line);
-          rendered['l' + (i + 1)] = compiled[i](rendered);
-        } catch (e) {
-          __config.errors.push(e);
-        }
-      });
-
-      compiled.forEach(function (line, i) {
-        try {
-          rendered['l' + (i + 1)] = rerendered[i] = line(rendered);
-          // rendered['l' + (i + 1)] = rerendered[i];
-        } catch (e) {
-          console.log(e);
-          __config.errors.push(e);
-        }
-      });
-
-      // console.log(rendered);
-
-      return rerendered.join('<br>');
-    }
-
-    function solve(note, line, htmlCode) {
-      var exp, val, el;
-      if (line) {
-        try {
-          // <div class="row" data-note="0">
-          // console.log([note, line, htmlCode]);
-          el = $('div[data-note="' + note + '"] [data-input="' + line + '"]');
-          // console.log(el);
-          exp = htmlCode || el.val() || el.html() || '';
-          exp = stripTags(exp);
-
-          if (exp) {
-            // var parserSource = generator.generate({moduleName: "mathr"});
-            val = parser.parse(exp);
-          } else {
-            return;
-          }
-        } catch (e) {
-          val = '';
-          displayError(e.stack);
-        }
-        $('[data-note="' + note + '"] [data-output="' + line + '"]').html(val).data('value', val);
-      }
-      return [exp, val];
-    }
-
-    function editorUpdated () { // d, t, e
-      // console.log('ru', d, t, e);
-      // console.log(this.editor);
-      var self = this,
-        $container = $(this.editor.renderer.container),
-        note = $container.parent().parent('[data-note]').data('note'),
-        line = parseInt($container.data('input'));
-      setTimeout(function () {
-        // solve(note, parseInt($container.data('input')), self.editor.innerHTML);
-        var val = solveLines(self.editor.innerHTML);
-        $('[data-note="' + note + '"] [data-output="' + line + '"]').html(val).data('value', val);
-
-        resizeEditorContainer(self.editor);
-        fillGutter($container);
-      }, 20);
-    }
-
-    function selectLine (string, lineNum) {
-      lineNum--; // array starts at 0
-      var lines = string.split('\n');
-
-      // calculate start/end
-      var startPos = 0, endPos = string.length;
-      for(var x = 0; x < lines.length; x++) {
-        if (x === lineNum) {
-            break;
-        }
-        startPos += (lines[x].length+1);
-      }
-      endPos = lines[lineNum].length + startPos;
-
-      return [startPos, endPos];
-    }
-
-
-    // $('div[data-note]').each(function () {
-    //   var note = parseInt($(this).data('note'));
-
-    //   __config.editors[note] = new Quill('div[data-note="0"] [data-input].editor', __config.quillSetup);
-
-    //   __config.editors[note]
-    //     .on('renderer-update', editorUpdated.bind(__config.editors[note]))
-    //     .on('text-change', editorUpdated.bind(__config.editors[note]))
-    //     .on('pre-event', function () { // d, t, e
-    //       // console.log('pe', d, t, e);
-    //     });
-    // });
-
-
-    $('.gutter').on('click', 'a', function (e) {
-      e.preventDefault();
-
-      var el = $(e.currentTarget),
-        note = noteManager.getNoteByGutter(el),
-        exp = stripTags(__config.editors[note].editor.innerHTML),
-        line = el.data('line'),
-        linePos = selectLine(exp, line);
-
-      location.hash = 'l' + line;
-
-      __config.editors[note].setSelection(linePos[0], linePos[1]);
-    });
-    </script>
-
 </body>
 </html>
