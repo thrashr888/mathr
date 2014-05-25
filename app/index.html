@@ -148,7 +148,7 @@
           dataType: 'json',
           success: function(pages) {
             // this.setState({pages: pages});
-            this.onAddPages(pages);
+            this.onAddPages({pages: pages});
           }.bind(this),
           error: function(xhr, status, err) {
             console.error(payload.url, status, err.toString());
