@@ -265,14 +265,14 @@
     var GutterLine = React.createClass({
       render: function () {
         return (
-          <a data-line={this.props.line} name={"l_"+this.props.id} href={"#l_"+this.props.id} key={this.props.id}>{this.props.line}</a>
+          <a data-line={this.props.line} name={"l_"+this.props.key} href={"#l_"+this.props.key} key={this.props.key}>{this.props.line}</a>
         );
       }
     });
     var Gutter = React.createClass({
       countLines: function (rows) {
         var gNums = [];
-        for (var i = 1; i < rows-1; i++) {
+        for (var i = 1; i <= rows; i++) {
           gNums.push(i);
         }
         this.setState({lines: gNums});
@@ -285,7 +285,7 @@
       },
       render: function () {
         var gutterLines = this.state.lines.map(function (line) {
-          return <GutterLine line={line} id={this.props.id+'_'+line} />;
+          return <GutterLine line={line} key={this.props.key+'_'+line} />;
         }.bind(this));
         return (
           <div className="gutter col-md-1 col-xs-1 m-note--gutter">
@@ -305,15 +305,25 @@
       editorUpdated: function (d, t, e) { // d, t, e
         // console.log([d, t, e]);
         var text = this.rte.getText();
-        this.props.onInputUpdate(text);
+        // console.log(text)
+        if (text !== this.props.input) {
+          this.props.onInputUpdate(text);
+        }
         this.resizeContainer();
       },
       installRTE: function () {
-        var node = this.getDOMNode();
-        this.rte = new Quill(node, __config.quillSetup);
+        this.rte = new Quill(this.getDOMNode(), __config.quillSetup);
 
         if (this.props.input) {
-          // this.rte.setContents({ value: this.props.input });
+
+
+          // TODO Switch the input to lines instead?
+
+
+          // this.rte.setContents([
+          //   { value: this.props.input },
+          //   { value: '' }
+          // ]);
           this.rte.setHTML(this.props.input);
           // this.rte.insertText(0, this.props.input);
         }
@@ -330,19 +340,14 @@
         // console.log(this.props.input);
         if (!this.rte) {
           this.installRTE();
-          if (this.props.input) {
-            // this.rte.setContents({ value: this.props.input });
-            this.rte.setHTML(this.props.input);
-            // this.rte.insertText(0, this.props.input);
-          }
           this.resizeContainer();
         }
       },
       componentWillReceiveProps: function (nextProps) {
+        if (!this.rte) {
+          this.installRTE();
+        }
         if (nextProps.input) {
-          if (!this.rte) {
-            this.installRTE();
-          }
           // this.rte.setContents({ text: nextProps.input });
           this.rte.setHTML(nextProps.input);
           // this.rte.insertText(0, nextProps.input);
@@ -422,13 +427,27 @@
         //   input: update.input,
         //   output: update.output
         // });
-        console.log(this.props.item.input, update)
+        // console.log(this.props.item.input, update)
         if (update && this.props.item.input !== update) {
           this.props.item.input = update;
         }
         this.props.item.output = this.solveLines(update);
+
+
+
+        // TODO
+        // dont run this on the first update
+
+
+
+
+
         // this.setState();
         // console.log(update, this.props.item)
+        this.getFlux().actions.updatePage(this.props.item);
+      },
+      componentDidMount: function () {
+        this.props.item.output = this.solveLines(this.props.item.input);
         this.getFlux().actions.updatePage(this.props.item);
       },
       getInitialState: function() {
@@ -436,11 +455,12 @@
       },
       render: function () {
         // console.log(this.props)
+        console.log(this.props.item.input.split('\n'))
         return (
           <div className="row m-note m-note--container col-md-12">
             <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
             <div className="row m-note--row">
-              <Gutter id={this.props.item.id} rows={this.props.item.input ? this.props.item.input.split('\n').length : 5} />
+              <Gutter key={this.props.item.id} rows={this.props.item.input ? this.props.item.input.split('\n').length : 10} />
               <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
               <EditorOutput output={this.props.item.output ? this.props.item.output : ''} />
             </div>
@@ -453,15 +473,16 @@
 
       handleInputUpdate: function (input) {
         // console.log('input update:', input);
-        // this.setState({output: input.output});
+        // this.getFlux().actions.updatePage(this.props.item);
       },
       render: function () {
+        // console.log(this.props.item.input.split('\n').length)
         return (
           <div className="row m-func m-note--container col-md-12">
             <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
             <div className="row m-note--row">
-              <Gutter id={this.props.item.id} rows={10} />
-              <EditorInput input={this.props.item ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
+              <Gutter key={this.props.item.id} rows={this.props.item.input ? this.props.item.input.split('\n').length : 10} />
+              <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
             </div>
           </div>
         );
