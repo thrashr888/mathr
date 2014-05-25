@@ -16,7 +16,6 @@
     <!-- endbuild -->
 
     <link rel="stylesheet" href="styles/fonts.css">
-    <link rel="stylesheet" href="http://quilljs.com/css/quill.snow.css" />
 
   </head>
   <body>
@@ -97,7 +96,8 @@
         "ADD_PAGE": "onAddPage",
         "ADD_PAGES": "onAddPages",
         "TOGGLE_PAGE": "onTogglePage",
-        "CLEAR_TPAGE": "onClearPages"
+        "CLEAR_PAGES": "onClearPages",
+        "GET_PAGES": "onGetPages"
       },
 
       initialize: function() {
@@ -117,11 +117,8 @@
       },
 
       onAddPages: function(payload) {
-        console.log(payload)
-
         for (var i = 0, l = payload.pages.length; i < l; i++) {
           var page = payload.pages[i];
-
           this.pages.push({
             id: page.id || UUIDjs.create(4).toString(),
             type: page.type,
@@ -130,7 +127,6 @@
             hidden: false
           });
         }
-
         this.emit("change");
       },
 
@@ -144,6 +140,20 @@
           return page.hidden;
         });
         this.emit("change");
+      },
+
+      onGetPages: function(payload) {
+        $.ajax({
+          url: payload.url,
+          dataType: 'json',
+          success: function(pages) {
+            // this.setState({pages: pages});
+            this.onAddPages(pages);
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(payload.url, status, err.toString());
+          }.bind(this)
+        });
       },
 
       getState: function() {
@@ -167,7 +177,11 @@
       },
 
       clearPages: function() {
-        this.dispatch("CLEAR_PAGESS");
+        this.dispatch("CLEAR_PAGES");
+      },
+
+      getPages: function(url) {
+        this.dispatch("GET_PAGES", {url: url});
       }
     };
 
@@ -438,7 +452,7 @@
 
       getStateFromFlux: function() {
         var flux = this.getFlux();
-        console.log(flux)
+        // console.log(flux)
         // Normally we'd use one key per store, but we only have one store, so
         // we'll use the state of the store as our entire state here.
         return flux.store("PageStore").getState();
@@ -446,17 +460,7 @@
 
       componentWillMount: function() {
         // console.log(this);
-        $.ajax({
-          url: this.props.url,
-          dataType: 'json',
-          success: function(pages) {
-            // this.setState({pages: pages});
-            this.getFlux().actions.addPages(pages);
-          }.bind(this),
-          error: function(xhr, status, err) {
-            console.error(this.props.url, status, err.toString());
-          }.bind(this)
-        });
+        this.getFlux().actions.getPages(this.props.url);
       },
       getInitialState: function() {
         return {};
