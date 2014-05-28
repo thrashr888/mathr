@@ -10,7 +10,9 @@
     "quill": "*",
     "filtrex": "https://github.com/joewalnes/filtrex.git",
     "fluxxor": "https://github.com/BinaryMuse/fluxxor.git",
-    "uuid-js": "~0.7.5"
+    "uuid-js": "~0.7.5",
+    "jsandbox": "https://github.com/eligrey/jsandbox.git",
+    "q": "~2.0.0"
   },
   "devDependencies": {}
 }

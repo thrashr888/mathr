@@ -39,12 +39,15 @@
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
     <script src="bower_components/filtrex/filtrex.js"></script>
+    <script src="bower_components/fluxxor/build/fluxxor.min.js"></script>
     <script src="bower_components/uuid-js/lib/uuid.js"></script>
     <!-- endbower -->
     <script src="http://quilljs.com/js/quill.js"></script>
     <script src="bower_components/react/react.js"></script>
     <script src="bower_components/react/JSXTransformer.js"></script>
-    <script src="bower_components/fluxxor/build/fluxxor.js"></script>
+    <script src="bower_components/jsandbox/src/jsandbox.js"></script>
+    <script src="bower_components/jsandbox/src/jsandbox-worker.js"></script>
+    <script src="bower_components/q/q.js"></script>
     <!-- endbuild -->
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
@@ -55,7 +58,11 @@
     <!-- <script src="scripts/controllers/main.js"></script> -->
     <!-- endbuild -->
 
-    <script type="text/javascript">
+    <script type="text/jsx">
+    /**
+     * @jsx React.DOM
+     */
+
     var __config = {
       lineHeight: 30,
       editors: [],
@@ -85,12 +92,7 @@
         formats: ['bold']
       }
     };
-    </script>
 
-    <script type="text/jsx">
-    /**
-     * @jsx React.DOM
-     */
     var PageStore = Fluxxor.createStore({
       actions: {
         "ADD_PAGE": "onAddPage",
@@ -297,6 +299,8 @@
     });
 
     var EditorInput = React.createClass({
+      input: null,
+
       resizeContainer: function () {
         if (this.rte && this.rte.editor.renderer) {
           var $container = this.rte.editor.renderer.container;
@@ -305,10 +309,10 @@
       },
       editorUpdated: function (d, t, e) { // d, t, e
         // console.log([d, t, e]);
-        var text = this.rte.getText();
-        // console.log(text)
-        if (text !== this.props.input) {
-          this.props.onInputUpdate(text);
+        this.input = this.rte.getText();
+        // console.log(this.input)
+        if (this.input !== this.props.input) {
+          this.props.onInputUpdate(this.input);
         }
         this.resizeContainer();
       },
@@ -355,8 +359,10 @@
         if (!this.rte) {
           this.installRTE();
         }
-        if (nextProps.input) {
+        if (nextProps.input !== this.input) {
           // this.rte.setContents({ text: nextProps.input });
+          // TODO: do this only sparingly under certain conditions
+          // this might have been updated from the editor itself.
           this.rte.setHTML(nextProps.input);
           // this.rte.insertText(0, nextProps.input);
           this.resizeContainer();
@@ -392,7 +398,6 @@
       mixins: [FluxChildMixin],
 
       flattenTables: function () {
-
         var flux = this.getFlux();
         // console.log(flux)
         // Normally we'd use one key per store, but we only have one store, so
@@ -404,6 +409,50 @@
         });
 
         return tables;
+      },
+
+      flattenFuncs: function () {
+        var flux = this.getFlux();
+        // console.log(flux)
+        // Normally we'd use one key per store, but we only have one store, so
+        // we'll use the state of the store as our entire state here.
+        var tables = (flux.store("PageStore").getState().pages).filter(function (i) {
+          return i.type === 'function';
+        });
+
+        return tables;
+      },
+
+      funcItemToFunction: function (item) {
+        // var q = Q.defer();
+        // console.log(item)
+        // TODO: convert this into an actual, usable function:
+        // "function multiplyList (v, m) {\n\tfor(var i in v) {\n\t\ti = i * m;\n\t};\n\treturn v;\n};"
+        // then add this to the list of functions available to the compiler below
+
+        // first thoughts:
+        // ? namespace the function, ex.: functions.multiplyList
+        // parse out "function XXX(XXX){XXX}"
+        // read up on eval for JS
+        // use the compiler?
+        var func = eval(item.input);
+        var name = eval(item.name);
+        // console.log(this)
+        // console.log(this[item.name])
+        // console.log(name)
+        // TODO: switch to jsandbox here
+        // jsandbox.eval({
+        //   code: item.input,
+        //   input: figure this out
+        //   callback: function (x) {
+        //     q.resolve(x);
+        //   },
+        //   onerror: function (e) {
+        //     throw new Error(e);
+        //   }
+        // });
+        // return q.promise;
+        return name;
       },
 
       tableLookup: function (tables) {
@@ -454,12 +503,19 @@
         var lines = code.split('\n');
 
         var tables = this.flattenTables();
+        var funcs = this.flattenFuncs();
 
         rendered['t1.b1'] = 3; // just a test
         var extraFunctions = {};
         extraFunctions.table = this.tableLookup(tables);
         extraFunctions.tablecell = this.tablecellLookup(tables);
         // TODO add function pages
+
+        funcs.forEach(function (func, i) {
+          extraFunctions[func.name] = this.funcItemToFunction(func);
+        }.bind(this));
+
+        console.log('extraFunctions', extraFunctions);
 
         // first rendering pass
         lines.forEach(function (line, i) {
@@ -516,7 +572,7 @@
         this.props.item.output = this.solveLines(this.props.item.input);
 
         // FIXME: enable this but don't update this.props.item.input since that's what triggered this! that change rerenders the RTE and we lose our cursor.
-        // this.getFlux().actions.updatePage(this.props.item);
+        this.getFlux().actions.updatePage(this.props.item);
       },
       getInitialState: function() {
         return {};
