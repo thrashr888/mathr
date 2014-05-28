@@ -151,6 +151,7 @@
       },
 
       onGetPages: function(payload) {
+        // TODO: replace me with a better store
         $.ajax({
           url: payload.url,
           dataType: 'json',
@@ -317,7 +318,7 @@
         if (this.props.input) {
 
 
-          // TODO Switch the input to lines instead?
+          // TODO Switch the input to lines/array instead?
 
 
           // this.rte.setContents([
@@ -328,6 +329,13 @@
           // this.rte.insertText(0, this.props.input);
         }
         this.resizeContainer();
+
+        setTimeout(function () {
+          // it needs time to init
+          // TODO: use a callback below instead
+          this.resizeContainer();
+          // this.props.onInputUpdate(this.props.input);
+        }.bind(this), 1);
 
         this.rte
           .on('renderer-update', this.editorUpdated)
@@ -351,6 +359,7 @@
           // this.rte.setContents({ text: nextProps.input });
           this.rte.setHTML(nextProps.input);
           // this.rte.insertText(0, nextProps.input);
+          this.resizeContainer();
         }
       },
       render: function () {
@@ -493,22 +502,21 @@
         }
         this.props.item.output = this.solveLines(update);
 
-
-
-        // TODO
-        // dont run this on the first update
-
-
-
-
-
         // this.setState();
         // console.log(update, this.props.item)
-        this.getFlux().actions.updatePage(this.props.item);
+        if (!this.init) {
+          // skip this on the first run
+          this.getFlux().actions.updatePage(this.props.item);
+        } else {
+          this.init = false;
+        }
       },
       componentDidMount: function () {
+        this.init = true;
         this.props.item.output = this.solveLines(this.props.item.input);
-        this.getFlux().actions.updatePage(this.props.item);
+
+        // FIXME: enable this but don't update this.props.item.input since that's what triggered this! that change rerenders the RTE and we lose our cursor.
+        // this.getFlux().actions.updatePage(this.props.item);
       },
       getInitialState: function() {
         return {};
