@@ -37,6 +37,12 @@ div[data-note] div[data-output] {
   border-left: 1px solid #dddddd;
 }
 
+.m-note--output span {
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
 .m-note--output.alert,
 div[data-output].alert {
   background-color: #fdfdfd;

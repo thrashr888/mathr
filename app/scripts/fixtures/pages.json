@@ -2,7 +2,7 @@
   {
     "type": "note",
     "name": "test note",
-    "input": "10.5 * $2\n0 + 1.6666\n5000 - 12.5\n1000944.111 * 14\n33 + l3\nl2 * 2\nl4 / 2\n# testing\n# testing + 50 * 3\n\"testing\" + 3\nmath:\nmath: + 5 + 5.5\nt1.b1\n$8.50 / 4\n$22\nrandom(5)",
+    "input": "t1\nt1.a2\nt1.c\n10.5 * $2\n0 + 1.6666\n5000 - 12.5\n1000944.111 * 14\n33 + l3\nl2 * 2\nl4 / 2\n# testing\n# testing + 50 * 3\n\"testing\" + 3\nmath:\nmath: + 5 + 5.5\nt1.b2\n$8.50 / 4\n$22\nrandom(5)",
     "createdAt": "2014/05/22 00:00:00",
     "updatedAt": "2014/05/22 00:00:00"
   },
@@ -10,9 +10,12 @@
     "type": "table",
     "name": "groceries",
     "input": [
-      ["coffee", "$4.00"],
-      ["milk", "$3.75"],
-      ["water", "$6.25"]
+      ["coffee", "$4.00", "cream"],
+      ["milk", "$3.75", "froth"],
+      ["water", "$6.25", "ice"],
+      ["juice", "$3.25", "ice"],
+      ["smoothie", "$6.75", "straw"],
+      ["slurpie", "$7.10", "headache"]
     ],
     "createdAt": "2014/05/22 00:00:00",
     "updatedAt": "2014/05/22 00:00:00"

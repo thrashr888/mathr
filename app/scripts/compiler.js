@@ -53,6 +53,7 @@ function compileExpression(expression, extraFunctions /* optional */) {
 }
 
 function filtrexParser() {
+    'use strict';
 
     // Language parser powered by Jison <http://zaach.github.com/jison/>,
     // which is a pure JavaScript implementation of
@@ -65,14 +66,14 @@ function filtrexParser() {
         // console.log(args);
         var argsJs = args.map(function(a) {
             // console.log(a);
-            return typeof(a) == 'number' ? ('$' + a) : JSON.stringify(a);
+            return typeof(a) === 'number' ? ('$' + a) : JSON.stringify(a);
         }).join(',');
 
         // console.log(argsJs);
 
-        return skipParentheses
-                ? '$$ = [' + argsJs + '];'
-                : '$$ = ["(", ' + argsJs + ', ")"];';
+        return skipParentheses ?
+            '$$ = [' + argsJs + '];' :
+            '$$ = ["(", ' + argsJs + ', ")"];';
     }
 
     var grammar = {
@@ -105,6 +106,9 @@ function filtrexParser() {
                 ['[0-9]+(?:\\.[0-9]+)?\\b', 'return "NUMBER";'], // 212.321
                 ['([$€£])[0-9]+(?:\\.[0-9]+)?\\b', 'yytext = yytext.substr(1, yyleng); return "NUMBER";'], // $212.321
                 ['(?:[^\\s])*\\:', 'return "STRING";'], // (foo:) e
+                ['t([0-9]+)\\.[a-z]+[0-9]+', 'return "TABLECELL";'], // table cell: t1.b1 or t2.d
+                ['t([0-9]+)\\.[a-z]+', 'return "TABLECELL";'], // table cell: t1.b1 or t2.d
+                ['t([0-9]+)', 'return "TABLE";'], // table: t3
                 ['[a-zA-Z][\\.a-zA-Z0-9_]*', 'return "SYMBOL";'], // some.Symbol22
                 ['#\\s*(?:[^\\s])*', 'return "STRING";'], // #foo
                 ['"(?:[^"])*"', 'yytext = yytext.substr(1, yyleng-2); return "STRING";'], // "foo"
@@ -157,10 +161,12 @@ function filtrexParser() {
                 ['( e )'  , code([2])],
                 ['NUMBER' , code([1])],
                 ['STRING' , code(['"<em>', 1, '</em> "'])],
+                ['TABLECELL'  , code(['functions.tablecell("', 1, '")'])],
+                ['TABLE'  , code(['functions.table("', 1, '")'])],
                 ['SYMBOL' , code(['data["', 1, '"]'])],
                 ['SYMBOL ( argsList )', code(['functions.', 1, '(', 3, ')'])],
-                ['e in ( inSet )', code([1, ' in (function(o) { ', 4, 'return o; })({})'])],
-                ['e not in ( inSet )', code(['!(', 1, ' in (function(o) { ', 5, 'return o; })({}))'])],
+                ['e in ( inSet )'     , code([1, ' in (function(o) { ', 4, 'return o; })({})'])],
+                ['e not in ( inSet )' , code(['!(', 1, ' in (function(o) { ', 5, 'return o; })({}))'])],
             ],
             argsList: [
                 ['e', code([1], true)],
