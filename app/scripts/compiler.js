@@ -104,7 +104,7 @@ function filtrexParser() {
 
                 ['\\s+',  ''], // skip whitespace
                 ['[0-9]+(?:\\.[0-9]+)?\\b', 'return "NUMBER";'], // 212.321
-                ['([$€£])[0-9]+(?:\\.[0-9]+)?\\b', 'yytext = yytext.substr(1, yyleng); return "NUMBER";'], // $212.321
+                ['([$€£])[0-9]+(?:\\.[0-9]{0,2})?\\b', 'yytext = yytext.substr(1, yyleng); return "NUMBER";'], // $212.321
                 ['(?:[^\\s])*\\:', 'return "STRING";'], // (foo:) e
                 ['t([0-9]+)\\.[a-z]+[0-9]+', 'return "TABLECELL";'], // table cell: t1.b1 or t2.d
                 ['t([0-9]+)\\.[a-z]+', 'return "TABLECELL";'], // table cell: t1.b1 or t2.d
