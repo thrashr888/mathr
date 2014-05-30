@@ -114,6 +114,12 @@ body {
   -o-transition: height 0.30s ease-in-out;*/
 }
 
+.m-sheet {
+  > thead > tr > th {
+    border-bottom: none;
+  }
+}
+
 .m-error--container {
   .m-error--hed {
     background-color: #ff0000;
