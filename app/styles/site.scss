@@ -1,4 +1,12 @@
 
+$global-line-height: 30px;
+$output-color: #0066ff;
+$output-color-rgba: rgba(0, 31, 255, 0.10);
+$gutter-bg-color: #fdfdfd;
+$border-color-light: #dddddd;
+$border-color-dark: #dfdfdf;
+
+
 body {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 18px;
@@ -7,79 +15,84 @@ body {
 .row {
   /*font-family: 'Source Sans Pro', sans-serif;*/
   /*font-family: 'Source Code Pro', ;*/
-  line-height: 30px;
+  line-height: $global-line-height;
 }
 
 .m-note,
-.m-func {
+.m-func,
+.m-error {
   margin: 1em 0;
 }
 
-.m-note--output,
-div[data-output] {
-  background-color: #0066ff;
-  background-color: rgba(0, 31, 255, 0.10);
-  line-height: 30px;
-  overflow-x: hidden;
+.m-error--container,
+.m-note--container,
+.editor-container {
+  border: 1px solid $border-color-dark;
+  border-radius: 3px;
+  overflow: hidden;
 }
 
-.m-note--hed {
-  border-bottom: 1px solid #dddddd;
+.m-note--hed,
+.m-error--hed {
+  border-bottom: 1px solid $border-color-light;
   padding: 0.25em 0.5em;
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.m-note--output,
-div[data-note] div[data-output] {
+.m-note--output {
+  background-color: $output-color;
+  background-color: $output-color-rgba;
+  line-height: $global-line-height;
+  overflow-x: hidden;
+
   padding-bottom: 500em;
   margin-bottom: -500em;
-  border-left: 1px solid #dddddd;
-}
+  border-left: 1px solid $border-color-light;
 
-.m-note--output span {
-  margin: 0;
-  padding: 0;
-  display: block;
-}
+  span {
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
 
-.m-note--output.alert,
-div[data-output].alert {
-  background-color: #fdfdfd;
-  border: 1px solid #dddddd;
-  padding: 5px;
-  overflow-y: scroll;
-  height: 250px;
-  margin-top: 2em;
+  .alert {
+    background-color: $gutter-bg-color;
+    border: 1px solid $border-color-light;
+    padding: 5px;
+    overflow-y: scroll;
+    height: 250px;
+    margin-top: 2em;
+  }
 }
 
 .m-note--gutter,
 .gutter {
-  line-height: 30px;
+  line-height: $global-line-height;
   text-align: right;
   font-size: 12px;
-  background-color: #fdfdfd;
-  border-right: 1px solid #dddddd;
+  background-color: $gutter-bg-color;
+  border-right: 1px solid $border-color-light;
   overflow-y: hidden;
 
   /*-webkit-transition: height 0.30s ease-in-out;
   -moz-transition: height 0.30s ease-in-out;
   -ms-transition: height 0.30s ease-in-out;
   -o-transition: height 0.30s ease-in-out;*/
-}
-.m-note--gutter a,
-.gutter a {
-  clear: both;
-  display: block;
-}
-.m-note--gutter a:hover,
-.gutter a:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
+  a {
+    clear: both;
+    display: block;
 
-.m-note--input,
-div[data-input].editor {
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    &:active {
+      outline: none;
+    }
+  }
+}
+.m-note--input {
   font-family: 'Source Code Pro', serif;
 
   /*font-family: 'Source Sans Pro', sans-serif;*/
@@ -92,20 +105,29 @@ div[data-input].editor {
   border: none;
 
   white-space: pre;
-  line-height: 30px;
+  line-height: $global-line-height;
 }
-.m-note--input iframe,
-div[data-input].editor iframe {
+.m-note--input iframe {
   /*-webkit-transition: height 0.30s ease-in-out;
   -moz-transition: height 0.30s ease-in-out;
   -ms-transition: height 0.30s ease-in-out;
   -o-transition: height 0.30s ease-in-out;*/
 }
 
+.m-error--container {
+  .m-error--hed {
+    background-color: #ff0000;
+  }
+  .m-error--row {
+    background-color: $gutter-bg-color;
+    padding: 0 1em;
 
-.m-note--container,
-.editor-container {
-  border: 1px solid #dfdfdf;
-  border-radius: 3px;
-  overflow: hidden;
+    height: 200px;
+    overflow-y: scroll;
+  }
+
+  p {
+    line-height: $global-line-height;
+    border-bottom: 1px solid $border-color-light;
+  }
 }

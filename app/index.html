@@ -17,6 +17,8 @@
 
     <link rel="stylesheet" href="styles/fonts.css">
 
+    <link rel="jsandbox" href="bower_components/jsandbox/src/jsandbox-worker.js" />
+
   </head>
   <body>
     <div class="container" id="page1"></div>
@@ -24,18 +26,6 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
-    <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
     <script src="bower_components/filtrex/filtrex.js"></script>
@@ -46,7 +36,6 @@
     <script src="bower_components/react/react.js"></script>
     <script src="bower_components/react/JSXTransformer.js"></script>
     <script src="bower_components/jsandbox/src/jsandbox.js"></script>
-    <script src="bower_components/jsandbox/src/jsandbox-worker.js"></script>
     <script src="bower_components/q/q.js"></script>
     <!-- endbuild -->
 
@@ -63,10 +52,13 @@
      * @jsx React.DOM
      */
 
+
+    /**
+     * Application Config
+     */
     var __config = {
       lineHeight: 30,
       editors: [],
-      errors: [],
       quillSetup: {
         styles: {
           'body': {
@@ -92,6 +84,75 @@
         formats: ['bold']
       }
     };
+
+
+    /**
+     * Flux Stores
+     */
+    var ErrorStore = Fluxxor.createStore({
+      actions: {
+        "ADD_ERROR": "onAddError",
+        "CLEAR_ERRORS": "onClearErrors"
+      },
+
+      initialize: function() {
+        this.errors = [];
+      },
+
+      onAddError: function(payload) {
+        console.log(payload)
+        this.errors.push({
+          id: UUIDjs.create(4).toString(),
+          message: payload.message,
+          time: (new Date())
+        });
+        this.emit("change");
+      },
+
+      onClearErrors: function() {
+        this.errors = [];
+        this.emit("change");
+      },
+
+      getState: function() {
+        return {
+          errors: this.errors
+        };
+      }
+    });
+
+    // TODO: switch to using this doc store
+    var DocStore = Fluxxor.createStore({
+      actions: {
+        "GET_DOC": "onGetDoc",
+        "CLEAR_DOC": "onClearPages"
+      },
+
+      initialize: function() {
+        this.doc = {};
+      },
+
+      onGetDoc: function (payload) {
+        $.ajax({
+          url: payload.url,
+          dataType: 'json',
+          success: function(doc) {
+            this.doc = doc;
+            // PageStore.onAddPages({pages: doc.pages});
+            this.emit("change");
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(payload.url, status, err.toString());
+          }.bind(this)
+        });
+      },
+
+      getState: function() {
+        return {
+          doc: this.doc
+        };
+      }
+    });
 
     var PageStore = Fluxxor.createStore({
       actions: {
@@ -157,9 +218,9 @@
         $.ajax({
           url: payload.url,
           dataType: 'json',
-          success: function(pages) {
+          success: function(doc) {
             // this.setState({pages: pages});
-            this.onAddPages({pages: pages});
+            this.onAddPages({pages: doc.pages});
           }.bind(this),
           error: function(xhr, status, err) {
             console.error(payload.url, status, err.toString());
@@ -174,44 +235,58 @@
       }
     });
 
+
+    /**
+     * Flux Actions
+     */
     var actions = {
       addPage: function(page) {
         this.dispatch("ADD_PAGE", {page: page});
       },
-
       addPages: function(pages) {
         this.dispatch("ADD_PAGES", {pages: pages});
       },
-
       togglePage: function(page) {
         this.dispatch("TOGGLE_PAGE", {page: page});
       },
-
       updatePage: function(page) {
         this.dispatch("UPDATE_PAGE", {page: page});
       },
-
       clearPages: function() {
         this.dispatch("CLEAR_PAGES");
       },
-
       getPages: function(url) {
         this.dispatch("GET_PAGES", {url: url});
+      },
+      addError: function(message) {
+        this.dispatch("ADD_ERROR", {message: message});
+      },
+      getDoc: function(url) {
+        this.dispatch("GET_DOC", {url: url});
       }
     };
 
     var stores = {
-      PageStore: new PageStore()
+      DocStore: new DocStore(),
+      PageStore: new PageStore(),
+      ErrorStore: new ErrorStore()
     };
 
-    var flux = new Fluxxor.Flux(stores, actions);
 
+
+    /**
+     * Flux Init
+     */
+    var flux = new Fluxxor.Flux(stores, actions);
     var FluxMixin = Fluxxor.FluxMixin(React),
         FluxChildMixin = Fluxxor.FluxChildMixin(React),
         StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 
 
+    /**
+     * Sheet Views
+     */
     var SheetColumn = React.createClass({
       render: function () {
         return (
@@ -230,9 +305,13 @@
       }
     });
     var Sheet = React.createClass({
+      // TODO: use this? http://handsontable.com/
       render: function () {
         return (
           <table data-table="1" className="table">
+            <thead>
+              <th>Sheet Name</th>
+            </thead>
             <SheetRow row="1" a="coffee" b="$4.00" />
             <SheetRow row="2" a="milk" b="$3.75" />
             <SheetRow row="3" a="water" b="$6.25" />
@@ -241,30 +320,46 @@
       }
     });
 
+
+    /**
+     * Error Views
+     */
     var ErrorItem = React.createClass({
       render: function () {
         return (
-          <p>{this.props.text}</p>
+          <p>{'#' + this.props.key +
+            ' (' +
+              this.props.error.time.getUTCMinutes() + ':' +
+              this.props.error.time.getUTCSeconds() + '.' +
+              this.props.error.time.getUTCMilliseconds() +
+              ')' + ': ' +
+            this.props.error.message}</p>
         );
       }
     });
     var ErrorList = React.createClass({
-      getInitialState: function() {
-        return {data: [
-          {text: 'I am an error.'},
-          {text: 'I am another error.'},
-        ]};
-      },
+      mixins: [FluxChildMixin],
+
       render: function () {
+        var errorLines = this.props.errors.map(function (error, index) {
+          return <ErrorItem error={error} key={index+1} />
+        }.bind(this));
+        // console.log('errors', this.props.errors)
         return (
-          <div data-output="error" className="col-md-12 alert">
-            <ErrorItem text="I am an error." />
-            <ErrorItem text="I am another error." />
+          <div className="row m-error m-error--container col-md-12">
+            <h3 className="row m-error--hed">Error Log</h3>
+            <div className="row m-error--row">
+              {this.props.errors ? errorLines.reverse() : <p>No errors (yet).</p>}
+            </div>
           </div>
         );
       }
     });
 
+
+    /**
+     * Gutter Views
+     */
     var GutterLine = React.createClass({
       render: function () {
         return (
@@ -298,6 +393,10 @@
       }
     });
 
+
+    /**
+     * RTE Views
+     */
     var EditorInput = React.createClass({
       input: null,
 
@@ -394,6 +493,10 @@
       }
     });
 
+
+    /**
+     * Notes View
+     */
     var Note = React.createClass({
       mixins: [FluxChildMixin],
 
@@ -523,24 +626,34 @@
             compiled[i] = compileExpression(line, extraFunctions);
             rendered['l' + (i + 1)] = compiled[i](rendered);
           } catch (e) {
-            __config.errors.push(e);
+            console.error(e);
+            this.getFlux().actions.addError(e.toString());
           }
-        });
+        }.bind(this));
         // console.log(compiled);
         // console.log(rendered);
 
         compiled.forEach(function (line, i) {
           try {
-            rendered['l' + (i + 1)] = rerendered[i] = line(rendered);
+            rendered['l' + (i + 1)] = rerendered[i] = this.normalizeString(line(rendered));
             // rendered['l' + (i + 1)] = rerendered[i];
           } catch (e) {
-            console.log(e);
-            __config.errors.push(e);
+            console.error(e);
+            this.getFlux().actions.addError(e.toString());
           }
-        });
+        }.bind(this));
         // console.log(rerendered);
 
         return rerendered;
+      },
+
+      normalizeString: function (string) {
+        // just remove the currency output for now
+        if (typeof string === 'string' && string.substr(0, 1) === '$') {
+          return string.substr(1, string.length);
+        } else {
+          return string;
+        }
       },
 
       handleInputUpdate: function (update) {
@@ -592,6 +705,11 @@
         );
       }
     });
+
+
+    /**
+     * Func View
+     */
     var Func = React.createClass({
       mixins: [FluxChildMixin],
 
@@ -615,19 +733,28 @@
 
 
 
-    var Page = React.createClass({
-      mixins: [FluxMixin, StoreWatchMixin("PageStore")],
+    /**
+     * Application View
+     */
+    var Application = React.createClass({
+      mixins: [FluxMixin, StoreWatchMixin("DocStore", "PageStore", "ErrorStore")],
 
       getStateFromFlux: function() {
         var flux = this.getFlux();
-        // console.log(flux)
+        console.log(flux.store("PageStore"))
+        console.log(flux.store("ErrorStore"))
         // Normally we'd use one key per store, but we only have one store, so
         // we'll use the state of the store as our entire state here.
-        return flux.store("PageStore").getState();
+        return {
+          doc: flux.store("DocStore").getState(),
+          pages: flux.store("PageStore").getState(),
+          errors: flux.store("ErrorStore").getState(),
+        }
       },
 
       componentWillMount: function() {
         // console.log(this);
+        // this.getFlux().actions.getDoc(this.props.url);
         this.getFlux().actions.getPages(this.props.url);
       },
       getInitialState: function() {
@@ -636,7 +763,7 @@
       render: function () {
         //<Func item={this.state.pages[2]} />
         // console.log(this.state)
-        var itemList = this.state.pages.map(function (item) {
+        var pageList = this.state.pages.pages.map(function (item) {
           switch (item.type) {
             case 'note':
               return <Note item={item} key={item.id} />;
@@ -650,15 +777,15 @@
         });
         return (
           <div className="container">
-            {itemList}
-            <ErrorList />
+            {pageList}
+            <ErrorList errors={this.state.errors ? this.state.errors.errors : null} />
           </div>
         );
       }
     });
 
     React.renderComponent(
-      <Page url="/scripts/fixtures/pages.json" flux={flux} />,
+      <Application url="/scripts/fixtures/doc1.json" flux={flux} />,
       document.getElementById('page1')
     );
     </script>
