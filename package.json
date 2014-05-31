@@ -1,10 +1,14 @@
 {
   "name": "mathr",
   "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thrashr888/mathr.git"
+  },
   "scripts": {
     "start": "node dist/server.js",
-    "prepublish": "grunt build",
-    "test": "grunt test"
+    "prepublish": "node grunt build",
+    "test": "node grunt test"
   },
   "dependencies": {
     "grunt": "~0.4.1",
