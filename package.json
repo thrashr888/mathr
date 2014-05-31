@@ -1,9 +1,10 @@
 {
   "name": "mathr",
   "version": "0.0.1",
-  "script": {
+  "scripts": {
     "start": "node dist/server.js",
-    "prepublish": "grunt build"
+    "prepublish": "grunt build",
+    "test": "grunt test"
   },
   "dependencies": {
     "grunt": "~0.4.1",
@@ -66,9 +67,6 @@
     "jison": "*"
   },
   "engines": {
-    "node": ">=0.10.0"
-  },
-  "scripts": {
-    "test": "grunt test"
+    "node": ">=0.10.28"
   }
 }
