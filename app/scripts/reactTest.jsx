@@ -1,5 +1,7 @@
+/**
+ * @jsx React.DOM
+ */
 
-/** @jsx React.DOM */
 React.renderComponent(
   <p>Hello, world!</p>,
   document.getElementById('o6')

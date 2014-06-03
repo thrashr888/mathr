@@ -1,6 +1,8 @@
 // Generated on 2014-04-07 using generator-angular 0.8.0
 'use strict';
 
+var path = require('path');
+
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -349,6 +351,57 @@ module.exports = function (grunt) {
       }
     },
 
+    // react: {
+    //   target: {
+    //     files: [
+    //       {
+    //         expand: true,
+    //         cwd: '<%= yeoman.app %>',
+    //         src: ['scripts/**/*.jsx'],
+    //         dest: './.tmp',
+    //         ext: '.js'
+    //       }
+    //     ]
+    //   }
+    // },
+
+    watchify: {
+      options: {
+        transform: [ require('grunt-react').browserify ]
+      },
+      target: {
+        src: '<%= yeoman.app %>/scripts/app.jsx',
+        dest: '<%= yeoman.dist %>/scripts/app.all.js'
+      }
+    },
+
+    browserify: {
+      options: {
+        transform: [ require('grunt-react').browserify ]
+      },
+      target: {
+        src: '<%= yeoman.app %>/scripts/app.jsx',
+        dest: '<%= yeoman.dist %>/scripts/app.all.js'
+      }
+    },
+
+    traceur: {
+      options: {
+        // traceur options here
+      },
+      target: {
+        files: [
+          {
+            expand: true,
+            cwd: '.tmp',
+            src: ['scripts/**/*.js'],
+            dest: '<%= yeoman.dist %>',
+            ext: '.js'
+          }
+        ]
+      },
+    },
+
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
@@ -392,9 +445,10 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
-      'bowerInstall',
+      // 'bowerInstall',
       'concurrent:server',
       'autoprefixer',
+      'watchify',
       'connect:livereload',
       'watch'
     ]);
@@ -410,10 +464,12 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'bowerInstall',
+    // 'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
-    'jison',
+    // 'jison',
+    'browserify',
+    // 'traceur',
     'autoprefixer',
     'concat',
     'copy:dist',
