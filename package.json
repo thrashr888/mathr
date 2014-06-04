@@ -6,17 +6,24 @@
     "url": "https://github.com/thrashr888/mathr.git"
   },
   "scripts": {
-    "start": "node grunt server:dist",
+    "start": "node ./node_modules/grunt-cli/bin/grunt server:dist",
     "prepublish": "grunt build",
     "test": "grunt test"
   },
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "bacon": "0.0.1",
-    "browserify": "^4.1.7",
     "codemirror": "^4.2.0",
-    "envify": "^1.2.1",
     "fluxxor": "^1.1.3",
+    "jison": "*",
+    "jquery": "^2.1.1",
+    "numeral": "^1.5.3",
+    "q": "^1.0.1",
+    "quilljs": "^0.14.1",
+    "react": "^0.10.0",
+    "uuid-js": "^0.7.4"
+  },
+  "devDependencies": {
+    "browserify": "^4.1.7",
     "grunt": "~0.4.1",
     "grunt-autoprefixer": "~0.4.0",
     "grunt-bower-install": "~1.0.0",
@@ -44,19 +51,12 @@
     "grunt-usemin": "~2.0.0",
     "grunt-watchify": "^0.1.0",
     "gulp": "^3.7.0",
-    "jison": "*",
-    "jquery": "^2.1.1",
     "jshint-stylish": "~0.1.3",
     "karma": "~0.12.4",
     "karma-ng-html2js-preprocessor": "~0.1.0",
     "karma-ng-scenario": "~0.1.0",
     "load-grunt-tasks": "~0.4.0",
-    "numeral": "^1.5.3",
-    "q": "^1.0.1",
-    "quilljs": "^0.14.1",
-    "react": "^0.10.0",
-    "time-grunt": "~0.2.1",
-    "uuid-js": "^0.7.4"
+    "time-grunt": "~0.2.1"
   },
   "engines": {
     "node": ">=0.10.28"
