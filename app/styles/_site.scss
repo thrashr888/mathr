@@ -1,4 +1,9 @@
 
+@import "./fonts";
+
+@import "CSS:../../node_modules/codemirror/lib/codemirror";
+@import "CSS:../../node_modules/codemirror/theme/monokai";
+
 $global-line-height: 30px;
 $output-color: #0066ff;
 $output-color-rgba: rgba(247, 247, 247, 0.50);

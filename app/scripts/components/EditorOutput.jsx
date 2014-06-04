@@ -4,6 +4,8 @@
 
 'use strict';
 
+var React = require('react/react.js');
+
 var EditorOutputLine = require('./EditorOutputLine.jsx');
 
 var EditorOutput = React.createClass({

@@ -4,11 +4,14 @@
 
 'use strict';
 
+var React = require('react/react.js');
+
 var SheetColumn = require('./SheetColumn.jsx');
 
 /**
  * Sheet Views
  */
+
 var SheetRow = React.createClass({
   render: function () {
     return (

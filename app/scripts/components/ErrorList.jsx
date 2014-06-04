@@ -4,7 +4,8 @@
 
 'use strict';
 
-var Fluxxor = require('../../../node_modules/fluxxor/index.js');
+var React = require('react/react.js');
+var Fluxxor = require('fluxxor/index.js');
 var FluxChildMixin = Fluxxor.FluxChildMixin(React);
 
 var ErrorItem = require('./ErrorItem.jsx');

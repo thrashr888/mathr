@@ -4,6 +4,8 @@
 
 'use strict';
 
+var React = require('react/react.js');
+
 var SheetRow = require('./SheetRow.jsx');
 
 /**

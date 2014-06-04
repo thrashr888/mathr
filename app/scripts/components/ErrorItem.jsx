@@ -4,9 +4,12 @@
 
 'use strict';
 
+var React = require('react/react.js');
+
 /**
  * Error Views
  */
+
 var ErrorItem = React.createClass({
   render: function () {
     return (

@@ -6,6 +6,7 @@
     "url": "https://github.com/thrashr888/mathr.git"
   },
   "scripts": {
+    "install": "bundler install",
     "start": "node ./node_modules/grunt-cli/bin/grunt server:dist",
     "prepublish": "grunt build",
     "test": "grunt test"

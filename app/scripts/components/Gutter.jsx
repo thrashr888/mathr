@@ -4,6 +4,8 @@
 
 'use strict';
 
+var React = require('react/react.js');
+
 /**
  * Gutter Views
  */

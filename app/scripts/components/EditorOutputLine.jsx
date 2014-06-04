@@ -4,6 +4,8 @@
 
 'use strict';
 
+var React = require('react/react.js');
+
 var EditorOutputLine = React.createClass({
   render: function () {
     // console.log(this.props)

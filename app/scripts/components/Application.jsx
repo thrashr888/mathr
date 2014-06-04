@@ -5,7 +5,8 @@
 
 'use strict';
 
-var Fluxxor = require('../../../node_modules/fluxxor/index.js');
+var React = require('react/react.js');
+var Fluxxor = require('fluxxor/index.js');
 var FluxMixin = Fluxxor.FluxMixin(React),
     FluxChildMixin = Fluxxor.FluxChildMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;

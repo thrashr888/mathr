@@ -4,9 +4,12 @@
 
 'use strict';
 
+var React = require('react/react.js');
+
 /**
  * Sheet Views
  */
+
 var SheetColumn = React.createClass({
   render: function () {
     return (

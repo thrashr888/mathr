@@ -54,7 +54,7 @@ module.exports = function (grunt) {
         files: [
           '<%= yeoman.app %>/scripts/**/*.jsx'
         ],
-        tasks: ['newer:browserify:target'],
+        tasks: ['browserify:target'],
         options: {
           livereload: true
         }
@@ -192,7 +192,8 @@ module.exports = function (grunt) {
         httpFontsPath: '/styles/fonts',
         relativeAssets: false,
         assetCacheBuster: false,
-        raw: 'Sass::Script::Number.precision = 10\n'
+        raw: 'Sass::Script::Number.precision = 10\n',
+        require: 'sass-css-importer'
       },
       dist: {
         options: {
@@ -387,7 +388,10 @@ module.exports = function (grunt) {
 
     browserify: {
       options: {
-        transform: [ require('grunt-react').browserify ]
+        transform: [ require('grunt-react').browserify ],
+        // aliasMappings: {
+        //   src: ['node_modules/**/*.js']
+        // }
       },
       target: {
         src: '<%= yeoman.app %>/scripts/app.jsx',

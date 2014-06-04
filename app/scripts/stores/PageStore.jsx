@@ -4,7 +4,8 @@
 
 'use strict';
 
-var Fluxxor = require('../../../node_modules/fluxxor/index.js');
+var Fluxxor = require('fluxxor/index.js');
+var UUIDjs = require('uuid-js/lib/uuid.js');
 
 var PageStore = Fluxxor.createStore({
   actions: {

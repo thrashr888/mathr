@@ -4,7 +4,9 @@
 
 'use strict';
 
-var Quill = require('../../../node_modules/quilljs/index.js');
+var React = require('react/react.js');
+
+var CodeMirror = require('codemirror/lib/codemirror.js');
 
 /**
  * RTE Views
@@ -13,10 +15,10 @@ var EditorInput = React.createClass({
   input: null,
 
   resizeContainer: function () {
-    if (this.rte && this.rte.editor.renderer) {
-      var $container = this.rte.editor.renderer.container;
-      $container.style.height = this.rte.root.clientHeight + 'px';
-    }
+    // if (this.rte && this.rte.editor.renderer) {
+    //   var $container = this.rte.editor.renderer.container;
+    //   $container.style.height = this.rte.root.clientHeight + 'px';
+    // }
   },
   editorUpdated: function (d, t, e) { // d, t, e
     // console.log([d, t, e]);
@@ -29,26 +31,14 @@ var EditorInput = React.createClass({
   },
   installRTE: function () {
 
-    // TODO: switch to code mirror?
-    // - free gutter
-    // - free syntax formatting?
-    // - dont need RTE features anyway
+    this.rte = CodeMirror.fromTextArea(this.getDOMNode().children[0], {
+      mode: 'text/html',
+      theme: 'monokai',
+      value: this.props.input ? this.props.input : ''
+    });
 
-    this.rte = new Quill(this.getDOMNode(), __config.quillSetup);
+    console.log(this.rte)
 
-    if (this.props.input) {
-
-
-      // TODO Switch the input to lines/array instead?
-
-
-      // this.rte.setContents([
-      //   { value: this.props.input },
-      //   { value: '' }
-      // ]);
-      this.rte.setHTML(this.props.input);
-      // this.rte.insertText(0, this.props.input);
-    }
     this.resizeContainer();
 
     setTimeout(function () {
@@ -58,12 +48,12 @@ var EditorInput = React.createClass({
       // this.props.onInputUpdate(this.props.input);
     }.bind(this), 1);
 
-    this.rte
-      .on('renderer-update', this.editorUpdated)
-      .on('text-change', this.editorUpdated)
-      .on('pre-event', function () { // d, t, e
-        // console.log('pe', d, t, e);
-      }.bind(this));
+    // this.rte
+    //   .on('renderer-update', this.editorUpdated)
+    //   .on('text-change', this.editorUpdated)
+    //   .on('pre-event', function () { // d, t, e
+    //     // console.log('pe', d, t, e);
+    //   }.bind(this));
   },
   componentDidMount: function () {
     // console.log(this.props.input);
@@ -87,7 +77,7 @@ var EditorInput = React.createClass({
   },
   render: function () {
     return (
-      <div className="editor col-md-6 col-xs-6 m-note--input"></div>
+      <div className="editor col-md-6 col-xs-6 m-note--input"><textarea /></div>
     );
   }
 });
