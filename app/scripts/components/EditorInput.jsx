@@ -20,9 +20,10 @@ var EditorInput = React.createClass({
     //   $container.style.height = this.rte.root.clientHeight + 'px';
     // }
   },
-  editorUpdated: function (d, t, e) { // d, t, e
+  editorUpdated: function (cm, change) { // d, t, e
+    // console.log(cm, change)
     // console.log([d, t, e]);
-    this.input = this.rte.getText();
+    this.input = cm.doc.getValue();
     // console.log(this.input)
     if (this.input !== this.props.input) {
       this.props.onInputUpdate(this.input);
@@ -31,8 +32,12 @@ var EditorInput = React.createClass({
   },
   installRTE: function () {
 
+    // TODO:
+    // - add more config options http://codemirror.net/doc/manual.html
+    // - move common to __config
+    // - merge __config object with this
     this.rte = CodeMirror.fromTextArea(this.getDOMNode().children[0], {
-      mode: 'text/html',
+      mode: 'text/plain',
       theme: 'monokai',
       value: this.props.input ? this.props.input : ''
     });
@@ -48,6 +53,8 @@ var EditorInput = React.createClass({
       // this.props.onInputUpdate(this.props.input);
     }.bind(this), 1);
 
+    this.rte
+      .on('changes', this.editorUpdated);
     // this.rte
     //   .on('renderer-update', this.editorUpdated)
     //   .on('text-change', this.editorUpdated)
