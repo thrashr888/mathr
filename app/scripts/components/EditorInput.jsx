@@ -38,13 +38,23 @@ var EditorInput = React.createClass({
     // - merge __config object with this
     this.rte = CodeMirror.fromTextArea(this.getDOMNode().children[0], {
       mode: 'text/plain',
-      theme: 'monokai',
+      // theme: 'monokai',
+      lineNumbers: true,
+      lineWrapping: true,
       value: this.props.input ? this.props.input : ''
     });
-
-    console.log(this.rte)
+    // console.log(this.rte)
 
     this.resizeContainer();
+
+    if (this.props.input) {
+
+
+      // TODO Switch the input to lines/array instead?
+
+
+      this.rte.doc.setValue(this.props.input);
+    }
 
     setTimeout(function () {
       // it needs time to init
@@ -55,12 +65,6 @@ var EditorInput = React.createClass({
 
     this.rte
       .on('changes', this.editorUpdated);
-    // this.rte
-    //   .on('renderer-update', this.editorUpdated)
-    //   .on('text-change', this.editorUpdated)
-    //   .on('pre-event', function () { // d, t, e
-    //     // console.log('pe', d, t, e);
-    //   }.bind(this));
   },
   componentDidMount: function () {
     // console.log(this.props.input);
@@ -74,11 +78,9 @@ var EditorInput = React.createClass({
       this.installRTE();
     }
     if (nextProps.input !== this.input) {
-      // this.rte.setContents({ text: nextProps.input });
       // TODO: do this only sparingly under certain conditions
       // this might have been updated from the editor itself.
-      this.rte.setHTML(nextProps.input);
-      // this.rte.insertText(0, nextProps.input);
+      this.rte.doc.setValue(nextProps.input);
       this.resizeContainer();
     }
   },

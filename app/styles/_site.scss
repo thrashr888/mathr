@@ -142,3 +142,18 @@ body {
     border-bottom: 1px solid $border-color-light;
   }
 }
+
+
+
+
+
+
+
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
