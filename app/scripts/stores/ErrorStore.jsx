@@ -4,6 +4,8 @@
 
 'use strict';
 
+var Fluxxor = require('../../../node_modules/fluxxor/index.js');
+
 var ErrorStore = Fluxxor.createStore({
   actions: {
     'ADD_ERROR': 'onAddError',

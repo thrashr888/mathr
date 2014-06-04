@@ -50,6 +50,15 @@ module.exports = function (grunt) {
           livereload: true
         }
       },
+      jsx: {
+        files: [
+          '<%= yeoman.app %>/scripts/**/*.jsx'
+        ],
+        tasks: ['newer:browserify:target'],
+        options: {
+          livereload: true
+        }
+      },
       jsTest: {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'karma']
@@ -326,7 +335,8 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'compass:server'
+        'compass:server',
+        'browserify:target'
       ],
       test: [
         'compass'
@@ -371,7 +381,7 @@ module.exports = function (grunt) {
       },
       target: {
         src: '<%= yeoman.app %>/scripts/app.jsx',
-        dest: '<%= yeoman.dist %>/scripts/app.all.js'
+        dest: '.tmp/scripts/app.js'
       }
     },
 
@@ -381,7 +391,7 @@ module.exports = function (grunt) {
       },
       target: {
         src: '<%= yeoman.app %>/scripts/app.jsx',
-        dest: '<%= yeoman.dist %>/scripts/app.all.js'
+        dest: '.tmp/scripts/app.js'
       }
     },
 
@@ -395,7 +405,7 @@ module.exports = function (grunt) {
             expand: true,
             cwd: '.tmp',
             src: ['scripts/**/*.js'],
-            dest: '<%= yeoman.dist %>',
+            dest: '.tmp',
             ext: '.js'
           }
         ]
@@ -448,7 +458,7 @@ module.exports = function (grunt) {
       // 'bowerInstall',
       'concurrent:server',
       'autoprefixer',
-      'watchify',
+      // 'browserify',
       'connect:livereload',
       'watch'
     ]);
@@ -465,20 +475,20 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     // 'bowerInstall',
-    'useminPrepare',
-    'concurrent:dist',
-    // 'jison',
+    // 'jison', // unused
     'browserify',
     // 'traceur',
+    'useminPrepare',
+    'concurrent:dist',
     'autoprefixer',
     'concat',
     'copy:dist',
-    // 'cdnify',
+    // 'cdnify', // unused
     'cssmin',
     'uglify',
-    'rev',
+    // 'rev',
     'usemin',
-    'htmlmin'
+    // 'htmlmin'
   ]);
 
   grunt.registerTask('default', [

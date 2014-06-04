@@ -4,6 +4,8 @@
 
 'use strict';
 
+var Quill = require('../../../node_modules/quilljs/index.js');
+
 /**
  * RTE Views
  */
@@ -26,6 +28,12 @@ var EditorInput = React.createClass({
     this.resizeContainer();
   },
   installRTE: function () {
+
+    // TODO: switch to code mirror?
+    // - free gutter
+    // - free syntax formatting?
+    // - dont need RTE features anyway
+
     this.rte = new Quill(this.getDOMNode(), __config.quillSetup);
 
     if (this.props.input) {

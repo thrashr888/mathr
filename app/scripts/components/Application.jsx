@@ -5,6 +5,11 @@
 
 'use strict';
 
+var Fluxxor = require('../../../node_modules/fluxxor/index.js');
+var FluxMixin = Fluxxor.FluxMixin(React),
+    FluxChildMixin = Fluxxor.FluxChildMixin(React),
+    StoreWatchMixin = Fluxxor.StoreWatchMixin;
+
 var Note = require('./Note.jsx');
 var Func = require('./Func.jsx');
 var Sheet = require('./Sheet.jsx');
@@ -18,8 +23,8 @@ var Application = React.createClass({
 
   getStateFromFlux: function() {
     var flux = this.getFlux();
-    console.log(flux.store('PageStore'))
-    console.log(flux.store('ErrorStore'))
+    // console.log(flux.store('PageStore'))
+    // console.log(flux.store('ErrorStore'))
     // Normally we'd use one key per store, but we only have one store, so
     // we'll use the state of the store as our entire state here.
     return {

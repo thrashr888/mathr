@@ -4,6 +4,9 @@
 
 'use strict';
 
+var Fluxxor = require('../../../node_modules/fluxxor/index.js');
+var FluxChildMixin = Fluxxor.FluxChildMixin(React);
+
 var Gutter = require('./Gutter.jsx');
 var EditorInput = require('./EditorInput.jsx');
 

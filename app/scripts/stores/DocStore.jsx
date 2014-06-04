@@ -4,6 +4,8 @@
 
 'use strict';
 
+var Fluxxor = require('../../../node_modules/fluxxor/index.js');
+
 // TODO: switch to using this doc store
 var DocStore = Fluxxor.createStore({
   actions: {
