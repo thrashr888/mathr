@@ -20,6 +20,11 @@ var EditorInput = React.createClass({
     //   $container.style.height = this.rte.root.clientHeight + 'px';
     // }
   },
+  gutterClick: function (instance, line, gutter, clickEvent) {
+    var key = 'l_' + this.props.key + '_' + (line + 1);
+    location.hash = key;
+    // console.log('gutterClick', key, instance)
+  },
   editorUpdated: function (cm, change) { // d, t, e
     // console.log(cm, change)
     // console.log([d, t, e]);
@@ -44,15 +49,12 @@ var EditorInput = React.createClass({
       value: this.props.input ? this.props.input : ''
     });
     // console.log(this.rte)
+    // this.rte.doc.addLineClass('CodeMirror-activeLine');
 
     this.resizeContainer();
 
     if (this.props.input) {
-
-
       // TODO Switch the input to lines/array instead?
-
-
       this.rte.doc.setValue(this.props.input);
     }
 
@@ -65,6 +67,8 @@ var EditorInput = React.createClass({
 
     this.rte
       .on('changes', this.editorUpdated);
+    this.rte
+      .on('gutterClick', this.gutterClick);
   },
   componentDidMount: function () {
     // console.log(this.props.input);
@@ -86,7 +90,7 @@ var EditorInput = React.createClass({
   },
   render: function () {
     return (
-      <div className="editor col-md-6 col-xs-6 m-note--input"><textarea /></div>
+      <div className="editor col-md-7 col-xs-7 m-note--input"><textarea /></div>
     );
   }
 });

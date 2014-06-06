@@ -12,11 +12,15 @@ var Gutter = require('./Gutter.jsx');
 var EditorInput = require('./EditorInput.jsx');
 var EditorOutput = require('./EditorOutput.jsx');
 
+var funcs = {};
+
 /**
  * Notes View
  */
 var Note = React.createClass({
   mixins: [FluxChildMixin],
+
+  funcs: {},
 
   flattenTables: function () {
     var flux = this.getFlux();
@@ -56,9 +60,16 @@ var Note = React.createClass({
     // parse out "function XXX(XXX){XXX}"
     // read up on eval for JS
     // use the compiler?
-    var func = eval(item.input);
+    // console.log(item.name, item.input, this)
+
+
+    // eval.apply(this, [item.input]);
+    eval.call(this.funcs, item.input);
+
+    // var func = eval(item.input);
+    // console.log(item.name, item.input, this, window)
+    // console.log(this.funcs, this)
     var name = eval(item.name);
-    // console.log(this)
     // console.log(this[item.name])
     // console.log(name)
     // TODO: switch to jsandbox here
@@ -94,7 +105,7 @@ var Note = React.createClass({
 
       if(s[4]) {
         // get a cell
-        col = s[4] - 1;
+        var col = s[4] - 1;
         // console.log([symbol, table, row, col, tables[table][row][col]]);
         return tables[table][row][col]; // returns a value
       } else {
@@ -106,6 +117,9 @@ var Note = React.createClass({
   },
 
   solveLines: function (rawCode) {
+
+    // TODO: move this to the model
+
     // console.log(rawCode);
     function stripTags (string) {
       if (!string) {
@@ -136,7 +150,7 @@ var Note = React.createClass({
       extraFunctions[func.name] = this.funcItemToFunction(func);
     }.bind(this));
 
-    console.log('extraFunctions', extraFunctions);
+    // console.log('extraFunctions', extraFunctions);
 
     // first rendering pass
     lines.forEach(function (line, i) {
@@ -215,8 +229,7 @@ var Note = React.createClass({
       <div className="row m-note m-note--container col-md-12">
         <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
         <div className="row m-note--row">
-          <Gutter key={this.props.item.id} rows={this.props.item.input ? this.props.item.input.split('\n').length : 10} />
-          <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} />
+          <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} mode="note" key={this.props.item.id} />
           <EditorOutput output={this.props.item.output ? this.props.item.output : ''} />
         </div>
       </div>

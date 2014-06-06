@@ -26,7 +26,7 @@
       "type": "function",
       "hidden": "true",
       "name": "addToList",
-      "input": "function addToList (v, m) {\n\tfor(var i in v) {\n\t\tv[i] = v[i] + m;\n\t\tconsole.log('v', v);\n\t};\n\treturn v;\n};",
+      "input": "function addToList (v, m) {\n\tfor(var i in v) {\n\t\tv[i] = v[i] + m;\n\t\t// console.log('v', v);\n\t};\n\treturn v;\n};",
       "createdAt": "2014/05/22 00:00:00",
       "updatedAt": "2014/05/22 00:00:00"
     }

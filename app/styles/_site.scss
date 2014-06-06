@@ -111,6 +111,8 @@ body {
 
   white-space: pre;
   line-height: $global-line-height;
+
+  padding: 0;
 }
 .m-note--input iframe {
   /*-webkit-transition: height 0.30s ease-in-out;
@@ -146,14 +148,45 @@ body {
 
 
 
+/*
 
+  CODEMIRROR CONFIG
 
-
+*/
 .CodeMirror {
-  border: 1px solid #eee;
+  border: none;
   height: auto;
+  line-height: $global-line-height;
+
+  pre {
+    // positioning wrapper for a line of text
+    padding: 0 16px;
+
+    span {
+      // a line of text
+
+    }
+  }
 }
 .CodeMirror-scroll {
   overflow-y: hidden;
   overflow-x: auto;
+}
+.CodeMirror-gutters {
+  width: 38px;
+
+  .CodeMirror-linenumbers {
+  }
+}
+.CodeMirror-linenumber {
+  // min-width: 24px;
+  // padding-left: 6px;
+  font-size: 12px;
+}
+.CodeMirror-gutter-elt {
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
 }
