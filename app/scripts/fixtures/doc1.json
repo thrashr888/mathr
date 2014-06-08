@@ -4,7 +4,7 @@
     {
       "type": "note",
       "name": "test note",
-      "input": "addToList(t1.b, 2)\nt1\nt1.a2\nt1.c\n10.5 * $2\n0 + 1.6666\n5000 - 12.5\n1000944.111 * 14\n33 + l3\nl5 * 2\nl6 / 2\n# testing\n# testing + 50 * 3\n\"testing\" + 3\nmath:\nmath: + 5 + 5.5\nt1.b2\n$8.50 / 4\n$22\nrandom(5)",
+      "input": "addToList(t1.b, 2)\nt1\nt1.a2\nt1.c\n10.5 * $2\n0 + 1.6666\n5000 - 12.5\n1000944.111 * 14\n33 + l3\nl5 * 2\nl6 / 2\n# testing\n# testing + 50 * 3\n\"testing\" + 3\nmath:\nmath: + 5 + 5.5\nt1.b2\n$8.50 / 4\n$22\n\nrandom(5)",
       "createdAt": "2014/05/22 00:00:00",
       "updatedAt": "2014/05/22 00:00:00"
     },

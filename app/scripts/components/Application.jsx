@@ -31,7 +31,7 @@ var Application = React.createClass({
     return {
       doc: flux.store('DocStore').getState(),
       pages: flux.store('PageStore').getState(),
-      errors: flux.store('ErrorStore').getState(),
+      errors: flux.store('ErrorStore').getState()
     };
   },
 

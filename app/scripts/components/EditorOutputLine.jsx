@@ -11,7 +11,7 @@ var EditorOutputLine = React.createClass({
     // console.log(this.props)
     // this is an array. some of the values are arrays. we can use them more wisely.
     return (
-      <span dangerouslySetInnerHTML={{__html: this.props.text}}></span>
+      <span dangerouslySetInnerHTML={{__html: this.props.text ? this.props.text : '&nbsp;'}}></span>
     );
   }
 });
