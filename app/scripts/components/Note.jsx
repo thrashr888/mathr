@@ -144,7 +144,6 @@ var Note = React.createClass({
     var extraFunctions = {};
     extraFunctions.table = this.tableLookup(tables);
     extraFunctions.tablecell = this.tablecellLookup(tables);
-    // TODO add function pages
 
     funcs.forEach(function (func, i) {
       extraFunctions[func.name] = this.funcItemToFunction(func);
@@ -152,31 +151,29 @@ var Note = React.createClass({
 
     // console.log('extraFunctions', extraFunctions);
 
-    // first rendering pass
-    lines.forEach(function (line, i) {
+    return lines.map(function (line, i) {
+      var compiled;
       try {
-        compiled[i] = compileExpression(line, extraFunctions);
-        rendered['l' + (i + 1)] = compiled[i](rendered);
+        compiled = compileExpression(line, extraFunctions);
+        rendered['l' + (i + 1)] = compiled(rendered);
       } catch (e) {
         console.error(e);
         this.getFlux().actions.addError(e.toString());
+        rendered['l' + (i + 1)] = compiled = '';
       }
-    }.bind(this));
-    // console.log(compiled);
-    // console.log(rendered);
-
-    compiled.forEach(function (line, i) {
+      return compiled;
+    }.bind(this)).map(function (line, i) {
+      var rerendered;
       try {
-        rendered['l' + (i + 1)] = rerendered[i] = this.normalizeString(line(rendered));
-        // rendered['l' + (i + 1)] = rerendered[i];
+        rerendered = this.normalizeString(line(rendered));
+        rendered['l' + (i + 1)] = rerendered;
       } catch (e) {
         console.error(e);
         this.getFlux().actions.addError(e.toString());
+        rendered['l' + (i + 1)] = rerendered = '';
       }
+      return rerendered;
     }.bind(this));
-    // console.log(rerendered);
-
-    return rerendered;
   },
 
   normalizeString: function (string) {
@@ -200,8 +197,8 @@ var Note = React.createClass({
     // console.log(this.props.item.input, update)
     if (update && this.props.item.input !== update) {
       this.props.item.input = update;
+      this.props.item.output = this.solveLines(update);
     }
-    this.props.item.output = this.solveLines(update);
 
     // this.setState();
     // console.log(update, this.props.item)
@@ -229,7 +226,7 @@ var Note = React.createClass({
       <div className="row m-note m-note--container col-md-12">
         <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
         <div className="row m-note--row">
-          <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} mode="note" key={this.props.item.id} />
+          <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} mode="note" key={this.props.item.id} className="col-md-7 col-xs-7" />
           <EditorOutput output={this.props.item.output ? this.props.item.output : ''} />
         </div>
       </div>

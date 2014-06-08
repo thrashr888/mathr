@@ -5,6 +5,7 @@
 'use strict';
 
 var Fluxxor = require('fluxxor/index.js');
+var uuid = require('node-uuid');
 
 var ErrorStore = Fluxxor.createStore({
   actions: {
@@ -17,9 +18,9 @@ var ErrorStore = Fluxxor.createStore({
   },
 
   onAddError: function(payload) {
-    console.log(payload)
+    // console.log(payload)
     this.errors.push({
-      id: UUIDjs.create(4).toString(),
+      id: payload.id || uuid.v4(),
       message: payload.message,
       time: (new Date())
     });

@@ -5,7 +5,7 @@
 'use strict';
 
 var Fluxxor = require('fluxxor/index.js');
-var UUIDjs = require('uuid-js/lib/uuid.js');
+var uuid = require('node-uuid');
 
 var PageStore = Fluxxor.createStore({
   actions: {
@@ -24,7 +24,7 @@ var PageStore = Fluxxor.createStore({
   onAddPage: function(payload) {
     // console.log(payload)
     this.pages.push({
-      id: payload.page.id || UUIDjs.create(4).toString(),
+      id: payload.page.id || uuid.v4(),
       type: payload.page.type,
       name: payload.page.name,
       input: payload.page.input,
@@ -38,7 +38,7 @@ var PageStore = Fluxxor.createStore({
     for (var i = 0, l = payload.pages.length; i < l; i++) {
       var page = payload.pages[i];
       this.pages.push({
-        id: page.id || UUIDjs.create(4).toString(),
+        id: page.id || uuid.v4(),
         type: page.type,
         name: page.name,
         input: page.input,

@@ -27,7 +27,6 @@ var EditorInput = React.createClass({
   },
   editorUpdated: function (cm, change) { // d, t, e
     // console.log(cm, change)
-    // console.log([d, t, e]);
     this.input = cm.doc.getValue();
     // console.log(this.input)
     if (this.input !== this.props.input) {
@@ -49,7 +48,6 @@ var EditorInput = React.createClass({
       value: this.props.input ? this.props.input : ''
     });
     // console.log(this.rte)
-    // this.rte.doc.addLineClass('CodeMirror-activeLine');
 
     this.resizeContainer();
 
@@ -90,7 +88,7 @@ var EditorInput = React.createClass({
   },
   render: function () {
     return (
-      <div className="editor col-md-7 col-xs-7 m-note--input"><textarea /></div>
+      <div className={this.props.className + 'editor m-note--input'}><textarea /></div>
     );
   }
 });

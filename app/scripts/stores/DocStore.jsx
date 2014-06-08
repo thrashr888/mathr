@@ -1,6 +1,7 @@
 /**
  * @jsx React.DOM
  */
+/*globals $*/
 
 'use strict';
 
