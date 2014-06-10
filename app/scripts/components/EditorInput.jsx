@@ -88,7 +88,7 @@ var EditorInput = React.createClass({
   },
   render: function () {
     return (
-      <div className={this.props.className + 'editor m-note--input'}><textarea /></div>
+      <div className={this.props.className + ' editor m-note--input'}><textarea /></div>
     );
   }
 });

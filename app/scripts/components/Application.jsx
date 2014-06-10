@@ -11,6 +11,7 @@ var FluxMixin = Fluxxor.FluxMixin(React),
     FluxChildMixin = Fluxxor.FluxChildMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
+var ControlPanel = require('./ControlPanel.jsx');
 var Note = require('./Note.jsx');
 var Func = require('./Func.jsx');
 var Sheet = require('./Sheet.jsx');
@@ -60,6 +61,7 @@ var Application = React.createClass({
     });
     return (
       <div className="container">
+        <ControlPanel />
         {pageList}
         <ErrorList errors={this.state.errors ? this.state.errors.errors : null} />
       </div>

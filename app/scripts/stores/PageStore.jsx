@@ -21,7 +21,7 @@ var PageStore = Fluxxor.createStore({
     this.pages = [];
   },
 
-  flattenTables: function () {
+  _flattenTables: function _flattenTables() {
     // Normally we'd use one key per store, but we only have one store, so
     // we'll use the state of the store as our entire state here.
     var tables = this.pages.filter(function (i) {
@@ -33,7 +33,7 @@ var PageStore = Fluxxor.createStore({
     return tables;
   },
 
-  flattenFuncs: function () {
+  _flattenFuncs: function _flattenFuncs() {
     // Normally we'd use one key per store, but we only have one store, so
     // we'll use the state of the store as our entire state here.
     var tables = this.pages.filter(function (i) {
@@ -43,7 +43,7 @@ var PageStore = Fluxxor.createStore({
     return tables;
   },
 
-  funcItemToFunction: function (item) {
+  _funcItemToFunction: function _funcItemToFunction(item) {
     // var q = Q.defer();
     // console.log(item)
     // TODO: convert this into an actual, usable function:
@@ -82,7 +82,7 @@ var PageStore = Fluxxor.createStore({
     return name;
   },
 
-  tableLookup: function (tables) {
+  _tableLookup: function _tableLookup(tables) {
     return function (symbol) {
       // console.log('table:', symbol, this, tables)
       var t = symbol.split('')[1] - 1;
@@ -90,7 +90,7 @@ var PageStore = Fluxxor.createStore({
     };
   },
 
-  tablecellLookup: function (tables) {
+  _tablecellLookup: function _tablecellLookup(tables) {
     return function (symbol) {
       // console.log('tablecell:', symbol, this, tables)
       var cToI = 'abcdefghijklmnopqrstuvwxyz'.split(''),
@@ -111,7 +111,7 @@ var PageStore = Fluxxor.createStore({
     };
   },
 
-  normalizeString: function (string) {
+  _normalizeString: function _normalizeString(string) {
     // just remove the currency output for now
     if (typeof string === 'string' && string.substr(0, 1) === '$') {
       return string.substr(1, string.length);
@@ -120,7 +120,7 @@ var PageStore = Fluxxor.createStore({
     }
   },
 
-  stripTags: function (string) {
+  _stripTags: function _stripTags(string) {
     if (!string) {
       return '';
     }
@@ -129,37 +129,45 @@ var PageStore = Fluxxor.createStore({
     return string;
   },
 
-  solveLines: function (rawCode) {
+  solveLines: function solveLines(rawCode) {
     // console.log(rawCode);
     var rendered = {},
-      code = this.stripTags(rawCode),
+      code = this._stripTags(rawCode),
       lines = code.split('\n'),
-      tables = this.flattenTables(),
-      funcs = this.flattenFuncs(),
+      tables = this._flattenTables(),
+      funcs = this._flattenFuncs(),
       extraFunctions = {};
 
     rendered['t1.b1'] = 3; // just a test
-    extraFunctions.table = this.tableLookup(tables);
-    extraFunctions.tablecell = this.tablecellLookup(tables);
+    extraFunctions.table = this._tableLookup(tables);
+    extraFunctions.tablecell = this._tablecellLookup(tables);
 
     funcs.forEach(function (func, i) {
-      extraFunctions[func.name] = this.funcItemToFunction(func);
+      extraFunctions[func.name] = this._funcItemToFunction(func);
     }.bind(this));
     // console.log('extraFunctions', extraFunctions);
 
     return lines.map(function (line, i) {
       var compiled;
+      var lineKey = 'l' + (i + 1);
       if (line === '') {
-        rendered['l' + (i + 1)] = '';
+        rendered[lineKey] = '';
         return function () { return ''; };
       }
       try {
         compiled = compileExpression(line, extraFunctions);
-        rendered['l' + (i + 1)] = compiled(rendered);
+        var value = compiled(rendered);
+        if (value) {
+          rendered[lineKey] = compiled(rendered);
+        } else if (!rendered[lineKey]) {
+          rendered[lineKey] = '';
+        }
       } catch (e) {
         console.error(e);
         compiled = function () { return ''; };
-        rendered['l' + (i + 1)] = '';
+        if (!rendered[lineKey]) {
+          rendered[lineKey] = '';
+        }
 
         // this.waitFor(['ErrorStore'], function(errorStore) {
         //   errorStore.onAddError({message: e.toString()});
@@ -168,13 +176,20 @@ var PageStore = Fluxxor.createStore({
       return compiled;
     }.bind(this)).map(function (line, i) {
       var rerendered;
+      var lineKey = 'l' + (i + 1);
       try {
-        rerendered = this.normalizeString(line(rendered));
+        rerendered = this._normalizeString(line(rendered));
         // console.log(rerendered)
-        rendered['l' + (i + 1)] = rerendered;
+        if (rerendered) {
+          rendered[lineKey] = rerendered;
+        } else if (!rendered[lineKey]) {
+          rendered[lineKey] = '';
+        }
       } catch (e) {
         console.error(e);
-        rendered['l' + (i + 1)] = rerendered = '';
+        if (!rendered[lineKey]) {
+          rendered[lineKey] = rerendered = '';
+        }
 
         // this.waitFor(['ErrorStore'], function(errorStore) {
         //   errorStore.onAddError({message: e.toString()});
@@ -184,7 +199,7 @@ var PageStore = Fluxxor.createStore({
     }.bind(this));
   },
 
-  onAddPage: function(payload) {
+  onAddPage: function onAddPages(payload) {
     // console.log(payload)
     this.pages.push({
       id: payload.page.id || uuid.v4(),
@@ -197,7 +212,7 @@ var PageStore = Fluxxor.createStore({
     this.emit('change');
   },
 
-  onAddPages: function(payload) {
+  onAddPages: function onAddPages(payload) {
     for (var i = 0, l = payload.pages.length; i < l; i++) {
       var page = payload.pages[i];
       this.pages.push({
@@ -217,7 +232,7 @@ var PageStore = Fluxxor.createStore({
     this.emit('change');
   },
 
-  onUpdatePage: function(payload) {
+  onUpdatePage: function onUpdatePage(payload) {
     this.pages.forEach(function (page, i) {
       if (page.id === payload.page.id) {
         payload.page.output = this.solveLines(payload.page.input);
@@ -234,7 +249,7 @@ var PageStore = Fluxxor.createStore({
     this.emit('change');
   },
 
-  onGetPages: function(payload) {
+  onGetPages: function onGetPages(payload) {
     // TODO: replace me with a better store
     $.ajax({
       url: payload.url,
@@ -249,7 +264,7 @@ var PageStore = Fluxxor.createStore({
     });
   },
 
-  getState: function() {
+  getState: function getState() {
     return {
       pages: this.pages
     };

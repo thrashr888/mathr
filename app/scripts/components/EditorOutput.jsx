@@ -15,7 +15,7 @@ var EditorOutput = React.createClass({
       return <EditorOutputLine text={text} key={i}/>;
     }) : [];
     return (
-      <div className="col-md-5 col-xs-5 m-note--output">{lineList}</div>
+      <div className={this.props.className + ' m-note--output'}>{lineList}</div>
     );
   }
 });

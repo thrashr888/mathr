@@ -12,16 +12,11 @@ var Gutter = require('./Gutter.jsx');
 var EditorInput = require('./EditorInput.jsx');
 var EditorOutput = require('./EditorOutput.jsx');
 
-var funcs = {};
-
 /**
  * Notes View
  */
 var Note = React.createClass({
   mixins: [FluxChildMixin],
-
-  funcs: {},
-  init: true,
 
   handleInputUpdate: function (update) {
     if (this.props.item.input !== update) {
@@ -39,8 +34,8 @@ var Note = React.createClass({
       <div className="row m-note m-note--container col-md-12">
         <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
         <div className="row m-note--row">
-          <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} mode="note" key={this.props.item.id} className="col-md-7 col-xs-7" />
-          <EditorOutput output={this.props.item.output ? this.props.item.output : ''} />
+          <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} mode="note" key={this.props.item.id} className="col-md-8 col-xs-8" />
+          <EditorOutput output={this.props.item.output ? this.props.item.output : ''} className="col-md-4 col-xs-4" />
         </div>
       </div>
     );
