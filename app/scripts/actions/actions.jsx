@@ -31,6 +31,12 @@ var actions = {
   },
   getDoc: function(url) {
     this.dispatch('GET_DOC', {url: url});
+  },
+  login: function() {
+    this.dispatch('LOGIN');
+  },
+  logout: function() {
+    this.dispatch('LOGOUT');
   }
 };
 

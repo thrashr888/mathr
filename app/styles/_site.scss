@@ -15,6 +15,7 @@ $border-color-dark: #dfdfdf;
 body {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 18px;
+  padding-top: 70px;
 }
 
 .row {
@@ -43,6 +44,11 @@ body {
   padding: 0.25em 0.5em;
   margin-top: 0;
   margin-bottom: 0;
+}
+
+.m-note--title {
+  border: none;
+  width: 100%;
 }
 
 .m-note--output {
@@ -145,7 +151,13 @@ body {
   }
 }
 
-
+.m-controlpanel {
+  .m-controlpanel--profile-image {
+    width: 30px;
+    border-radius: 15px;
+    margin-right: 4px;
+  }
+}
 
 
 /*

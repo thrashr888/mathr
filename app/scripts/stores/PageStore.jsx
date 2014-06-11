@@ -168,10 +168,7 @@ var PageStore = Fluxxor.createStore({
         if (!rendered[lineKey]) {
           rendered[lineKey] = '';
         }
-
-        // this.waitFor(['ErrorStore'], function(errorStore) {
-        //   errorStore.onAddError({message: e.toString()});
-        // });
+        this.flux.actions.addError({message: e.toString()});
       }
       return compiled;
     }.bind(this)).map(function (line, i) {
@@ -190,10 +187,7 @@ var PageStore = Fluxxor.createStore({
         if (!rendered[lineKey]) {
           rendered[lineKey] = rerendered = '';
         }
-
-        // this.waitFor(['ErrorStore'], function(errorStore) {
-        //   errorStore.onAddError({message: e.toString()});
-        // });
+        this.flux.actions.addError({message: e.toString()});
       }
       return rerendered;
     }.bind(this));

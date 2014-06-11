@@ -1,9 +1,10 @@
 /**
  * @jsx React.DOM
  */
-/*globals StoreWatchMixin, FluxMixin*/
 
 'use strict';
+
+var VERSION_NUMBER = '0.0.1';
 
 var React = require('react/react.js');
 var Fluxxor = require('fluxxor/index.js');
@@ -21,7 +22,7 @@ var ErrorList = require('./ErrorList.jsx');
  * Application View
  */
 var Application = React.createClass({
-  mixins: [FluxMixin, new StoreWatchMixin('DocStore', 'PageStore', 'ErrorStore')],
+  mixins: [FluxMixin, new StoreWatchMixin('UserStore', 'DocStore', 'PageStore', 'ErrorStore')],
 
   getStateFromFlux: function() {
     var flux = this.getFlux();
@@ -30,6 +31,7 @@ var Application = React.createClass({
     // Normally we'd use one key per store, but we only have one store, so
     // we'll use the state of the store as our entire state here.
     return {
+      user: flux.store('UserStore').getState(),
       doc: flux.store('DocStore').getState(),
       pages: flux.store('PageStore').getState(),
       errors: flux.store('ErrorStore').getState()
@@ -61,9 +63,10 @@ var Application = React.createClass({
     });
     return (
       <div className="container">
-        <ControlPanel />
+        <ControlPanel user={this.state.user ? this.state.user : null} />
         {pageList}
         <ErrorList errors={this.state.errors ? this.state.errors.errors : null} />
+        <footer>mathr v{VERSION_NUMBER} &copy;2014 Paul Thrasher</footer>
       </div>
     );
   }

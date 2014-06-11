@@ -14,14 +14,17 @@
   "dependencies": {
     "bacon": "0.0.1",
     "codemirror": "^4.2.0",
+    "firebase": "^1.0.17",
+    "firebase-client": "git://github.com/tinj/firebase-client",
+    "firebase-simple-login": "git://github.com/tinj/firebase-simple-login",
     "fluxxor": "^1.2.0",
     "jison": "*",
     "jquery": "^2.1.1",
+    "node-uuid": "^1.4.1",
     "numeral": "^1.5.3",
     "q": "^1.0.1",
     "quilljs": "^0.14.1",
-    "react": "^0.10.0",
-    "node-uuid": "^1.4.1"
+    "react": "^0.10.0"
   },
   "devDependencies": {
     "browserify": "^4.1.7",
