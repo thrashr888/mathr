@@ -18,6 +18,8 @@ var ControlPanel = React.createClass({
   mixins: [FluxChildMixin],
 
   handleAddPage: function (event) {
+    event.preventDefault();
+
     var type = $(event.target).data('type');
     var item = {
       type: type,
@@ -39,7 +41,7 @@ var ControlPanel = React.createClass({
   componentDidMount: function () {},
 
   render: function () {
-    console.log(this.props.user.user)
+    // console.log(this.props.user.user)
 
     var accountLinks;
     if (this.props.user && this.props.user.user && this.props.user.user.id) {
@@ -78,7 +80,7 @@ var ControlPanel = React.createClass({
             <ul className="nav navbar-nav">
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="note">Add a Note</a></li>
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="table">Add a Table</a></li>
-              <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="func">Add a Func</a></li>
+              <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="function">Add a Func</a></li>
             </ul>
 
             {accountLinks}
