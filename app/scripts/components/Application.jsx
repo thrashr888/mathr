@@ -13,6 +13,7 @@ var FluxMixin = Fluxxor.FluxMixin(React),
     StoreWatchMixin = Fluxxor.StoreWatchMixin;
 
 var ControlPanel = require('./ControlPanel.jsx');
+var DocList = require('./DocList.jsx');
 var Note = require('./Note.jsx');
 var Func = require('./Func.jsx');
 var Sheet = require('./Sheet.jsx');
@@ -32,7 +33,7 @@ var Application = React.createClass({
     // we'll use the state of the store as our entire state here.
     return {
       user: flux.store('UserStore').getState(),
-      doc: flux.store('DocStore').getState(),
+      docs: flux.store('DocStore').getState(),
       pages: flux.store('PageStore').getState(),
       errors: flux.store('ErrorStore').getState()
     };
@@ -40,15 +41,17 @@ var Application = React.createClass({
 
   componentWillMount: function() {
     // console.log(this);
-    // this.getFlux().actions.getDoc(this.props.url);
-    this.getFlux().actions.getPages(this.props.url);
+    this.getFlux().actions.getDocs(this.props.docs);
+    this.getFlux().actions.getPages(this.props.pages);
   },
+
   getInitialState: function() {
     return {};
   },
+
   render: function () {
     //<Func item={this.state.pages[2]} />
-    // console.log(this.state)
+    // console.log('app state', this.state)
     var pageList = this.state.pages.pages.map(function (item) {
       switch (item.type) {
         case 'note':
@@ -64,6 +67,7 @@ var Application = React.createClass({
     return (
       <div className="container">
         <ControlPanel user={this.state.user ? this.state.user : null} />
+        <DocList docs={this.state.docs ? this.state.docs.docs : null} />
         {pageList}
         <ErrorList errors={this.state.errors ? this.state.errors.errors : null} />
         <footer>mathr v{VERSION_NUMBER} &copy;2014 Paul Thrasher</footer>

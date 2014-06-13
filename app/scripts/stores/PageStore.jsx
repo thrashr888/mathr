@@ -193,7 +193,7 @@ var PageStore = Fluxxor.createStore({
     }.bind(this));
   },
 
-  onAddPage: function onAddPages(payload) {
+  onAddPage: function onAddPage(payload) {
     // console.log(payload)
     this.pages.push({
       id: payload.page.id || uuid.v4(),
@@ -248,9 +248,9 @@ var PageStore = Fluxxor.createStore({
     $.ajax({
       url: payload.url,
       dataType: 'json',
-      success: function(doc) {
+      success: function(res) {
         // this.setState({pages: pages});
-        this.onAddPages({pages: doc.pages});
+        this.onAddPages({pages: res.pages});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(payload.url, status, err.toString());

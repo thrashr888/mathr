@@ -26,10 +26,12 @@ body {
 
 .m-note,
 .m-func,
-.m-error {
+.m-error,
+.m-doc {
   margin: 1em 0;
 }
 
+.m-doc--container,
 .m-error--container,
 .m-note--container,
 .editor-container {
@@ -39,7 +41,8 @@ body {
 }
 
 .m-note--hed,
-.m-error--hed {
+.m-error--hed,
+.m-doc--hed {
   border-bottom: 1px solid $border-color-light;
   padding: 0.25em 0.5em;
   margin-top: 0;
@@ -157,6 +160,10 @@ body {
     border-radius: 15px;
     margin-right: 4px;
   }
+}
+
+.m-doc--container {
+
 }
 
 

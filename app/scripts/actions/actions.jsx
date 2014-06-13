@@ -29,8 +29,8 @@ var actions = {
   addError: function(message) {
     this.dispatch('ADD_ERROR', {message: message});
   },
-  getDoc: function(url) {
-    this.dispatch('GET_DOC', {url: url});
+  getDocs: function(url) {
+    this.dispatch('GET_DOCS', {url: url});
   },
   login: function() {
     this.dispatch('LOGIN');

@@ -10,22 +10,43 @@ var Fluxxor = require('fluxxor/index.js');
 // TODO: switch to using this doc store
 var DocStore = Fluxxor.createStore({
   actions: {
-    'GET_DOC': 'onGetDoc',
-    'CLEAR_DOC': 'onClearPages'
+    'ADD_DOC': 'onAddDoc',
+    'ADD_DOCS': 'onAddDocs',
+    'GET_DOCS': 'onGetDocs',
+    'CLEAR_DOCS': 'onClearDocs'
   },
 
   initialize: function() {
-    this.doc = {};
+    this.docs = [];
   },
 
-  onGetDoc: function (payload) {
+  onAddDoc: function onAddDoc(payload) {
+    // console.log(payload)
+    this.docs.push({
+      id: payload.doc.id || uuid.v4(),
+      name: payload.doc.name
+    });
+    this.emit('change');
+  },
+
+  onAddDocs: function (payload) {
+    for (var i = 0, l = payload.docs.length; i < l; i++) {
+      var doc = payload.docs[i];
+      this.docs.push({
+        id: doc.id || uuid.v4(),
+        name: doc.name
+      });
+    }
+    this.emit('change');
+  },
+
+  onGetDocs: function (payload) {
+      // console.log(payload)
     $.ajax({
       url: payload.url,
       dataType: 'json',
-      success: function(doc) {
-        this.doc = doc;
-        // PageStore.onAddPages({pages: doc.pages});
-        this.emit('change');
+      success: function(res) {
+        this.onAddDocs({docs: res.docs});
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(payload.url, status, err.toString());
@@ -35,7 +56,7 @@ var DocStore = Fluxxor.createStore({
 
   getState: function() {
     return {
-      doc: this.doc
+      docs: this.docs
     };
   }
 });

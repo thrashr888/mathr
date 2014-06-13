@@ -38,6 +38,6 @@ var FluxMixin = Fluxxor.FluxMixin(React),
  * Render Application Component
  */
 React.renderComponent(
-  <Application url="/scripts/fixtures/doc1.json" flux={flux} />,
+  <Application docs="/scripts/fixtures/docs.json" pages="/scripts/fixtures/doc1.json" flux={flux} />,
   document.getElementById('page1')
 );
