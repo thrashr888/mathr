@@ -39,5 +39,5 @@ var FluxMixin = Fluxxor.FluxMixin(React),
  */
 React.renderComponent(
   <Application docs="/scripts/fixtures/docs.json" pages="/scripts/fixtures/doc1.json" flux={flux} />,
-  document.getElementById('page1')
+  document.getElementById('main')
 );
