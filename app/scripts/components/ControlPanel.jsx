@@ -46,7 +46,7 @@ var ControlPanel = React.createClass({
       accountLinks = (
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
-            <a href="#" className="dropdown-toggle" data-toggle="dropdown"><img className="m-controlpanel--profile-image" src={this.props.user.user.profile_image_url} />{this.props.user.user.displayName} <b className="caret"></b></a>
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown"><img className="m-controlpanel--profile-image" src={this.props.user.user.image_url} />{this.props.user.user.displayName} <b className="caret"></b></a>
 
             <ul className="dropdown-menu">
               <li><a href="#!/account">Account</a></li>
