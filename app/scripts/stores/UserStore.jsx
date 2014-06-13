@@ -64,6 +64,7 @@ var UserStore = Fluxxor.createStore({
     // location.path = '/';
     location.hash = '';
     history.pushState({}, 'home', '/');
+    this.emit('change');
   },
 
   getState: function() {
