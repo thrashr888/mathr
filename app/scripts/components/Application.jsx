@@ -14,10 +14,9 @@ var FluxMixin = Fluxxor.FluxMixin(React),
 
 var ControlPanel = require('./ControlPanel.jsx');
 var DocList = require('./DocList.jsx');
-var Note = require('./Note.jsx');
-var Func = require('./Func.jsx');
-var Sheet = require('./Sheet.jsx');
+var PageList = require('./PageList.jsx');
 var ErrorList = require('./ErrorList.jsx');
+var Footer = require('./Footer.jsx');
 
 /**
  * Application View
@@ -52,25 +51,13 @@ var Application = React.createClass({
   render: function () {
     //<Func item={this.state.pages[2]} />
     // console.log('app state', this.state)
-    var pageList = this.state.pages.pages.map(function (item) {
-      switch (item.type) {
-        case 'note':
-          return <Note item={item} key={item.id} />;
-        case 'function':
-          return <Func item={item} key={item.id} />;
-        case 'table':
-          return <Sheet item={item} key={item.id} />;
-        default:
-          return null;
-      }
-    });
     return (
-      <div className="container">
-        <ControlPanel user={this.state.user ? this.state.user : null} />
-        <DocList docs={this.state.docs ? this.state.docs.docs : null} />
-        {pageList}
-        <ErrorList errors={this.state.errors ? this.state.errors.errors : null} />
-        <footer>mathr v{VERSION_NUMBER} &copy;2014 Paul Thrasher</footer>
+      <div className="container-fluid">
+        <ControlPanel className="" user={this.state.user ? this.state.user : null} />
+        <DocList className="col-md-12 col-lg-3" docs={this.state.docs ? this.state.docs.docs : null} />
+        <PageList className="col-md-12 col-lg-9" pages={this.state.pages ? this.state.pages.pages : null} />
+        <ErrorList className="col-md-12 col-lg-9" errors={this.state.errors ? this.state.errors.errors : null} />
+        <Footer className="col-md-12 col-lg-12" versionNumber={VERSION_NUMBER} />
       </div>
     );
   }

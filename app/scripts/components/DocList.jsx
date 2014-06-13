@@ -21,13 +21,11 @@ var DocList = React.createClass({
 
   render: function () {
     // console.log('docs:', this.props.docs)
-    if (this.props.docs) {
-      var docLines = this.props.docs.map(function (doc, index) {
-        return <DocItem doc={doc} key={index+1} onClick={this.handleClick} />
-      }.bind(this));
-    }
+    var docLines = this.props.docs.map(function (doc, index) {
+      return <DocItem doc={doc} key={index+1} onClick={this.handleClick} />
+    }.bind(this));
     return (
-      <div className="row m-doc m-doc--container col-md-12">
+      <div className={this.props.className + ' row m-doc m-doc--container'}>
         <h3 className="row m-doc--hed">Doc List</h3>
         <ul className="row m-doc--row">
           {this.props.docs ? docLines : <p>No docs (yet).</p>}

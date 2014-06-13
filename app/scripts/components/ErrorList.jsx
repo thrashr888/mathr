@@ -19,7 +19,7 @@ var ErrorList = React.createClass({
     }.bind(this));
     // console.log('errors', this.props.errors)
     return (
-      <div className="row m-error m-error--container col-md-12">
+      <div className={this.props.className + ' row m-error m-error--container'}>
         <h3 className="row m-error--hed">Error Log</h3>
         <div className="row m-error--row">
           {this.props.errors ? errorLines.reverse() : <p>No errors (yet).</p>}
