@@ -16,7 +16,7 @@
     "codemirror": "^4.2.0",
     "firebase": "^1.0.17",
     "firebase-client": "git://github.com/tinj/firebase-client",
-    "firebase-simple-login": "git://github.com/tinj/firebase-simple-login",
+    "firebase-simple-login": "git://github.com/thrashr888/firebase-simple-login",
     "fluxxor": "^1.2.0",
     "jison": "*",
     "jquery": "^2.1.1",
