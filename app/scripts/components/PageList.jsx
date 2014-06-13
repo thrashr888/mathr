@@ -30,7 +30,7 @@ var PageList = React.createClass({
       }
     });
     return (
-      <div className={this.props.className + ' row'}>
+      <div className={this.props.className + ' m-page m-page--container'}>
         {pageList}
       </div>
     );

@@ -12,7 +12,7 @@ var React = require('react/react.js');
 var Footer = React.createClass({
   render: function () {
     return (
-      <footer className={this.props.className + ' row'}>mathr v{this.props.versionNumber} &copy;2014 Paul Thrasher</footer>
+      <footer className={this.props.className + ' '}>mathr v{this.props.versionNumber} &copy;2014 Paul Thrasher</footer>
     );
   }
 });

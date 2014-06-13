@@ -56,8 +56,8 @@ var Application = React.createClass({
         <ControlPanel className="" user={this.state.user ? this.state.user : null} />
         <DocList className="col-md-12 col-lg-3" docs={this.state.docs ? this.state.docs.docs : null} />
         <PageList className="col-md-12 col-lg-9" pages={this.state.pages ? this.state.pages.pages : null} />
-        <ErrorList className="col-md-12 col-lg-9" errors={this.state.errors ? this.state.errors.errors : null} />
-        <Footer className="col-md-12 col-lg-12" versionNumber={VERSION_NUMBER} />
+        <ErrorList className="col-md-12 col-lg-9 row" errors={this.state.errors ? this.state.errors.errors : null} />
+        <Footer className="col-md-12 col-lg-12 row" versionNumber={VERSION_NUMBER} />
       </div>
     );
   }
