@@ -39,7 +39,7 @@ var ControlPanel = React.createClass({
   componentDidMount: function () {},
 
   render: function () {
-    console.log(this.props.user)
+    console.log(this.props.user.user)
 
     var accountLinks;
     if (this.props.user && this.props.user.user && this.props.user.user.id) {
