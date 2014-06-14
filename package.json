@@ -5,6 +5,7 @@
     "type": "git",
     "url": "https://github.com/thrashr888/mathr.git"
   },
+  "main": "main.js",
   "scripts": {
     "install": "bundler install",
     "start": "node ./node_modules/grunt-cli/bin/grunt server:dist",
@@ -47,6 +48,7 @@
     "grunt-contrib-jshint": "~0.7.1",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-watch": "~0.5.2",
+    "grunt-download-atom-shell": "^0.8.0",
     "grunt-jison": "~1.2.1",
     "grunt-karma": "~0.8.2",
     "grunt-newer": "~0.6.1",
