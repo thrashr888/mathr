@@ -362,23 +362,26 @@ module.exports = function (grunt) {
       }
     },
 
-    // react: {
-    //   target: {
-    //     files: [
-    //       {
-    //         expand: true,
-    //         cwd: '<%= yeoman.app %>',
-    //         src: ['scripts/**/*.jsx'],
-    //         dest: './.tmp',
-    //         ext: '.js'
-    //       }
-    //     ]
-    //   }
-    // },
-
     watchify: {
       options: {
-        transform: [ require('grunt-react').browserify ]
+        transform: [
+          [ 'es6ify' ],
+          [ require('grunt-react').browserify, { harmony: true } ]
+        ],
+        bundleOptions: {
+          debug: true,
+          harmony: true
+        }
+      },
+      target: {
+        src: '<%= yeoman.app %>/scripts/app.jsx',
+        dest: '.tmp/scripts/app.js'
+      }
+    },
+
+    react: {
+      options: {
+        harmony: true
       },
       target: {
         src: '<%= yeoman.app %>/scripts/app.jsx',
@@ -388,10 +391,10 @@ module.exports = function (grunt) {
 
     browserify: {
       options: {
-        transform: [ require('grunt-react').browserify ],
-        // aliasMappings: {
-        //   src: ['node_modules/**/*.js']
-        // }
+        transform: [
+          // 'es6ify',
+          [ require('grunt-react').browserify, { harmony: true } ],
+        ],
       },
       target: {
         src: '<%= yeoman.app %>/scripts/app.jsx',

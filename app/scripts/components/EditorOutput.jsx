@@ -20,4 +20,17 @@ var EditorOutput = React.createClass({
   }
 });
 
+// class EditorOutput extends React.Component {
+//   render() {
+//     // console.log(this.props.output);
+//     return (
+//       <div className={this.props.className + ' m-note--output'}>
+//         {this.props.output.map((text, i) =>
+//           <EditorOutputLine text={text} key={i}/>
+//         )}
+//       </div>
+//     );
+//   }
+// };
+
 module.exports = EditorOutput;

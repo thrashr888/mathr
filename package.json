@@ -14,10 +14,12 @@
   "dependencies": {
     "bacon": "0.0.1",
     "codemirror": "^4.2.0",
+    "es6ify": "^1.1.0",
     "firebase": "^1.0.17",
     "firebase-client": "git://github.com/tinj/firebase-client",
     "firebase-simple-login": "git://github.com/thrashr888/firebase-simple-login",
-    "fluxxor": "^1.2.0",
+    "firepad": "git://github.com/firebase/firepad",
+    "fluxxor": "^1.2.1",
     "jison": "*",
     "jquery": "^2.1.1",
     "node-uuid": "^1.4.1",
