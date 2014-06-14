@@ -42,12 +42,13 @@ var UserStore = Fluxxor.createStore({
     }
 
     if (user) {
-      console.log('user logged in: ', user);
+      console.debug('user logged in: ', user);
+      console.info('user logged in');
       this.user = user;
       this.unifyUserProperties();
       this.emit('change');
     } else {
-      console.log('logged out');
+      console.info('logged out');
     }
   },
 
