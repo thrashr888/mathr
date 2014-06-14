@@ -393,7 +393,8 @@ module.exports = function (grunt) {
       options: {
         transform: [
           // 'es6ify',
-          [ require('grunt-react').browserify, { harmony: true } ],
+          // [ require('grunt-react').browserify, { harmony: true } ],
+          [ 'reactify', { harmony: true } ]
         ],
       },
       target: {
