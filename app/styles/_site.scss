@@ -3,6 +3,7 @@
 
 @import "CSS:../../node_modules/codemirror/lib/codemirror";
 @import "CSS:../../node_modules/codemirror/theme/monokai";
+@import "CSS:../../node_modules/firepad/dist/firepad";
 
 $global-line-height: 30px;
 $output-color: #0066ff;
@@ -208,4 +209,29 @@ body {
     text-decoration: underline;
     cursor: pointer;
   }
+}
+
+/*
+
+  FIREPAD CONFIG
+
+*/
+// Reset the default firepad styles
+.firepad {
+  height: auto;
+  position: relative;
+
+  .CodeMirror {
+    position: relative;
+    height: auto;
+  }
+}
+
+.firepad {
+  text-align: left;
+  line-height: $global-line-height;
+}
+
+.powered-by-firepad {
+  display: none;
 }

@@ -6,7 +6,9 @@
 
 var React = require('react/react.js');
 
-var CodeMirror = require('codemirror/lib/codemirror.js');
+window.CodeMirror = require('codemirror/lib/codemirror.js');
+// var Firebase = require('firebase-client');
+// var Firepad = require('firepad/dist/firepad.js');
 
 /**
  * RTE Views
@@ -33,14 +35,23 @@ var EditorInput = React.createClass({
     // TODO:
     // - add more config options http://codemirror.net/doc/manual.html
     // - move common to __config, merge __config object with this
-    this.rte = CodeMirror.fromTextArea(this.getDOMNode().children[0], {
+
+    // this.dbRef = new Firebase(window.__config.firebaseHost + 'firepads/EditorInput/' + this.props.key);
+    this.rte = window.CodeMirror.fromTextArea(this.getDOMNode().children[0], {
       mode: 'text/plain',
       // theme: 'monokai',
       lineNumbers: true,
       lineWrapping: true,
       value: this.props.input ? this.props.input : ''
     });
+    // this.firepad = Firepad.fromCodeMirror(this.dbRef, this.rte, {
+    //   // userId: blah,
+    //   richTextShortcuts: false,
+    //   richTextToolbar: false
+    // });
     // console.log(this.rte)
+    // console.log(this.firepad)
+    // this.firepad.setUserId();
 
     if (this.props.input) {
       // TODO Switch the input to lines/array instead?
