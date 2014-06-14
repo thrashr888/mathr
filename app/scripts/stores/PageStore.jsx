@@ -18,6 +18,8 @@ var PageStore = Fluxxor.createStore({
   },
 
   initialize: function() {
+    this.dbRef = new Firebase(window.__config.firebaseHost + 'pages');
+
     this.pages = [];
   },
 
@@ -198,6 +200,7 @@ var PageStore = Fluxxor.createStore({
     this.pages.push({
       id: payload.page.id || uuid.v4(),
       type: payload.page.type,
+      order: payload.page.order,
       name: payload.page.name,
       input: payload.page.input,
       output: null,
@@ -212,6 +215,7 @@ var PageStore = Fluxxor.createStore({
       this.pages.push({
         id: page.id || uuid.v4(),
         type: page.type,
+        order: page.order,
         name: page.name,
         input: page.input,
         output: null,
@@ -236,7 +240,7 @@ var PageStore = Fluxxor.createStore({
     this.emit('change');
   },
 
-  onClearPages: function() {
+  onClearPages: function onClearPages() {
     this.pages = this.pages.filter(function(page) {
       return page.hidden;
     });
