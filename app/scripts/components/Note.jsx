@@ -8,7 +8,6 @@ var React = require('react/react.js');
 var Fluxxor = require('fluxxor/index.js');
 var FluxChildMixin = Fluxxor.FluxChildMixin(React);
 
-var Gutter = require('./Gutter.jsx');
 var EditorInput = require('./EditorInput.jsx');
 var EditorOutput = require('./EditorOutput.jsx');
 
