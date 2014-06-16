@@ -6,11 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <!-- endbower -->
-    <!-- endbuild -->
-
     <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
@@ -26,6 +21,11 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
+    <script>
+    if (process) {
+      window.$ = window.jQuery = require('./bower_components/jquery/dist/jquery.js');
+    }
+    </script>
     <!--
     <script src="bower_components/bacon/dist/Bacon.js"></script>
     <script src="bower_components/numeral/numeral.js"></script>
@@ -78,7 +78,6 @@
     <script src="scripts/app.js"></script>
     <!-- endbuild -->
     <!-- <script src="scripts/mathr.js"></script> -->
-    <!-- <script src="scripts/controllers/main.js"></script> -->
 
 </body>
 </html>

@@ -316,13 +316,24 @@ module.exports = function (grunt) {
             '*.html',
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
-            'fonts/*'
+            'fonts/*',
+            'bower_components/jsandbox/src/jsandbox-worker.js',
+            'bower_components/jquery/dist/jquery.js',
+            'scripts/fixtures/*' // this is temporary until I start using backend data
           ]
         }, {
           expand: true,
           cwd: '.tmp/images',
           dest: '<%= yeoman.dist %>/images',
           src: ['generated/*']
+        }, {
+          expand: true,
+          cwd: '.',
+          dest: '<%= yeoman.dist %>/',
+          src: [
+            'main.js',
+            'package.json'
+          ]
         }]
       },
       styles: {
