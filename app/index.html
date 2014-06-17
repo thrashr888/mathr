@@ -22,7 +22,7 @@
     <!-- endbower -->
     <!-- endbuild -->
     <script>
-    if (process) {
+    if (typeof process !== 'undefined') {
       window.$ = window.jQuery = require('./bower_components/jquery/dist/jquery.js');
     }
     </script>
@@ -43,6 +43,7 @@
      */
     window.__config = {
       firebaseHost: 'https://mathr.firebaseio.com/',
+      apiEndpoint: 'http://localhost:8882',
       lineHeight: 30,
       editors: [],
       quillSetup: {

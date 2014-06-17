@@ -436,6 +436,20 @@ module.exports = function (grunt) {
       outputDir: 'binaries'
     },
 
+    stubby: {
+      stubsServer: {
+        options: {
+          persistent: true,
+          mute: false,
+          relativeFilesPath: true
+        },
+        // note the array collection instead of an object
+        files: [{
+          src: [ 'fixtures/main.json' ]
+        }]
+      }
+    },
+
     // By default, your `index.html`'s <!-- Usemin block --> will take care of
     // minification. These next options are pre-configured if you do not wish
     // to use the Usemin blocks.
@@ -471,6 +485,12 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.registerTask('server-parallel', function() {
+    this.async();
+    ['watch', 'stubby'].forEach(function(task) {
+      grunt.util.spawn({grunt: true, args: [task], opts: { stdio: 'inherit' }}, function() {});
+    });
+  });
 
   grunt.registerTask('server', function (target) {
     if (target === 'dist') {
@@ -482,9 +502,8 @@ module.exports = function (grunt) {
       // 'bowerInstall',
       'concurrent:server',
       'autoprefixer',
-      // 'browserify',
       'connect:livereload',
-      'watch'
+      'server-parallel'
     ]);
   });
 

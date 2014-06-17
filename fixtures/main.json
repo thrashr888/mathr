@@ -1,0 +1,43 @@
+[
+  {
+    "request": {
+      "url": "^/$",
+      "method": "GET"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "{\"message\": \"Hello World.\"}"
+    }
+  },
+  {
+    "request": {
+      "url": "/doc/(\\d+)",
+      "method": "GET"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "OK",
+      "file": "doc<% url[1] %>.json"
+    }
+  },
+  {
+    "request": {
+      "url": "/doc",
+      "method": "GET"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "OK",
+      "file": "docs.json"
+    }
+  }
+]

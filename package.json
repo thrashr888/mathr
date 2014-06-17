@@ -54,6 +54,7 @@
     "grunt-newer": "~0.6.1",
     "grunt-react": "~0.8.2",
     "grunt-rev": "~0.1.0",
+    "grunt-stubby": "^0.1.4",
     "grunt-svgmin": "~0.2.0",
     "grunt-traceur": "^0.1.2",
     "grunt-usemin": "~2.0.0",
