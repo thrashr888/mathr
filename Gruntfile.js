@@ -486,9 +486,11 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('server-parallel', function() {
-    this.async();
+    var process_done = this.async();
     ['watch', 'stubby'].forEach(function(task) {
-      grunt.util.spawn({grunt: true, args: [task], opts: { stdio: 'inherit' }}, function() {});
+      grunt.util.spawn({grunt: true, args: [task], opts: { stdio: 'inherit' }}, function() {
+        process_done();
+      });
     });
   });
 

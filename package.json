@@ -31,7 +31,6 @@
     "react": "^0.10.0"
   },
   "devDependencies": {
-    "browserify": "^4.1.7",
     "grunt": "~0.4.1",
     "grunt-autoprefixer": "~0.4.0",
     "grunt-bower-install": "~1.0.0",
@@ -60,7 +59,6 @@
     "grunt-traceur": "^0.1.2",
     "grunt-usemin": "~2.0.0",
     "grunt-watchify": "^0.1.0",
-    "gulp": "^3.7.0",
     "jshint-stylish": "~0.1.3",
     "karma": "~0.12.4",
     "karma-ng-html2js-preprocessor": "~0.1.0",
