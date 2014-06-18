@@ -233,7 +233,9 @@ var PageStore = Fluxxor.createStore({
   onUpdatePage: function onUpdatePage(payload) {
     this.pages.forEach(function (page, i) {
       if (page.id === payload.page.id) {
-        payload.page.output = this.solveLines(payload.page.input);
+        if (payload.hasOutput) {
+          payload.page.output = this.solveLines(payload.page.input);
+        }
         $.extend(page, payload.page);
       }
     }.bind(this));

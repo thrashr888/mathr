@@ -26,7 +26,11 @@ var Func = React.createClass({
       <div className="row m-func m-note--container col-md-12">
         <h3 className="row m-note--hed">{this.props.item ? this.props.item.name : ''}</h3>
         <div className="row m-note--row">
-          <EditorInput input={this.props.item.input ? this.props.item.input : ''} onInputUpdate={this.handleInputUpdate} mode="func" className="col-md-12 col-xs-12" />
+          <EditorInput
+            input={this.props.item.input ? this.props.item.input : ''}
+            onInputUpdate={this.handleInputUpdate}
+            mode="func"
+            className="col-md-12 col-xs-12" />
         </div>
       </div>
     );

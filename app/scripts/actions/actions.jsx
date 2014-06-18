@@ -17,8 +17,8 @@ var actions = {
   togglePage: function(page) {
     this.dispatch('TOGGLE_PAGE', {page: page});
   },
-  updatePage: function(page) {
-    this.dispatch('UPDATE_PAGE', {page: page});
+  updatePage: function(page, hasOutput) {
+    this.dispatch('UPDATE_PAGE', {page: page, hasOutput: hasOutput || false});
   },
   clearPages: function() {
     this.dispatch('CLEAR_PAGES');

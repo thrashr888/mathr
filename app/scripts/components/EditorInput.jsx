@@ -22,7 +22,7 @@ var EditorInput = React.createClass({
     // console.log('gutterClick', key, instance)
   },
 
-  editorUpdated: function (cm, change) { // d, t, e
+  handleChange: function (cm, change) { // d, t, e
     // console.log(cm, change)
     this.input = cm.doc.getValue();
     // console.log(this.input)
@@ -36,13 +36,15 @@ var EditorInput = React.createClass({
     // - add more config options http://codemirror.net/doc/manual.html
     // - move common to __config, merge __config object with this
 
+    var el = this.getDOMNode().children[0];
+
     // this.dbRef = new Firebase(window.__config.firebaseHost + 'firepads/EditorInput/' + this.props.key);
-    this.rte = window.CodeMirror.fromTextArea(this.getDOMNode().children[0], {
+    this.rte = window.CodeMirror.fromTextArea(el, {
       mode: 'text/plain',
       // theme: 'monokai',
       lineNumbers: true,
       lineWrapping: true,
-      value: this.props.input ? this.props.input : ''
+      value: this.props.input ? this.props.input : null
     });
     // this.firepad = Firepad.fromCodeMirror(this.dbRef, this.rte, {
     //   // userId: blah,
@@ -53,10 +55,10 @@ var EditorInput = React.createClass({
     // console.log(this.firepad)
     // this.firepad.setUserId();
 
-    if (this.props.input) {
-      // TODO Switch the input to lines/array instead?
-      this.rte.doc.setValue(this.props.input);
-    }
+    // if (this.props.input) {
+    //   // TODO Switch the input to lines/array instead?
+    //   this.rte.doc.setValue(this.props.input);
+    // }
 
     setTimeout(function () {
       // it needs time to init
@@ -65,7 +67,7 @@ var EditorInput = React.createClass({
     }.bind(this), 1);
 
     this.rte
-      .on('changes', this.editorUpdated);
+      .on('changes', this.handleChange);
     this.rte
       .on('gutterClick', this.gutterClick);
   },

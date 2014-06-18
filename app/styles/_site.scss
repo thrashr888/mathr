@@ -4,6 +4,7 @@
 @import "CSS:../../node_modules/codemirror/lib/codemirror";
 @import "CSS:../../node_modules/codemirror/theme/monokai";
 @import "CSS:../../node_modules/firepad/dist/firepad";
+@import "CSS:../../node_modules/jquery-handsontable/dist/jquery.handsontable.full";
 
 $global-line-height: 30px;
 $output-color: #0066ff;
@@ -27,6 +28,7 @@ body {
 
 .m-note,
 .m-func,
+.m-sheet,
 .m-error,
 .m-doc {
   margin: 1em 0;
@@ -35,6 +37,8 @@ body {
 .m-doc--container,
 .m-error--container,
 .m-note--container,
+.m-func--container,
+.m-sheet--container,
 .editor-container {
   border: 1px solid $border-color-dark;
   border-radius: 3px;
@@ -42,6 +46,8 @@ body {
 }
 
 .m-note--hed,
+.m-sheet--hed,
+.m-func--hed,
 .m-error--hed,
 .m-doc--hed {
   border-bottom: 1px solid $border-color-light;
@@ -50,7 +56,8 @@ body {
   margin-bottom: 0;
 }
 
-.m-note--title {
+.m-note--title,
+.m-sheet--title {
   border: none;
   width: 100%;
 }
@@ -132,8 +139,28 @@ body {
 }
 
 .m-sheet {
-  > thead > tr > th {
-    border-bottom: none;
+  &.m-sheet--container {
+    // padding-left: 0;
+    // padding-right: 0;
+  }
+
+  table.htCore > tbody {
+    td {
+      padding: 5px 8px;
+    }
+
+    tr:first-child td {
+      border-top: none;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    td:first-child {
+      border-left: none;
+    }
+    td:last-child {
+      border-right: none;
+    }
   }
 }
 
