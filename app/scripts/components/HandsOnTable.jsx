@@ -28,8 +28,7 @@ var HandsOnTable = React.createClass({
       minCols: 2,
       // width: 'auto',
       // height: 'auto',
-      afterChange: this.handleChange,
-      afterRender: this.handleRender,
+      afterChange: this.handleChange
     });
   },
 
@@ -58,13 +57,20 @@ var HandsOnTable = React.createClass({
     }
   },
 
-  handleRender: function (isForced) {
-    // console.log('render');
+  componentWillReceiveProps: function (nextProps) {
+    if (!this.rte) {
+      this.installRTE();
+    }
+    if (nextProps.input !== this.input) {
+      // TODO: do this only sparingly under certain conditions
+      // this might have been updated from the editor itself.
+      this.rte.loadData(nextProps.input);
+    }
   },
 
   render: function () {
     return (
-      <div className="placeholder"></div>
+      <div className={this.props.className + ' editor m-sheet--input'}></div>
     );
   }
 });
