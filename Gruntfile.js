@@ -1,8 +1,6 @@
 // Generated on 2014-04-07 using generator-angular 0.8.0
 'use strict';
 
-var path = require('path');
-
 // # Globbing
 // for performance reasons we're only matching one level down:
 // 'test/spec/{,*/}*.js'
@@ -486,10 +484,10 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('server-parallel', function() {
-    var process_done = this.async();
+    var processDone = this.async();
     ['watch', 'stubby'].forEach(function(task) {
       grunt.util.spawn({grunt: true, args: [task], opts: { stdio: 'inherit' }}, function() {
-        process_done();
+        processDone();
       });
     });
   });
