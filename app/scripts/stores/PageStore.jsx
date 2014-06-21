@@ -6,22 +6,22 @@
 
 var Fluxxor = require('fluxxor/index.js');
 var Firebase = require('firebase-client');
-var uuid = require('node-uuid');
+var FirebaseHelper = require('../lib/FirebaseHelper.jsx');
 
 var PageStore = Fluxxor.createStore({
   actions: {
     'ADD_PAGE': 'onAddPage',
-    'ADD_PAGES': 'onAddPages',
-    'TOGGLE_PAGE': 'onTogglePage',
-    'UPDATE_PAGE': 'onUpdatePage',
-    'CLEAR_PAGES': 'onClearPages',
-    'GET_PAGES': 'onGetPages'
+    'UPDATE_PAGE': 'onUpdatePage'
   },
 
-  initialize: function initialize() {
-    this.dbRef = new Firebase(window.__config.firebaseHost + '/pages');
+  initialize: function initialize(userSession) {
+    // console.log(userSession)
+    this.dbRef = new Firebase(window.__config.firebaseHost + '/pages/' + userSession.user.id);
 
-    this.pages = [];
+    this.pages = FirebaseHelper.getSynchronizedArray(this.dbRef, function firebaseChange() {
+      this.emit('change');
+      // console.log(this.pages)
+    }.bind(this));
   },
 
   _flattenTables: function _flattenTables() {
@@ -132,7 +132,7 @@ var PageStore = Fluxxor.createStore({
     return string;
   },
 
-  solveLines: function solveLines(rawCode) {
+  _solveLines: function _solveLines(rawCode) {
     // console.log(rawCode);
     var rendered = {},
       code = this._stripTags(rawCode),
@@ -198,74 +198,34 @@ var PageStore = Fluxxor.createStore({
 
   onAddPage: function onAddPage(payload) {
     // console.log(payload)
-    this.pages.push({
-      id: payload.page.id || uuid.v4(),
+    this.pages.$add({
       type: payload.page.type,
-      order: payload.page.order,
-      name: payload.page.name,
-      input: payload.page.input,
-      output: null,
-      hidden: false,
+      order: payload.page.order || 0,
+      title: payload.page.title,
+      input: payload.page.input || '',
+      output: payload.page.output || [],
+      hidden: payload.page.hidden || false,
       created: new Date().getTime()
     });
     this.emit('change');
   },
 
-  onAddPages: function onAddPages(payload) {
-    for (var i = 0, l = payload.pages.length; i < l; i++) {
-      var page = payload.pages[i];
-      this.pages.push({
-        id: page.id || uuid.v4(),
-        type: page.type,
-        order: page.order,
-        name: page.name,
-        input: page.input,
-        output: null,
-        hidden: false,
-        created: new Date().getTime()
-      });
-    }
-    this.emit('change');
-  },
-
-  onTogglePage: function onTogglePage(payload) {
-    payload.page.hidden = !payload.page.hidden;
-    this.emit('change');
-  },
-
   onUpdatePage: function onUpdatePage(payload) {
-    this.pages.forEach(function (page, i) {
-      if (page.id === payload.page.id) {
-        if (payload.hasOutput) {
-          payload.page.output = this.solveLines(payload.page.input);
-        }
-        payload.page.updated = new Date().getTime();
-        $.extend(page, payload.page);
-      }
-    }.bind(this));
-    this.emit('change');
-  },
-
-  onClearPages: function onClearPages() {
-    this.pages = this.pages.filter(function(page) {
-      return page.hidden;
+    // console.log('onUpdatePage', payload.page)
+    if (payload.hasOutput) {
+      payload.page.output = this._solveLines(payload.page.input);
+    }
+    this.pages.$set(payload.page.$id, {
+      type: payload.page.type,
+      order: payload.page.order || 0,
+      title: payload.page.title,
+      input: payload.page.input || '',
+      output: payload.page.output ? payload.page.output : null,
+      hidden: payload.page.hidden || false,
+      created: payload.page.created || new Date().getTime(),
+      updated: new Date().getTime()
     });
     this.emit('change');
-  },
-
-  onGetPages: function onGetPages(payload) {
-    // TODO: replace me with a better store
-    $.ajax({
-      url: payload.url,
-      dataType: 'json',
-      success: function(res) {
-        // this.setState({pages: pages});
-        this.onAddPages({pages: res.pages});
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(payload.url, status, err.toString());
-      }.bind(this)
-    });
   },
 
   getState: function getState() {

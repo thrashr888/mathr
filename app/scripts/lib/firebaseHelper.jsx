@@ -5,46 +5,53 @@
 
 var FirebaseHelper = {
 
-  getSynchronizedArray: function getSynchronizedArray(firebaseRef) {
-
+  getSynchronizedArray: function getSynchronizedArray(firebaseRef, cb) {
     var list = [];
-    this.syncChanges(list, firebaseRef);
+    this.syncChanges(list, firebaseRef, cb);
+    this.wrapLocalCrudOps(list, firebaseRef);
     return list;
   },
 
-  syncChanges: function syncChanges(list, ref) {
+  syncChanges: function syncChanges(list, ref, cb) {
 
     ref.on('child_added', function _add(snap, prevChild) {
       var data = snap.val();
       data.$id = snap.name(); // assumes data is always an object
-      var pos = this.positionAfter(list, prevChild);
+      var pos = this._positionAfter(list, prevChild);
       list.splice(pos, 0, data);
-    });
+      cb();
+    }.bind(this));
+
     ref.on('child_removed', function _remove(snap) {
-      var i = this.positionFor(list, snap.name());
+      var i = this._positionFor(list, snap.name());
       if( i > -1 ) {
         list.splice(i, 1);
       }
-    });
+      cb();
+    }.bind(this));
+
     ref.on('child_changed', function _change(snap) {
-      var i = this.positionFor(list, snap.name());
+      var i = this._positionFor(list, snap.name());
       if( i > -1 ) {
         list[i] = snap.val();
         list[i].$id = snap.name(); // assumes data is always an object
       }
-    });
+      cb();
+    }.bind(this));
+
     ref.on('child_moved', function _move(snap, prevChild) {
-      var curPos = this.positionFor(list, snap.name());
+      var curPos = this._positionFor(list, snap.name());
       if( curPos > -1 ) {
         var data = list.splice(curPos, 1)[0];
-        var newPos = this.positionAfter(list, prevChild);
+        var newPos = this._positionAfter(list, prevChild);
         list.splice(newPos, 0, data);
       }
-    });
+      cb();
+    }.bind(this));
   },
 
   // similar to indexOf, but uses id to find element
-  positionFor: function positionFor(list, key) {
+  _positionFor: function _positionFor(list, key) {
     for(var i = 0, len = list.length; i < len; i++) {
       if( list[i].$id === key ) {
         return i;
@@ -56,12 +63,12 @@ var FirebaseHelper = {
   // using the Firebase API's prevChild behavior, we
   // place each element in the list after it's prev
   // sibling or, if prevChild is null, at the beginning
-  positionAfter: function positionAfter(list, prevChild) {
+  _positionAfter: function _positionAfter(list, prevChild) {
     if( prevChild === null ) {
       return 0;
     }
     else {
-      var i = this.positionFor(list, prevChild);
+      var i = this._positionFor(list, prevChild);
       if( i === -1 ) {
         return list.length;
       }
@@ -85,8 +92,8 @@ var FirebaseHelper = {
        firebaseRef.child(key).set(newData);
      };
      list.$indexOf = function(key) {
-       return this.positionFor(list, key); // positionFor in examples above
-     }
+       return this._positionFor(list, key); // _positionFor in examples above
+     };
   }
 };
 

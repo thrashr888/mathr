@@ -6,6 +6,7 @@
 
 var Fluxxor = require('fluxxor/index.js');
 var Firebase = require('firebase-client');
+var FirebaseHelper = require('../lib/FirebaseHelper.jsx');
 
 var ConfigStore = Fluxxor.createStore({
   actions: {
@@ -15,11 +16,11 @@ var ConfigStore = Fluxxor.createStore({
   initialize: function initialize() {
     this.dbRef = new Firebase(window.__config.firebaseHost + '/config');
 
-    this.config = {};
+    this.config = FirebaseHelper.getSynchronizedArray(this.dbRef);
   },
 
   onUpdateConfig: function onUpdateConfig(payload) {
-    this.config[payload.key] = payload.value;
+    this.config.$set(payload.key, payload.value);
     this.emit('change');
   },
 

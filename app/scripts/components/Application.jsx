@@ -48,7 +48,7 @@ var Application = React.createClass({
   componentWillMount: function() {
     // console.log(this);
     this.getFlux().actions.getDocs(this.props.docs);
-    this.getFlux().actions.getPages(this.props.pages);
+    // this.getFlux().actions.getPages(this.props.pages);
   },
 
   getInitialState: function() {

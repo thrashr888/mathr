@@ -17,15 +17,20 @@ var actions = require('./actions/actions.jsx');
 
 var Application = require('./components/Application.jsx');
 
+var userSession = null;
+if (window.localStorage.firebaseSession) {
+  userSession = JSON.parse(JSON.parse(window.localStorage.firebaseSession));
+}
+
 /**
  * Flux Stores
  */
 var stores = {
-  UserStore: new UserStore(),
-  ConfigStore: new ConfigStore(),
-  DocStore: new DocStore(),
-  PageStore: new PageStore(),
-  ErrorStore: new ErrorStore()
+  UserStore: new UserStore(userSession),
+  ConfigStore: new ConfigStore(userSession),
+  DocStore: new DocStore(userSession),
+  PageStore: new PageStore(userSession),
+  ErrorStore: new ErrorStore(userSession)
 };
 
 /**

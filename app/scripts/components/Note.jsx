@@ -25,26 +25,26 @@ var Note = React.createClass({
   },
 
   handleTitleUpdate: function (event, b) {
-    this.props.item.name = event.target.value;
-    this.getFlux().actions.updatePage(this.props.item, true);
+    this.props.item.title = event.target.value;
+    this.getFlux().actions.updatePage(this.props.item);
   },
 
   componentDidMount: function () {
-    this.getFlux().actions.updatePage(this.props.item, true);
+    // this.getFlux().actions.updatePage(this.props.item, true);
   },
 
   render: function () {
     // console.log('config', this.props.config)
     return (
-      <div className="row m-note m-note--container col-md-12">
-        <h3 className="row m-note--hed"><input className="m-note--title" value={this.props.item ? this.props.item.name : ''} type="text" onChange={this.handleTitleUpdate} /></h3>
+      <div className={'row m-note m-note--container col-md-12 ' + (this.props.item.hidden ? 'is-hidden' : '')}>
+        <h3 className="row m-note--hed"><input className="m-note--title" value={this.props.item ? this.props.item.title : ''} type="text" onChange={this.handleTitleUpdate} /></h3>
         <div className="row m-note--row">
           <EditorInput
             input={this.props.item.input ? this.props.item.input : ''}
             onInputUpdate={this.handleInputUpdate}
             mode="note"
             darkTheme={this.props.config ? this.props.config.darkTheme : null}
-            key={this.props.item.id}
+            key={this.props.item.$id}
             className="col-md-8 col-xs-8" />
           <EditorOutput
             output={this.props.item.output ? this.props.item.output : ''}

@@ -52,14 +52,14 @@ var ControlPanel = React.createClass({
   },
 
   render: function () {
-    // console.log(this.props.user.user)
+    console.log(this.props.user)
 
     var accountLinks;
-    if (this.props.user && this.props.user.user && this.props.user.user.id) {
+    if (this.props.user && this.props.user.id) {
       accountLinks = (
         <ul className="nav navbar-nav navbar-right">
           <li className="dropdown">
-            <a href="#" className="dropdown-toggle" data-toggle="dropdown"><img className="m-controlpanel--profile-image" src={this.props.user.user.image_url} />{this.props.user.user.displayName} <b className="caret"></b></a>
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown"><img className="m-controlpanel--profile-image" src={this.props.user.image_url} />{this.props.user.displayName} <b className="caret"></b></a>
 
             <ul className="dropdown-menu">
               <li><a href="#!/account">Account</a></li>

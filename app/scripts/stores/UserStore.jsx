@@ -16,22 +16,17 @@ var UserStore = Fluxxor.createStore({
 
   provider: 'google',
 
-  initialize: function initialize() {
-    this.dbRef = new Firebase(window.__config.firebaseHost + '/user');
+  initialize: function initialize(userSession) {
+    this.dbRef = new Firebase(window.__config.firebaseHost);
     this.auth = new FirebaseSimpleLogin(this.dbRef, this.authStateChanged);
 
-    // this.dbRef.on("child_added", function(dataSnapshot) {
-    //   this.items.push(dataSnapshot.val());
-    //   this.setState({
-    //     items: this.items
-    //   });
-    // }.bind(this));
-
-    if (window.localStorage.firebaseSession) {
-      this.onLogin();
-    }
-
     this.user = {};
+
+    if (userSession && userSession.user) {
+      // console.log('userSession', userSession.user)
+      this.user = userSession.user;
+      this.unifyUserProperties();
+    }
   },
 
   unifyUserProperties: function unifyUserProperties () {
@@ -49,6 +44,10 @@ var UserStore = Fluxxor.createStore({
       this.unifyUserProperties();
       this.emit('change');
     } else {
+      // TODO this should be a logout but there's a bug in the
+      // google provider that doesn't return the user data we need
+      // this.user = {};
+      // this.emit('change');
       console.info('logged out');
     }
   },
@@ -62,17 +61,18 @@ var UserStore = Fluxxor.createStore({
 
   onLogout: function onLogout() {
     this.auth.logout();
+
     this.user = {};
+    this.emit('change');
+    console.info('logged out');
+
     // location.path = '/';
     location.hash = '';
     history.pushState({}, 'home', '/');
-    this.emit('change');
   },
 
   getState: function getState() {
-    return {
-      user: this.user
-    };
+    return this.user;
   }
 });
 

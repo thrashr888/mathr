@@ -24,7 +24,7 @@ var Sheet = React.createClass({
   },
 
   handleTitleUpdate: function (event, b) {
-    this.props.item.name = event.target.value;
+    this.props.item.title = event.target.value;
     this.getFlux().actions.updatePage(this.props.item);
   },
 
@@ -40,13 +40,13 @@ var Sheet = React.createClass({
 
   render: function () {
     return (
-      <div className="m-sheet m-sheet--container col-md-12">
-        <h3 className="row m-sheet--hed"><input className="m-sheet--title" value={this.props.item ? this.props.item.name : ''} type="text" onChange={this.handleTitleUpdate} /></h3>
+      <div className={'m-sheet m-sheet--container col-md-12' + (this.props.item.hidden ? 'is-hidden' : '')}>
+        <h3 className="row m-sheet--hed"><input className="m-sheet--title" value={this.props.item ? this.props.item.title : ''} type="text" onChange={this.handleTitleUpdate} /></h3>
         <div className="row m-sheet--row">
           <HandsOnTable
             input={this.props.item.input ? this.props.item.input : ''}
             onInputUpdate={this.handleInputUpdate}
-            key={this.props.item.id}
+            key={this.props.item.$id}
             className="col-md-12 col-xs-12" />
         </div>
       </div>
