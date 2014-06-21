@@ -34,6 +34,7 @@ var Note = React.createClass({
   },
 
   render: function () {
+    // console.log('config', this.props.config)
     return (
       <div className="row m-note m-note--container col-md-12">
         <h3 className="row m-note--hed"><input className="m-note--title" value={this.props.item ? this.props.item.name : ''} type="text" onChange={this.handleTitleUpdate} /></h3>
@@ -42,6 +43,7 @@ var Note = React.createClass({
             input={this.props.item.input ? this.props.item.input : ''}
             onInputUpdate={this.handleInputUpdate}
             mode="note"
+            darkTheme={this.props.config ? this.props.config.darkTheme : null}
             key={this.props.item.id}
             className="col-md-8 col-xs-8" />
           <EditorOutput

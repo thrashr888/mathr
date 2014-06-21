@@ -20,6 +20,7 @@ var Func = React.createClass({
     // console.log('input update:', input);
     // this.getFlux().actions.updatePage(this.props.item);
   },
+
   render: function () {
     // console.log(this.props.item.input.split('\n').length)
     return (
@@ -29,7 +30,9 @@ var Func = React.createClass({
           <EditorInput
             input={this.props.item.input ? this.props.item.input : ''}
             onInputUpdate={this.handleInputUpdate}
-            mode="func"
+            mode="function"
+            darkTheme={this.props.config ? this.props.config.darkTheme : false}
+            key={this.props.item.id}
             className="col-md-12 col-xs-12" />
         </div>
       </div>

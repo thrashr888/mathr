@@ -38,7 +38,18 @@ var ControlPanel = React.createClass({
     this.getFlux().actions.logout();
   },
 
+  handleThemeChange: function (value, event) {
+    this.state.configDarkTheme = !this.state.configDarkTheme;
+    this.getFlux().actions.updateConfig('darkTheme', this.state.configDarkTheme);
+  },
+
   componentDidMount: function () {},
+
+  getInitialState: function() {
+    return {
+      configDarkTheme: null
+    };
+  },
 
   render: function () {
     // console.log(this.props.user.user)
@@ -69,7 +80,7 @@ var ControlPanel = React.createClass({
     }
 
     return (
-      <nav role="navigation" className="navbar navbar-default navbar-fixed-top m-controlpanel m-controlpanel--container">
+      <nav role="navigation" className={'navbar navbar-default navbar-fixed-top m-controlpanel m-controlpanel--container ' + (this.state.configDarkTheme ? 'navbar-inverse' : null )}>
         <div className="container-fluid">
 
           <div className="navbar-header">
@@ -81,6 +92,11 @@ var ControlPanel = React.createClass({
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="note">Add a Note</a></li>
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="table">Add a Table</a></li>
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="function">Add a Func</a></li>
+              <li className="active"><label className="btn btn-default"><input
+                type="checkbox"
+                name="darkTheme"
+                checked={this.state.configDarkTheme}
+                onChange={this.handleThemeChange} /> dark</label></li>
             </ul>
 
             {accountLinks}

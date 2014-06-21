@@ -20,15 +20,16 @@ var PageList = React.createClass({
     var pageList = this.props.pages.map(function (item) {
       switch (item.type) {
         case 'note':
-          return <Note item={item} key={item.id} />;
+          return <Note item={item} key={item.id} config={this.props.config} />;
         case 'function':
-          return <Func item={item} key={item.id} />;
+          return <Func item={item} key={item.id} config={this.props.config} />;
         case 'table':
-          return <Sheet item={item} key={item.id} />;
+          return <Sheet item={item} key={item.id} config={this.props.config} />;
         default:
           return null;
       }
-    });
+    }.bind(this));
+
     return (
       <div className={this.props.className + ' m-page m-page--container'}>
         {pageList}

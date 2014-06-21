@@ -16,7 +16,7 @@ var DocStore = Fluxxor.createStore({
     'CLEAR_DOCS': 'onClearDocs'
   },
 
-  initialize: function() {
+  initialize: function initialize() {
     this.docs = [];
   },
 
@@ -29,7 +29,7 @@ var DocStore = Fluxxor.createStore({
     this.emit('change');
   },
 
-  onAddDocs: function (payload) {
+  onAddDocs: function onAddDocs(payload) {
     for (var i = 0, l = payload.docs.length; i < l; i++) {
       var doc = payload.docs[i];
       this.docs.push({
@@ -40,7 +40,7 @@ var DocStore = Fluxxor.createStore({
     this.emit('change');
   },
 
-  onGetDocs: function (payload) {
+  onGetDocs: function onGetDocs(payload) {
       // console.log(payload)
     $.ajax({
       url: payload.url,
@@ -54,7 +54,7 @@ var DocStore = Fluxxor.createStore({
     });
   },
 
-  getState: function() {
+  getState: function getState() {
     return {
       docs: this.docs
     };

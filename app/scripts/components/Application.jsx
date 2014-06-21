@@ -22,7 +22,13 @@ var Footer = require('./Footer.jsx');
  * Application View
  */
 var Application = React.createClass({
-  mixins: [FluxMixin, new StoreWatchMixin('UserStore', 'DocStore', 'PageStore', 'ErrorStore')],
+  mixins: [FluxMixin, new StoreWatchMixin(
+    'UserStore',
+    'ConfigStore',
+    'DocStore',
+    'PageStore',
+    'ErrorStore'
+    )],
 
   getStateFromFlux: function() {
     var flux = this.getFlux();
@@ -32,6 +38,7 @@ var Application = React.createClass({
     // we'll use the state of the store as our entire state here.
     return {
       user: flux.store('UserStore').getState(),
+      config: flux.store('ConfigStore').getState(),
       docs: flux.store('DocStore').getState(),
       pages: flux.store('PageStore').getState(),
       errors: flux.store('ErrorStore').getState()
@@ -52,11 +59,11 @@ var Application = React.createClass({
     //<Func item={this.state.pages[2]} />
     // console.log('app state', this.state)
     return (
-      <div className="container-fluid">
-        <ControlPanel className="" user={this.state.user ? this.state.user : null} />
-        <DocList className="col-xs-12 col-sm-3 col-md-3 col-lg-3" docs={this.state.docs ? this.state.docs.docs : null} />
-        <PageList className="col-xs-12 col-sm-9 col-md-9 col-lg-9" pages={this.state.pages ? this.state.pages.pages : null} />
-        <ErrorList className="col-md-12 col-lg-12 row" errors={this.state.errors ? this.state.errors.errors : null} />
+      <div className={(this.state.config.darkTheme ? 'dark-theme' : null) + ' container-fluid'}>
+        <ControlPanel className="" user={this.state.user ? this.state.user : null} onConfigChange={this.handleConfigChange} config={this.state.config} />
+        <DocList className="col-xs-12 col-sm-3 col-md-3 col-lg-3" docs={this.state.docs ? this.state.docs.docs : null} config={this.state.config} />
+        <PageList className="col-xs-12 col-sm-9 col-md-9 col-lg-9" pages={this.state.pages ? this.state.pages.pages : null} config={this.state.config} />
+        <ErrorList className="col-md-12 col-lg-12 row" errors={this.state.errors ? this.state.errors.errors : null} config={this.state.config} />
         <Footer className="col-md-12 col-lg-12 row" versionNumber={VERSION_NUMBER} />
       </div>
     );

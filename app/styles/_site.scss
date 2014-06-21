@@ -7,23 +7,38 @@
 @import "CSS:../../node_modules/jquery-handsontable/dist/jquery.handsontable.full";
 
 $global-line-height: 30px;
+
+$text-color: rgb(51, 51, 51);
 $output-color: #0066ff;
 $output-color-rgba: rgba(247, 247, 247, 0.50);
 $gutter-bg-color: #fdfdfd;
 $border-color-light: #dddddd;
 $border-color-dark: #dfdfdf;
 
+$text-color-inverse: #f8f8f2;
+$output-color-inverse: #272822;
+$border-color-light-inverse: #5b5c56;
+$border-color-dark-inverse: #8f908a;
+$background-color-inverse: #222;
+// $background-color-inverse: #171812;
+
+$transition-duration: 0.3s;
 
 body {
   font-family: 'Source Sans Pro', sans-serif;
   font-size: 18px;
-  padding-top: 70px;
+  padding-top: 52px;
+  padding-bottom: 0;
 }
 
 .row {
   /*font-family: 'Source Sans Pro', sans-serif;*/
   /*font-family: 'Source Code Pro', ;*/
   line-height: $global-line-height;
+}
+
+ul.nav > li > label {
+  margin: 8px;
 }
 
 .m-note,
@@ -40,6 +55,8 @@ body {
 .m-func--container,
 .m-sheet--container,
 .editor-container {
+  transition: border-color $transition-duration, color $transition-duration;
+
   border: 1px solid $border-color-dark;
   border-radius: 3px;
   overflow: hidden;
@@ -50,6 +67,8 @@ body {
 .m-func--hed,
 .m-error--hed,
 .m-doc--hed {
+  transition: border-color $transition-duration, color $transition-duration;
+
   border-bottom: 1px solid $border-color-light;
   padding: 0.25em 0.5em;
   margin-top: 0;
@@ -63,6 +82,8 @@ body {
 }
 
 .m-note--output {
+  transition: background-color $transition-duration, border-color $transition-duration, color $transition-duration;
+
   background-color: $output-color;
   background-color: $output-color-rgba;
   line-height: $global-line-height;
@@ -182,6 +203,12 @@ body {
   }
 }
 
+.m-footer--container {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 14px;
+}
+
 .m-controlpanel {
   .m-controlpanel--profile-image {
     width: 30px;
@@ -261,4 +288,62 @@ body {
 
 .powered-by-firepad {
   display: none;
+}
+
+.dark-theme {
+  transition: background-color $transition-duration, color $transition-duration;
+
+  background-color: $background-color-inverse;
+
+  .m-doc--container,
+  // .m-footer--container,
+  .m-error--container,
+  .m-note--container,
+  .m-func--container,
+  .m-sheet--container,
+  .editor-container,
+
+  .m-error--row,
+
+  .m-note--hed,
+  .m-sheet--hed,
+  .m-func--hed,
+  .m-error--hed,
+  .m-doc--hed,
+
+  .m-note--title,
+  .m-sheet--title,
+
+  .m-note--output {
+    color: $text-color-inverse;
+    background-color: $output-color-inverse;
+  }
+
+  .m-footer--container {
+    color: $border-color-dark-inverse;
+  }
+
+  .m-note--hed,
+  .m-sheet--hed,
+  .m-func--hed,
+  .m-error--hed,
+  .m-doc--hed,
+  .m-note--output {
+    border-color: $border-color-light-inverse;
+  }
+
+  .m-doc--container,
+  .m-footer--container,
+  .m-error--container,
+  .m-note--container,
+  .m-func--container,
+  .m-sheet--container,
+  .editor-container {
+    border-color: $border-color-dark-inverse;
+  }
+
+}
+
+.navbar-inverse {
+  transition: background-color $transition-duration, color $transition-duration;
 }

@@ -32,6 +32,12 @@ var Sheet = React.createClass({
     this.getFlux().actions.updatePage(this.props.item);
   },
 
+  getInitialState: function() {
+    return {
+      config: {}
+    };
+  },
+
   render: function () {
     return (
       <div className="m-sheet m-sheet--container col-md-12">

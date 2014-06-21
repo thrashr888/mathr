@@ -8,6 +8,7 @@ var React = require('react/react.js');
 var Fluxxor = require('fluxxor/index.js');
 
 var UserStore = require('./stores/UserStore.jsx');
+var ConfigStore = require('./stores/ConfigStore.jsx');
 var DocStore = require('./stores/DocStore.jsx');
 var PageStore = require('./stores/PageStore.jsx');
 var ErrorStore = require('./stores/ErrorStore.jsx');
@@ -21,6 +22,7 @@ var Application = require('./components/Application.jsx');
  */
 var stores = {
   UserStore: new UserStore(),
+  ConfigStore: new ConfigStore(),
   DocStore: new DocStore(),
   PageStore: new PageStore(),
   ErrorStore: new ErrorStore()
@@ -41,7 +43,6 @@ React.renderComponent(
   <Application
     docs={window.__config.apiEndpoint + '/doc'}
     pages={window.__config.apiEndpoint + '/doc/1'}
-    flux={flux}
-    />,
+    flux={flux} />,
   document.getElementById('main')
 );

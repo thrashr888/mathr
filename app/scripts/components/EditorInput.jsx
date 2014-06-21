@@ -9,6 +9,8 @@ var React = require('react/react.js');
 window.CodeMirror = require('codemirror/lib/codemirror.js');
 // var Firebase = require('firebase-client');
 // var Firepad = require('firepad/dist/firepad.js');
+var ModeJavascript = require('codemirror/mode/javascript/javascript.js');
+var ModeMathr = require('../modes/mathr.js');
 
 /**
  * RTE Views
@@ -38,10 +40,11 @@ var EditorInput = React.createClass({
 
     var el = this.getDOMNode().children[0];
 
-    // this.dbRef = new Firebase(window.__config.firebaseHost + 'firepads/EditorInput/' + this.props.key);
+    // this.dbRef = new Firebase(window.__config.firebaseHost + '/firepads/EditorInput/' + this.props.key);
+    // console.log(this.props)
     this.rte = window.CodeMirror.fromTextArea(el, {
-      mode: 'text/plain',
-      // theme: 'monokai',
+      mode: (this.props.mode === 'function' ? 'javascript' : 'mathr'),
+      theme: this.props.darkTheme ? 'monokai' : 'default',
       lineNumbers: true,
       lineWrapping: true,
       value: this.props.input ? this.props.input : null
@@ -87,6 +90,9 @@ var EditorInput = React.createClass({
       // TODO: do this only sparingly under certain conditions
       // this might have been updated from the editor itself.
       this.rte.doc.setValue(nextProps.input);
+    }
+    if (typeof nextProps.darkTheme !== 'undefined') {
+      this.rte.setOption('theme', nextProps.darkTheme ? 'monokai' : 'default');
     }
   },
 

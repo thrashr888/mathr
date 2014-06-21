@@ -1,6 +1,6 @@
 {
     "docs": [
-        {"id": "doc1", "name": "Document #1"},
-        {"id": "doc2", "name": "Document #2"}
+        {"id": "1", "name": "Document #1"},
+        {"id": "2", "name": "Document #2"}
     ]
 }

@@ -5,6 +5,7 @@
 'use strict';
 
 var Fluxxor = require('fluxxor/index.js');
+var Firebase = require('firebase-client');
 var uuid = require('node-uuid');
 
 var PageStore = Fluxxor.createStore({
@@ -17,8 +18,8 @@ var PageStore = Fluxxor.createStore({
     'GET_PAGES': 'onGetPages'
   },
 
-  initialize: function() {
-    this.dbRef = new Firebase(window.__config.firebaseHost + 'pages');
+  initialize: function initialize() {
+    this.dbRef = new Firebase(window.__config.firebaseHost + '/pages');
 
     this.pages = [];
   },
@@ -204,7 +205,8 @@ var PageStore = Fluxxor.createStore({
       name: payload.page.name,
       input: payload.page.input,
       output: null,
-      hidden: false
+      hidden: false,
+      created: new Date().getTime()
     });
     this.emit('change');
   },
@@ -219,13 +221,14 @@ var PageStore = Fluxxor.createStore({
         name: page.name,
         input: page.input,
         output: null,
-        hidden: false
+        hidden: false,
+        created: new Date().getTime()
       });
     }
     this.emit('change');
   },
 
-  onTogglePage: function(payload) {
+  onTogglePage: function onTogglePage(payload) {
     payload.page.hidden = !payload.page.hidden;
     this.emit('change');
   },
@@ -236,6 +239,7 @@ var PageStore = Fluxxor.createStore({
         if (payload.hasOutput) {
           payload.page.output = this.solveLines(payload.page.input);
         }
+        payload.page.updated = new Date().getTime();
         $.extend(page, payload.page);
       }
     }.bind(this));

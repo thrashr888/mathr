@@ -61,10 +61,12 @@ var HandsOnTable = React.createClass({
     if (!this.rte) {
       this.installRTE();
     }
+    // console.log(nextProps.input, this.input)
     if (nextProps.input !== this.input) {
       // TODO: do this only sparingly under certain conditions
       // this might have been updated from the editor itself.
-      this.rte.loadData(nextProps.input);
+      // console.log(this.rte)
+      // this.rte.loadData(nextProps.input);
     }
   },
 
