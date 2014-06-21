@@ -1,5 +1,17 @@
 $icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
 
+
+  /*font-family: 'Source Sans Pro', sans-serif;*/
+  /*font-family: 'Source Code Pro', ;*/
+
+$font-family-sans-serif:  "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+// $font-family-serif:       Georgia, "Times New Roman", Times, serif;
+//** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
+$font-family-monospace:   'Source Code Pro', Menlo, Monaco, Consolas, "Courier New", monospace;
+// $font-family-base:        $font-family-sans-serif;
+
+$font-size-base: 16px;
+
 @import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
 
 // bower:scss

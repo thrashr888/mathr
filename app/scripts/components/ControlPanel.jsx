@@ -58,13 +58,15 @@ var ControlPanel = React.createClass({
     if (this.props.user && this.props.user.id) {
       accountLinks = (
         <ul className="nav navbar-nav navbar-right">
+          <li><a href="#">Link</a></li>
           <li className="dropdown">
-            <a href="#" className="dropdown-toggle" data-toggle="dropdown"><img className="m-controlpanel--profile-image" src={this.props.user.image_url} />{this.props.user.displayName} <b className="caret"></b></a>
-
+            <a href="#" className="dropdown-toggle" data-toggle="dropdown">Dropdown <b className="caret"></b></a>
             <ul className="dropdown-menu">
-              <li><a href="#!/account">Account</a></li>
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
               <li className="divider"></li>
-              <li><a href="#!/logout" onClick={this.handleLogout}>Log out</a></li>
+              <li><a href="#">Separated link</a></li>
             </ul>
           </li>
         </ul>
@@ -92,7 +94,7 @@ var ControlPanel = React.createClass({
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="note">Add a Note</a></li>
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="table">Add a Table</a></li>
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="function">Add a Func</a></li>
-              <li className="active"><label className="btn btn-default"><input
+              <li className="active"><label className={'btn btn-default dark-toggle ' + (this.state.configDarkTheme ? 'toggled': '')}><input
                 type="checkbox"
                 name="darkTheme"
                 checked={this.state.configDarkTheme}

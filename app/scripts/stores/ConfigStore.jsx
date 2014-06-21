@@ -20,6 +20,7 @@ var ConfigStore = Fluxxor.createStore({
   },
 
   onUpdateConfig: function onUpdateConfig(payload) {
+    this.config[payload.key] = payload.value;
     this.config.$set(payload.key, payload.value);
     this.emit('change');
   },

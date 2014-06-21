@@ -8,14 +8,13 @@
 
 $global-line-height: 30px;
 
-$text-color: rgb(51, 51, 51);
 $output-color: #0066ff;
 $output-color-rgba: rgba(247, 247, 247, 0.50);
 $gutter-bg-color: #fdfdfd;
 $border-color-light: #dddddd;
 $border-color-dark: #dfdfdf;
 
-$text-color-inverse: #f8f8f2;
+$text-color-inverse: #c8c8c2;
 $output-color-inverse: #272822;
 $border-color-light-inverse: #5b5c56;
 $border-color-dark-inverse: #8f908a;
@@ -25,8 +24,6 @@ $background-color-inverse: #222;
 $transition-duration: 0.3s;
 
 body {
-  font-family: 'Source Sans Pro', sans-serif;
-  font-size: 18px;
   padding-top: 52px;
   padding-bottom: 0;
 }
@@ -39,6 +36,30 @@ body {
 
 ul.nav > li > label {
   margin: 8px;
+  text-align: center;
+
+  &.dark-toggle {
+    color: $text-color-inverse;
+    border-color: $border-color-dark-inverse;
+    background-color: $background-color-inverse;
+
+    &.toggled {
+      transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
+
+      color: $text-color;
+      border-color: $border-color-dark;
+      background-color: $body-bg;
+    }
+  }
+
+  input {
+    width: 15px;
+    height: 15px;
+    margin-right: 3px;
+    border-style: solid;
+    border-radius: 2px;
+    border-width: 1px;
+  }
 }
 
 .m-note,
@@ -113,7 +134,7 @@ ul.nav > li > label {
 .gutter {
   line-height: $global-line-height;
   text-align: right;
-  font-size: 12px;
+  font-size: ceil(($font-size-base * 0.8));
   background-color: $gutter-bg-color;
   border-right: 1px solid $border-color-light;
   overflow-y: hidden;
@@ -136,7 +157,7 @@ ul.nav > li > label {
   }
 }
 .m-note--input {
-  font-family: 'Source Code Pro', serif;
+  font-family: $font-family-monospace;
 
   /*font-family: 'Source Sans Pro', sans-serif;*/
   /*box-sizing: padding-box;*/
@@ -187,6 +208,7 @@ ul.nav > li > label {
 
 .m-error--container {
   .m-error--hed {
+    color: #FFF;
     background-color: #ff0000;
   }
   .m-error--row {
@@ -206,14 +228,14 @@ ul.nav > li > label {
 .m-footer--container {
   padding-top: 20px;
   padding-bottom: 20px;
-  font-size: 14px;
+  font-size: ceil(($font-size-base * 0.85));
 }
 
 .m-controlpanel {
   .m-controlpanel--profile-image {
     width: 30px;
     border-radius: 15px;
-    margin-right: 4px;
+    margin: -6px 8px -6px 0;
   }
 }
 
@@ -255,7 +277,7 @@ ul.nav > li > label {
 .CodeMirror-linenumber {
   // min-width: 24px;
   // padding-left: 6px;
-  font-size: 12px;
+  font-size: ceil(($font-size-base * 0.8));
 }
 .CodeMirror-gutter-elt {
 
@@ -290,8 +312,9 @@ ul.nav > li > label {
   display: none;
 }
 
+
 .dark-theme {
-  transition: background-color $transition-duration, color $transition-duration;
+  transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
 
   background-color: $background-color-inverse;
 
@@ -315,11 +338,13 @@ ul.nav > li > label {
   .m-sheet--title,
 
   .m-note--output {
+    transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
     color: $text-color-inverse;
     background-color: $output-color-inverse;
   }
 
   .m-footer--container {
+    transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
     color: $border-color-dark-inverse;
   }
 
@@ -329,6 +354,7 @@ ul.nav > li > label {
   .m-error--hed,
   .m-doc--hed,
   .m-note--output {
+    transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
     border-color: $border-color-light-inverse;
   }
 
@@ -339,11 +365,11 @@ ul.nav > li > label {
   .m-func--container,
   .m-sheet--container,
   .editor-container {
+    transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
     border-color: $border-color-dark-inverse;
   }
-
 }
 
 .navbar-inverse {
-  transition: background-color $transition-duration, color $transition-duration;
+  transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
 }
