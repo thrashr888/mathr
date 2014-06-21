@@ -39,5 +39,19 @@
       "body": "OK",
       "file": "docs.json"
     }
+  },
+  {
+    "request": {
+      "url": "/user/(\\d+)?",
+      "method": "GET"
+    },
+    "response": {
+      "status": 200,
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "body": "OK",
+      "file": "user.json"
+    }
   }
 ]
