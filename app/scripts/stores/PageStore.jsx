@@ -1,7 +1,7 @@
 /**
  * @jsx React.DOM
  */
-/*globals compileExpression, $*/
+/*globals compileExpression*/
 'use strict';
 
 var Fluxxor = require('fluxxor/index.js');

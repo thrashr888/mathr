@@ -35,8 +35,16 @@ body {
 }
 
 ul.nav > li > label {
+  transition: opacity $transition-duration;
+
   margin: 8px;
   text-align: center;
+  opacity: 0.3;
+
+  &:hover {
+    transition: opacity $transition-duration;
+    opacity: 1.0;
+  }
 
   &.dark-toggle {
     color: $text-color-inverse;
