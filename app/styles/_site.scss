@@ -21,7 +21,7 @@ $border-color-dark-inverse: #8f908a;
 $background-color-inverse: #222;
 // $background-color-inverse: #171812;
 
-$transition-duration: 0.3s;
+$transition-duration: 0.667s;
 
 body {
   padding-top: 52px;
@@ -243,7 +243,7 @@ ul.nav > li > label {
   .m-controlpanel--profile-image {
     width: 30px;
     border-radius: 15px;
-    margin: -6px 8px -6px 0;
+    margin: -5px 8px -5px 0;
   }
 }
 
@@ -321,7 +321,28 @@ ul.nav > li > label {
 }
 
 
-.dark-theme {
+@keyframes fade-in {
+  0%   { opacity: 0; }
+  25% { opacity: 0; }
+  50% { opacity: 0; }
+  75% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+// .is-loading {
+//   .m-doc,
+//   .m-footer,
+//   .m-error,
+//   .m-note,
+//   .m-func,
+//   .m-sheet,
+//   .editor-container {
+//     transition: fade-in 20s;
+//     opacity: 0;
+//   }
+// }
+
+.is-dark-theme {
   transition: background-color $transition-duration, color $transition-duration, border-color $transition-duration;
 
   background-color: $background-color-inverse;

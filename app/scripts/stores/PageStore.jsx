@@ -16,7 +16,9 @@ var PageStore = Fluxxor.createStore({
 
   initialize: function initialize(userSession) {
     // console.log(userSession)
-    this.dbRef = new Firebase(window.__config.firebaseHost + '/pages/' + userSession.user.id);
+    // TODO: make this per user
+    this.dbRef = new Firebase(window.__config.firebaseHost + '/pages');
+    // this.dbRef = new Firebase(window.__config.firebaseHost + '/pages/' + userSession.user.id);
 
     this.pages = FirebaseHelper.getSynchronizedArray(this.dbRef, function firebaseChange() {
       this.emit('change');

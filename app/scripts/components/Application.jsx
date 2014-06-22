@@ -56,10 +56,12 @@ var Application = React.createClass({
   },
 
   render: function () {
-    //<Func item={this.state.pages[2]} />
     // console.log('app state', this.state)
+    // console.log('app user state', this.state.user)
+    var hasUser = this.state.user ? 'has-user ' : '';
+    var isDarkTheme = this.state.config.darkTheme ? 'is-dark-theme ' : '';
     return (
-      <div className={(this.state.config.darkTheme ? 'dark-theme' : null) + ' container-fluid'}>
+      <div className={hasUser + isDarkTheme + ' container-fluid'}>
         <ControlPanel className="" user={this.state.user ? this.state.user : null} onConfigChange={this.handleConfigChange} config={this.state.config} />
         <DocList className="col-xs-12 col-sm-3 col-md-3 col-lg-3" docs={this.state.docs ? this.state.docs.docs : null} config={this.state.config} />
         <PageList className="col-xs-12 col-sm-9 col-md-9 col-lg-9" pages={this.state.pages ? this.state.pages.pages : null} config={this.state.config} />

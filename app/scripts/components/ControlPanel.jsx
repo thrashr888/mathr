@@ -39,16 +39,14 @@ var ControlPanel = React.createClass({
   },
 
   handleThemeChange: function (value, event) {
-    this.state.configDarkTheme = !this.state.configDarkTheme;
-    this.getFlux().actions.updateConfig('darkTheme', this.state.configDarkTheme);
+    this.props.config.darkTheme = !this.props.config.darkTheme;
+    this.getFlux().actions.updateConfig('darkTheme', this.props.config.darkTheme);
   },
 
   componentDidMount: function () {},
 
   getInitialState: function() {
-    return {
-      configDarkTheme: null
-    };
+    return {};
   },
 
   render: function () {
@@ -80,7 +78,7 @@ var ControlPanel = React.createClass({
     }
 
     return (
-      <nav role="navigation" className={'navbar navbar-default navbar-fixed-top m-controlpanel m-controlpanel--container ' + (this.state.configDarkTheme ? 'navbar-inverse' : null )}>
+      <nav role="navigation" className={'navbar navbar-default navbar-fixed-top m-controlpanel m-controlpanel--container ' + (this.props.config.darkTheme ? 'navbar-inverse' : null )}>
         <div className="container-fluid">
 
           <div className="navbar-header">
@@ -92,10 +90,10 @@ var ControlPanel = React.createClass({
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="note">Add a Note</a></li>
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="table">Add a Table</a></li>
               <li><a className="btn" href="#" onClick={this.handleAddPage} data-type="function">Add a Func</a></li>
-              <li className="active"><label className={'btn btn-default dark-toggle ' + (this.state.configDarkTheme ? 'toggled': '')}><input
+              <li className="active"><label className={'btn btn-default dark-toggle ' + (this.props.config.darkTheme ? 'toggled': '')}><input
                 type="checkbox"
                 name="darkTheme"
-                checked={this.state.configDarkTheme}
+                checked={this.props.config.darkTheme}
                 onChange={this.handleThemeChange} /> dark</label></li>
             </ul>
 

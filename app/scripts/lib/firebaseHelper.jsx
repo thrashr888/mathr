@@ -5,6 +5,32 @@
 
 var FirebaseHelper = {
 
+  getSynchronizedObject: function getSynchronizedObject(firebaseRef, cb) {
+    var obj = {};
+    this.syncObjectChanges(obj, firebaseRef, cb);
+
+    obj.$remove = function(key) {
+      firebaseRef.child(key).remove();
+    };
+    obj.$set = function(key, newData) {
+      // make sure we don't accidentally push our $id prop
+      if( newData.hasOwnProperty('$id') ) { delete newData.$id; }
+      firebaseRef.child(key).set(newData);
+    };
+    return obj;
+  },
+
+  syncObjectChanges: function syncChanges(obj, ref, cb) {
+    ref.on('value', function _add(snap, prevChild) {
+      var data = snap.val();
+      data.$id = snap.name(); // assumes data is always an object
+      for (var i in data) {
+        obj[i] = data[i];
+      }
+      cb();
+    }.bind(this));
+  },
+
   getSynchronizedArray: function getSynchronizedArray(firebaseRef, cb) {
     var list = [];
     this.syncChanges(list, firebaseRef, cb);
@@ -13,7 +39,6 @@ var FirebaseHelper = {
   },
 
   syncChanges: function syncChanges(list, ref, cb) {
-
     ref.on('child_added', function _add(snap, prevChild) {
       var data = snap.val();
       data.$id = snap.name(); // assumes data is always an object

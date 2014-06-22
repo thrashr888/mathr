@@ -13,12 +13,11 @@ var ConfigStore = Fluxxor.createStore({
     'UPDATE_CONFIG': 'onUpdateConfig'
   },
 
-  initialize: function initialize() {
-    this.dbRef = new Firebase(window.__config.firebaseHost + '/config');
+  initialize: function initialize(userSession) {
+    this.dbRef = new Firebase(window.__config.firebaseHost + '/config/' + userSession.user.id);
 
-    this.config = FirebaseHelper.getSynchronizedArray(this.dbRef, function firebaseChange() {
+    this.config = FirebaseHelper.getSynchronizedObject(this.dbRef, function firebaseChange() {
       this.emit('change');
-      // console.log(this.config)
     }.bind(this));
   },
 
