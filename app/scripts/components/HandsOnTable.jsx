@@ -24,12 +24,24 @@ var HandsOnTable = React.createClass({
       data: this.props.input || null,
       startRows: 6,
       startCols: 4,
-      minRows: 2,
-      minCols: 2,
+      minRows: 3,
+      minCols: 3,
       // width: 'auto',
-      // height: 'auto',
+      height: 200,
+      stretchH: 'all',
+      colWidths: 55,
+      rowHeaders: true,
+      colHeaders: true,
+      minSpareRows: 1,
+      minSpareCols: 1,
+      persistentState: true,
+      currentRowClassName: 'currentRow',
+      currentColClassName: 'currentCol',
       afterChange: this.handleChange
     });
+
+    // from bootstrap: 'table-bordered table-striped table-hover'
+    $(el).find('table').addClass('table-hover');
   },
 
   componentDidMount: function () {
@@ -44,6 +56,10 @@ var HandsOnTable = React.createClass({
     var output = input;
     for (var i in changes) {
       var change = changes[i];
+
+      if (!output[change[0]]) {
+        output[change[0]] = [];
+      }
       output[change[0]][change[1]] = change[3];
     }
     return output;
