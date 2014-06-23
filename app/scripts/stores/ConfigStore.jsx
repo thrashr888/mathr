@@ -14,7 +14,7 @@ var ConfigStore = Fluxxor.createStore({
   },
 
   initialize: function initialize(userSession) {
-    this.dbRef = new Firebase(window.__config.firebaseHost + '/config/' + userSession.user.id);
+    this.dbRef = new Firebase(window.__config.firebaseHost + '/config');
 
     this.config = FirebaseHelper.getSynchronizedObject(this.dbRef, function firebaseChange() {
       this.emit('change');

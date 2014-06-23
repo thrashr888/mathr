@@ -17,7 +17,7 @@ var UserStore = Fluxxor.createStore({
   provider: 'google',
 
   initialize: function initialize(userSession) {
-    this.dbRef = new Firebase(window.__config.firebaseHost);
+    this.dbRef = new Firebase(window.__config.firebaseHost + '/users');
     this.auth = new FirebaseSimpleLogin(this.dbRef, this.authStateChanged);
 
     this.user = {};
