@@ -1,9 +1,9 @@
 # DOCKER-VERSION 0.3.4
 FROM dockerfile/nodejs
 
-ADD . /src
+ADD . /data
 
-RUN cd /src; npm install; bower install; grunt build;
+RUN cd /data; npm install; ./node_modules/bower/bin/bower install;
 
 EXPOSE  9000
 
