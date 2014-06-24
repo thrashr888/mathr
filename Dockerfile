@@ -3,8 +3,10 @@ FROM dockerfile/nodejs
 
 ADD . /data
 
-RUN cd /data; npm install; ./node_modules/bower/bin/bower install;
+RUN cd /data; npm install;
+RUN cd /data; npm install -g grunt-cli bower;
+RUN cd /data; bower install --allow-root;
 
 EXPOSE  9000
 
-CMD ["node", "./node_modules/grunt-cli/bin/grunt", "build", "server"]
+CMD ["grunt", "build", "server"]
