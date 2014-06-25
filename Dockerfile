@@ -1,12 +1,21 @@
 # DOCKER-VERSION 0.3.4
-FROM dockerfile/nodejs
+FROM peenuty/nodejs-npm-sass-docker
 
-ADD . /data
+MAINTAINER Paul Thrasher "thrashr888@gmail.com"
 
-RUN cd /data; npm install;
-RUN cd /data; npm install -g grunt-cli bower;
-RUN cd /data; bower install --allow-root;
+
+WORKDIR /src
+
+ADD package.json /src/
+RUN npm install
+
+ADD Gemfile /src/
+RUN bash -l -c "bundle install"
+
+ADD . /src
+
+RUN bower install --allow-root
 
 EXPOSE  9000
 
-CMD ["grunt", "build", "server"]
+CMD cd /src; grunt server build
