@@ -8,8 +8,8 @@ var React = require('react/react.js');
 var Fluxxor = require('fluxxor/index.js');
 var FluxChildMixin = Fluxxor.FluxChildMixin(React);
 
-var collapse = require('../../bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js');
-var dropdown = require('../../bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js');
+var collapse = require('../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/collapse.js');
+var dropdown = require('../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/dropdown.js');
 
 /**
  * Control Panel View

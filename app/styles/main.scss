@@ -1,4 +1,4 @@
-$icon-font-path: "/bower_components/bootstrap-sass-official/vendor/assets/fonts/bootstrap/";
+$icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
 
 
   /*font-family: 'Source Sans Pro', sans-serif;*/
@@ -12,10 +12,10 @@ $font-family-monospace:   'Source Code Pro', Menlo, Monaco, Consolas, "Courier N
 
 $font-size-base: 16px;
 
-@import 'bootstrap-sass-official/vendor/assets/stylesheets/bootstrap';
+@import 'bootstrap-sass-official/assets/stylesheets/bootstrap';
 
 // bower:scss
-@import "../bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap.scss";
+@import "../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap.scss";
 // endbower
 
 .browsehappy {
