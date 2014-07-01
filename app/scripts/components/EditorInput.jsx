@@ -69,10 +69,8 @@ var EditorInput = React.createClass({
       // this.props.onInputUpdate(this.props.input);
     }.bind(this), 1);
 
-    this.rte
-      .on('changes', this.handleChange);
-    this.rte
-      .on('gutterClick', this.gutterClick);
+    this.rte.on('changes', this.handleChange);
+    this.rte.on('gutterClick', this.gutterClick);
   },
 
   componentDidMount: function () {

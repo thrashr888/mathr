@@ -28,7 +28,7 @@ var Application = React.createClass({
     'DocStore',
     'PageStore',
     'ErrorStore'
-    )],
+  )],
 
   getStateFromFlux: function() {
     var flux = this.getFlux();
