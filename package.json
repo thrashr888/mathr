@@ -22,7 +22,7 @@
     "firepad": "git://github.com/firebase/firepad",
     "fluxxor": "^1.2.1",
     "jison": "*",
-    "jquery": "^2.1.1",
+    "jquery": "^3.0.0",
     "jquery-handsontable": "git://github.com/warpech/jquery-handsontable.git",
     "node-uuid": "^1.4.1",
     "numeral": "^1.5.3",
