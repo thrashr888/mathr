@@ -35,8 +35,8 @@ The idea is to have a reactive notes app that can do math for you using data tab
 - importable
 - can get live/realtime data from json, websockets or google docs
 - "*" signifies the "slug" field
-- this table won't format properly in markdown :(
 
+```
     ┌---------------------------------------------------------------------------------┐
     |                                 t1 ECU Sizes                                    |
     ├-------------------------------------------------------------------------------┬-┤
@@ -48,6 +48,7 @@ The idea is to have a reactive notes app that can do math for you using data tab
     |4| m1.medium |   1 |   2 |    3.75 |         410 |     $0.017 |    $375 | reg  | |
     |+|           |     |     |         |             |            |         |      | |
     └-------------------------------------------------------------------------------┴-┘
+```
 
 ## Embedded Functions
 
